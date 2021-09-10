@@ -1,6 +1,6 @@
 # R example
 
-This directory contains an example for running R in Graphene, including the
+This directory contains an example for running R in Gramine, including the
 Makefile and a template for generating the manifest.
 
 # Generating the manifest
@@ -23,20 +23,20 @@ the manifest with the `R_HOME` variable set accordingly. For example:
 make R_HOME=<install path>/lib/R SGX=1
 ```
 
-# Run R with Graphene
+# Run R with Gramine
 
-When running R with Graphene, please use the `--vanilla` or `--no-save` option.
+When running R with Gramine, please use the `--vanilla` or `--no-save` option.
 
-Here's an example of running an R script under Graphene:
+Here's an example of running an R script under Gramine:
 
 Without SGX:
 ```
-graphene-direct ./R --slave --vanilla -f scripts/sample.r
-graphene-direct ./R --slave --vanilla -f scripts/R-benchmark-25.R
+gramine-direct ./R --slave --vanilla -f scripts/sample.r
+gramine-direct ./R --slave --vanilla -f scripts/R-benchmark-25.R
 ```
 
 With SGX:
 ```
-graphene-sgx ./R --slave --vanilla -f scripts/sample.r
-graphene-sgx ./R --slave --vanilla -f scripts/R-benchmark-25.R
+gramine-sgx ./R --slave --vanilla -f scripts/sample.r
+gramine-sgx ./R --slave --vanilla -f scripts/R-benchmark-25.R
 ```

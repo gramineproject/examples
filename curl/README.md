@@ -1,7 +1,7 @@
 # Curl
 
 This directory contains a Makefile and template manifest to run curl on
-Graphene. This example uses curl installed on the system instead of compiling
+Gramine. This example uses curl installed on the system instead of compiling
 from source as some of the other examples do.
 
 # Quick Start

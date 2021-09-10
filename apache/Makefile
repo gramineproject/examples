@@ -12,7 +12,7 @@ HTTPD_MIRRORS ?= \
     https://www-us.apache.org/dist/httpd \
     https://ftp.fau.de/apache/httpd \
     https://archive.apache.org/dist/httpd \
-    https://packages.grapheneproject.io/distfiles
+    https://packages.gramineproject.io/distfiles
 
 LISTEN_HOST ?= 127.0.0.1
 LISTEN_PORT ?= 8001
@@ -20,9 +20,9 @@ LISTEN_PORT ?= 8001
 SGX_SIGNER_KEY ?= ../../Pal/src/host/Linux-SGX/signer/enclave-key.pem
 
 ifeq ($(DEBUG),1)
-GRAPHENE_LOG_LEVEL = debug
+GRAMINE_LOG_LEVEL = debug
 else
-GRAPHENE_LOG_LEVEL = error
+GRAMINE_LOG_LEVEL = error
 endif
 
 .PHONY: all
@@ -61,21 +61,21 @@ httpd-modules: $(INSTALL_DIR)/conf/httpd.conf
 	@echo $(INSTALL_DIR)/modules/mod_ssl.so        >> $@
 
 httpd.manifest: httpd.manifest.template
-	graphene-manifest \
-		-Dlog_level=$(GRAPHENE_LOG_LEVEL) \
+	gramine-manifest \
+		-Dlog_level=$(GRAMINE_LOG_LEVEL) \
 		-Dinstall_dir=$(INSTALL_DIR) \
 		-Dinstall_dir_abspath=$(abspath $(INSTALL_DIR)) \
 		-Darch_libdir=$(ARCH_LIBDIR) \
 		$< > $@
 
 httpd.manifest.sgx: httpd.manifest $(INSTALL_DIR)/bin/httpd \
-		$(INSTALL_DIR)/conf/httpd-graphene.conf \
-		$(INSTALL_DIR)/conf/extra/httpd-ssl-graphene.conf \
+		$(INSTALL_DIR)/conf/httpd-gramine.conf \
+		$(INSTALL_DIR)/conf/extra/httpd-ssl-gramine.conf \
 		$(TEST_DATA) \
 		$(INSTALL_DIR)/conf/server.crt
 	@test -s $(SGX_SIGNER_KEY) || \
 	    { echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
-	graphene-sgx-sign \
+	gramine-sgx-sign \
 		--key $(SGX_SIGNER_KEY) \
 		--manifest httpd.manifest \
 		--output $@
@@ -83,19 +83,19 @@ httpd.manifest.sgx: httpd.manifest $(INSTALL_DIR)/bin/httpd \
 httpd.sig: httpd.manifest.sgx
 
 httpd.token: httpd.sig
-	graphene-sgx-get-token --output $@ --sig $<
+	gramine-sgx-get-token --output $@ --sig $<
 
 .PHONY: config
-config: $(INSTALL_DIR)/conf/httpd-graphene.conf $(INSTALL_DIR)/conf/extra/httpd-ssl-graphene.conf
+config: $(INSTALL_DIR)/conf/httpd-gramine.conf $(INSTALL_DIR)/conf/extra/httpd-ssl-gramine.conf
 
-$(INSTALL_DIR)/conf/httpd-graphene.conf: $(INSTALL_DIR)/conf/httpd.conf
+$(INSTALL_DIR)/conf/httpd-gramine.conf: $(INSTALL_DIR)/conf/httpd.conf
 	sed \
 		-e "s|^Listen |#Listen |g" \
 		-e "s|^User |#User |g" \
 		-e "s|^Group |#Group |g" \
 		-e "s|^LoadModule mpm_prefork|#LoadModule mpm_prefork|g" \
 		-e "s|^#LoadModule ssl_module|LoadModule ssl_module|g" \
-		-e "s|^#Include conf/extra/httpd-ssl.conf|Include conf/extra/httpd-ssl-graphene.conf|g" \
+		-e "s|^#Include conf/extra/httpd-ssl.conf|Include conf/extra/httpd-ssl-gramine.conf|g" \
 		-e "s|#EnableMMAP off|EnableMMAP off|g" \
 		-e "s|#EnableSendfile on|EnableSendfile on|g" \
 	$< > $@
@@ -114,7 +114,7 @@ $(INSTALL_DIR)/conf/httpd-graphene.conf: $(INSTALL_DIR)/conf/httpd.conf
     ThreadsPerChild          25\n\
 </IfModule>\n" >> $@
 
-$(INSTALL_DIR)/conf/extra/httpd-ssl-graphene.conf: $(INSTALL_DIR)/conf/extra/httpd-ssl.conf
+$(INSTALL_DIR)/conf/extra/httpd-ssl-gramine.conf: $(INSTALL_DIR)/conf/extra/httpd-ssl.conf
 	sed \
 		-e "s|^Listen 443|Listen 127.0.0.1:8443|g" \
 		-e "s|^<VirtualHost _default_:443>|<VirtualHost 127.0.0.1:8443>|g" \
@@ -157,9 +157,9 @@ $(INSTALL_DIR)/conf/server.crt: ssl/ca_config.conf $(INSTALL_DIR)/bin/httpd
 ssldata: $(INSTALL_DIR)/conf/server.crt
 
 ifeq ($(SGX),)
-GRAPHENE = graphene-direct
+GRAMINE = gramine-direct
 else
-GRAPHENE = graphene-sgx
+GRAMINE = gramine-sgx
 endif
 
 .PHONY: clean-server
@@ -170,17 +170,17 @@ clean-server:
 start-native-server: all clean-server
 	@echo "Listen on $(LISTEN_HOST):$(LISTEN_PORT)"
 	$(INSTALL_DIR)/bin/httpd -D FOREGROUND \
-		-f conf/httpd-graphene.conf \
+		-f conf/httpd-gramine.conf \
 		-C "LoadModule mpm_prefork_module modules/mod_mpm_prefork.so" \
 		-C "Listen $(LISTEN_HOST):$(LISTEN_PORT)" \
 		-C "ServerName $(LISTEN_HOST)" \
 		-C "PidFile logs/httpd-$(LISTEN_HOST)-$(LISTEN_PORT).pid"
 
-.PHONY: start-graphene-server
-start-graphene-server: all clean-server
+.PHONY: start-gramine-server
+start-gramine-server: all clean-server
 	@echo "Listen on $(LISTEN_HOST):$(LISTEN_PORT)"
-	$(GRAPHENE) ./httpd -D FOREGROUND \
-		-f conf/httpd-graphene.conf \
+	$(GRAMINE) ./httpd -D FOREGROUND \
+		-f conf/httpd-gramine.conf \
 		-C "LoadModule mpm_prefork_module modules/mod_mpm_prefork.so" \
 		-C "Listen $(LISTEN_HOST):$(LISTEN_PORT)" \
 		-C "ServerName $(LISTEN_HOST)" \
@@ -190,17 +190,17 @@ start-graphene-server: all clean-server
 start-native-multithreaded-server: all clean-server
 	@echo "Listen on $(LISTEN_HOST):$(LISTEN_PORT)"
 	$(INSTALL_DIR)/bin/httpd -D FOREGROUND \
-		-f conf/httpd-graphene.conf \
+		-f conf/httpd-gramine.conf \
 		-C "LoadModule mpm_worker_module modules/mod_mpm_worker.so" \
 		-C "Listen $(LISTEN_HOST):$(LISTEN_PORT)" \
 		-C "ServerName $(LISTEN_HOST)" \
 		-C "PidFile logs/httpd-$(LISTEN_HOST)-$(LISTEN_PORT).pid"
 
-.PHONY: start-graphene-multithreaded-server
-start-graphene-multithreaded-server: all clean-server
+.PHONY: start-gramine-multithreaded-server
+start-gramine-multithreaded-server: all clean-server
 	@echo "Listen on $(LISTEN_HOST):$(LISTEN_PORT)"
-	$(GRAPHENE) ./httpd -D FOREGROUND \
-		-f conf/httpd-graphene.conf \
+	$(GRAMINE) ./httpd -D FOREGROUND \
+		-f conf/httpd-gramine.conf \
 		-C "LoadModule mpm_worker_module modules/mod_mpm_worker.so" \
 		-C "Listen $(LISTEN_HOST):$(LISTEN_PORT)" \
 		-C "ServerName $(LISTEN_HOST)" \

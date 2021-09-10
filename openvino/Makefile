@@ -12,10 +12,10 @@ OPENVINO_COMMIT ?= 023e7c2c3f8a8ac83564db09799d2049115d9cf6  # corresponds to ta
 SGX_SIGNER_KEY ?= ../../Pal/src/host/Linux-SGX/signer/enclave-key.pem
 
 ifeq ($(DEBUG),1)
-GRAPHENE_LOG_LEVEL = debug
+GRAMINE_LOG_LEVEL = debug
 OPENVINO_BUILD = Debug
 else
-GRAPHENE_LOG_LEVEL = error
+GRAMINE_LOG_LEVEL = error
 OPENVINO_BUILD = Release
 endif
 
@@ -50,8 +50,8 @@ $(OPENVINO_DIR)/inference-engine/bin/intel64/$(OPENVINO_BUILD)/object_detection_
 	$(MAKE) -C $(OPENVINO_DIR)/inference-engine/build
 
 object_detection_sample_ssd.manifest: object_detection_sample_ssd.manifest.template
-	graphene-manifest \
-		-Dlog_level=$(GRAPHENE_LOG_LEVEL) \
+	gramine-manifest \
+		-Dlog_level=$(GRAMINE_LOG_LEVEL) \
 		-Darch_libdir=$(ARCH_LIBDIR) \
 		-Dopenvino_dir=$(abspath $(OPENVINO_DIR)) \
 		-Dmodel_dir=$(MODEL_DIR) \
@@ -62,7 +62,7 @@ object_detection_sample_ssd.manifest.sgx: object_detection_sample_ssd.manifest \
 		$(OPENVINO_DIR)/inference-engine/bin/intel64/$(OPENVINO_BUILD)/object_detection_sample_ssd
 	@test -s $(SGX_SIGNER_KEY) || \
 	    { echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
-	graphene-sgx-sign \
+	gramine-sgx-sign \
 		--key $(SGX_SIGNER_KEY) \
 		--manifest $< \
 		--output $@
@@ -70,7 +70,7 @@ object_detection_sample_ssd.manifest.sgx: object_detection_sample_ssd.manifest \
 object_detection_sample_ssd.sig: object_detection_sample_ssd.manifest.sgx
 
 object_detection_sample_ssd.token: object_detection_sample_ssd.sig
-	graphene-sgx-get-token --sig $< --output $@
+	gramine-sgx-get-token --sig $< --output $@
 
 .PHONY: clean
 clean:

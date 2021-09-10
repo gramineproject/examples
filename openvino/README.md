@@ -4,7 +4,7 @@ This directory contains a Makefile and a template manifest for the most
 recent version of OpenVINO toolkit (as of this writing, version 2020.4).
 We use the "Object Detection C++ Sample SSD" (object_detection_sample_ssd)
 example from the OpenVINO distribution as a concrete application running
-under Graphene-SGX. We test only the CPU backend (i.e., no GPU or FPGA).
+under Gramine-SGX. We test only the CPU backend (i.e., no GPU or FPGA).
 
 We build OpenVINO from the source code instead of using an existing installation.
 **Note:** the build process requires ~1.1GB of disk space and takes ~20 minutes.
@@ -39,12 +39,12 @@ make SGX=1
 ./openvino/bin/intel64/Release/object_detection_sample_ssd -i images/horses.jpg \
     -m model/VGG_VOC0712Plus_SSD_300x300_ft_iter_160000.xml -d CPU
 
-# run OpenVINO/object_detection_sample_ssd in non-SGX Graphene
-graphene-direct object_detection_sample_ssd -i images/horses.jpg \
+# run OpenVINO/object_detection_sample_ssd in non-SGX Gramine
+gramine-direct object_detection_sample_ssd -i images/horses.jpg \
     -m model/VGG_VOC0712Plus_SSD_300x300_ft_iter_160000.xml -d CPU
 
-# run OpenVINO/object_detection_sample_ssd in Graphene-SGX
-graphene-sgx object_detection_sample_ssd -i images/horses.jpg \
+# run OpenVINO/object_detection_sample_ssd in Gramine-SGX
+gramine-sgx object_detection_sample_ssd -i images/horses.jpg \
     -m model/VGG_VOC0712Plus_SSD_300x300_ft_iter_160000.xml -d CPU
 
 # Each of these commands produces an image out_0.bmp with detected objects

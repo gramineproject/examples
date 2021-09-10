@@ -13,9 +13,9 @@ GIT_COMMIT ?= v1.9.0
 TAR_SHA256 ?= ffc3151b06823d57b4a408261ba8efe53601563dfe93af0866751d4f6ca5068c
 
 ifeq ($(DEBUG),1)
-GRAPHENE_LOG_LEVEL = debug
+GRAMINE_LOG_LEVEL = debug
 else
-GRAPHENE_LOG_LEVEL = error
+GRAMINE_LOG_LEVEL = error
 endif
 
 .PHONY: all
@@ -25,9 +25,9 @@ all: label_image.manifest.sgx label_image.sig label_image.token
 endif
 
 ifeq ($(SGX),)
-GRAPHENE = graphene-direct
+GRAMINE = gramine-direct
 else
-GRAPHENE = graphene-sgx
+GRAMINE = gramine-sgx
 endif
 
 $(TF_DIR)/configure:
@@ -59,32 +59,32 @@ image.bmp: $(TF_DIR)/tensorflow/contrib/lite/examples/label_image/testdata/grace
 
 label_image.manifest: label_image.manifest.template libtensorflow_framework.so label_image \
                       inception_v3.tflite labels.txt image.bmp
-	graphene-manifest \
-		-Dlog_level=$(GRAPHENE_LOG_LEVEL) \
+	gramine-manifest \
+		-Dlog_level=$(GRAMINE_LOG_LEVEL) \
 		-Darch_libdir=$(ARCH_LIBDIR) \
 		$< > $@
 
 label_image.manifest.sgx: label_image.manifest inception_v3.tflite labels.txt
 	@test -s $(SGX_SIGNER_KEY) || \
 	    { echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
-	graphene-sgx-sign \
+	gramine-sgx-sign \
 		--key $(SGX_SIGNER_KEY) \
 		--manifest $< \
 		--output $@
-	graphene-sgx-get-token \
+	gramine-sgx-get-token \
 		--output label_image.token --sig label_image.sig
 
 .PHONY: check
 check: all
-	$(GRAPHENE) ./label_image -m inception_v3.tflite -i image.bmp -t 4
+	$(GRAMINE) ./label_image -m inception_v3.tflite -i image.bmp -t 4
 
 .PHONY: run-native
 run-native: all
 	./label_image -m inception_v3.tflite -i image.bmp -t 4
 
-.PHONY: run-graphene
-run-graphene: all
-	$(GRAPHENE) ./label_image -m inception_v3.tflite -i image.bmp -t 4
+.PHONY: run-gramine
+run-gramine: all
+	$(GRAMINE) ./label_image -m inception_v3.tflite -i image.bmp -t 4
 
 .PHONY: clean
 clean:

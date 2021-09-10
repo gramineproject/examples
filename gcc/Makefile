@@ -7,17 +7,17 @@ SGX_SIGNER_KEY ?= ../../Pal/src/host/Linux-SGX/signer/enclave-key.pem
 
 BZIP2_MIRRORS ?= \
 	https://people.csail.mit.edu/smcc/projects/single-file-programs/bzip2.c \
-	https://packages.grapheneproject.io/distfiles/single-file-programs/bzip2.c
+	https://packages.gramineproject.io/distfiles/single-file-programs/bzip2.c
 BZIP2_HASH ?= 89f331ce93cbf0ee7318802f440f1d7594bb78cf1a82069f2288e0459ec8d729
 GZIP_MIRRORS ?= \
 	https://people.csail.mit.edu/smcc/projects/single-file-programs/gzip.c \
-	https://packages.grapheneproject.io/distfiles/single-file-programs/gzip.c
+	https://packages.gramineproject.io/distfiles/single-file-programs/gzip.c
 GZIP_HASH ?= 7ec7d87822e6497648580064756f64e47dbd085727910ebbc52a7c240a88dc27
 
 ifeq ($(DEBUG),1)
-GRAPHENE_LOG_LEVEL = debug
+GRAMINE_LOG_LEVEL = debug
 else
-GRAPHENE_LOG_LEVEL = error
+GRAMINE_LOG_LEVEL = error
 endif
 
 # awk '{print $NF}' ...  print last field.
@@ -32,8 +32,8 @@ all: gcc.manifest.sgx gcc.sig gcc.token
 endif
 
 %.manifest: %.manifest.template
-	graphene-manifest \
-		-Dlog_level=$(GRAPHENE_LOG_LEVEL) \
+	gramine-manifest \
+		-Dlog_level=$(GRAMINE_LOG_LEVEL) \
 		-Darch_libdir=$(ARCH_LIBDIR) \
 		-Dgcc_lib_path=$(GCC_LIB_PATH) \
 		-Dgcc_major_version=$(GCC_MAJOR_VERSION) \
@@ -48,13 +48,13 @@ gcc.sig gcc.manifest.sgx: sgx_outputs
 sgx_outputs: gcc.manifest
 	@test -s $(SGX_SIGNER_KEY) || \
 	    { echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
-	graphene-sgx-sign \
+	gramine-sgx-sign \
 		--key $(SGX_SIGNER_KEY) \
 		--manifest gcc.manifest \
 		--output gcc.manifest.sgx
 
 %.token: %.sig
-	graphene-sgx-get-token --output $@ --sig $<
+	gramine-sgx-get-token --output $@ --sig $<
 
 test_files/bzip2.c:
 	../common_tools/download --output $@ --sha256 $(BZIP2_HASH) $(foreach mirror,$(BZIP2_MIRRORS),--url $(mirror))
@@ -67,21 +67,21 @@ test_files/gzip.c: test_files/gzip_broken.c test_files/gzip.patch
 	patch test_files/gzip_broken.c -i test_files/gzip.patch -o $@
 
 ifeq ($(SGX),)
-GRAPHENE = graphene-direct
+GRAMINE = gramine-direct
 else
-GRAPHENE = graphene-sgx
+GRAMINE = gramine-sgx
 endif
 
 .PHONY: check
 check: all
 	@echo "\n\nCompiling hello.c..."
-	$(GRAPHENE) gcc test_files/helloworld.c -o test_files/hello
+	$(GRAMINE) gcc test_files/helloworld.c -o test_files/hello
 	@chmod 755 test_files/hello
 	-./test_files/hello
 	$(RM) test_files/hello
 
 	@echo "\n\nCompiling bzip2.c..."
-	$(GRAPHENE) gcc test_files/bzip2.c -o test_files/bzip2
+	$(GRAMINE) gcc test_files/bzip2.c -o test_files/bzip2
 	@chmod 755 test_files/bzip2
 	$(RM) bzip2.tmp
 	@cp -f test_files/bzip2 test_files/bzip2.copy
@@ -91,7 +91,7 @@ check: all
 	$(RM) test_files/bzip2 test_file/bzip2.copy
 
 	@echo "\n\nCompiling gzip.c..."
-	$(GRAPHENE) gcc test_files/gzip.c -o test_files/gzip
+	$(GRAMINE) gcc test_files/gzip.c -o test_files/gzip
 	@chmod 755 test_files/gzip
 	@cp -f test_files/gzip test_files/gzip.copy
 	./test_files/gzip test_files/gzip.copy
