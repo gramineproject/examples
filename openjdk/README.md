@@ -1,6 +1,6 @@
 # Java example
 
-This directory contains an example for running a OpenJDK example in Graphene,
+This directory contains an example for running a OpenJDK example in Gramine,
 including the Makefile and a template for generating the manifest.
 
 ## Installing prerequisites
@@ -10,22 +10,22 @@ following command to install the required packages (Ubuntu-specific):
 
     sudo apt-get install openjdk-11-jdk
 
-## Building for graphene-direct
+## Building for gramine-direct
 
 Run `make` (non-debug) or `make DEBUG=1` (debug) in the directory.
 
-## Building for graphene-sgx
+## Building for gramine-sgx
 
 Run `make SGX=1` (non-debug) or `make SGX=1 DEBUG=1` (debug) in the directory.
 
-## Run OpenJDK example with Graphene
+## Run OpenJDK example with Gramine
 
 Without SGX:
 
-    graphene-direct java MultiThreadMain
+    gramine-direct java MultiThreadMain
 
 With SGX:
 
-    graphene-sgx java -Xmx8G MultiThreadMain
+    gramine-sgx java -Xmx8G MultiThreadMain
 
-Note: If using 64G or greater enclave sizes, the JVM flag `-Xmx8G` can be omitted in graphene-sgx.
+Note: If using 64G or greater enclave sizes, the JVM flag `-Xmx8G` can be omitted in gramine-sgx.

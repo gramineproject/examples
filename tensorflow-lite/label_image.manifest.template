@@ -1,6 +1,6 @@
 # TensorFlow Lite example
 
-loader.preload = "file:{{ graphene.libos }}"
+loader.preload = "file:{{ gramine.libos }}"
 libos.entrypoint = "label_image"
 loader.log_level = "{{ log_level }}"
 
@@ -11,7 +11,7 @@ loader.insecure__use_cmdline_argv = true
 
 fs.mount.lib1.type = "chroot"
 fs.mount.lib1.path = "/lib"
-fs.mount.lib1.uri = "file:{{ graphene.runtimedir() }}"
+fs.mount.lib1.uri = "file:{{ gramine.runtimedir() }}"
 
 fs.mount.lib2.type = "chroot"
 fs.mount.lib2.path = "{{ arch_libdir }}"
@@ -26,7 +26,7 @@ sgx.enclave_size = "512M"
 sgx.thread_num = 16
 
 sgx.trusted_files.label_image = "file:label_image"
-sgx.trusted_files.runtime = "file:{{ graphene.runtimedir() }}/"
+sgx.trusted_files.runtime = "file:{{ gramine.runtimedir() }}/"
 sgx.trusted_files.arch_libdir = "file:{{ arch_libdir }}/"
 sgx.trusted_files.usr_arch_libdir = "file:/usr/{{ arch_libdir }}/"
 sgx.trusted_files.libtensorflowframework = "file:libtensorflow_framework.so"

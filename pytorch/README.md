@@ -1,7 +1,7 @@
 # PyTorch
 
 This directory contains steps and artifacts to run a PyTorch sample workload on
-Graphene. Specifically, this example uses a pre-trained model for image
+Gramine. Specifically, this example uses a pre-trained model for image
 classification.
 
 The workload reads an image from a file on disk `input.jpg` and runs the
@@ -52,5 +52,5 @@ make PYTHONPATH=<python install path> PYTHONVERSION=python3.6 SGX=1
 Execute any one of the following commands to run the workload:
 
 - natively: `python3 pytorchexample.py`
-- Graphene w/o SGX: `graphene-direct ./pytorch ./pytorchexample.py`
-- Graphene with SGX: `graphene-sgx ./pytorch ./pytorchexample.py`
+- Gramine w/o SGX: `gramine-direct ./pytorch ./pytorchexample.py`
+- Gramine with SGX: `gramine-sgx ./pytorch ./pytorchexample.py`

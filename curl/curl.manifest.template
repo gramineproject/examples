@@ -1,6 +1,6 @@
 # Curl manifest file example
 
-loader.preload = "file:{{ graphene.libos }}"
+loader.preload = "file:{{ gramine.libos }}"
 libos.entrypoint = "{{ curl_dir }}/curl"
 loader.log_level = "{{ log_level }}"
 
@@ -11,7 +11,7 @@ loader.insecure__use_cmdline_argv = true
 
 fs.mount.lib.type = "chroot"
 fs.mount.lib.path = "/lib"
-fs.mount.lib.uri = "file:{{ graphene.runtimedir() }}"
+fs.mount.lib.uri = "file:{{ gramine.runtimedir() }}"
 
 fs.mount.lib2.type = "chroot"
 fs.mount.lib2.path = "{{ arch_libdir }}"
@@ -33,7 +33,7 @@ sgx.enclave_size = "256M"
 sgx.thread_num = 4
 
 sgx.trusted_files.curl = "file:{{ curl_dir }}/curl"
-sgx.trusted_files.runtime = "file:{{ graphene.runtimedir() }}"
+sgx.trusted_files.runtime = "file:{{ gramine.runtimedir() }}"
 sgx.trusted_files.arch_libdir = "file:{{ arch_libdir }}/"
 sgx.trusted_files.usr_arch_libdir = "file:/usr/{{ arch_libdir }}/"
 

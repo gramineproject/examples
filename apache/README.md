@@ -22,14 +22,14 @@ make start-native-server &
 ../common_tools/benchmark-http.sh https://127.0.0.1:8443
 kill -SIGINT %%
 
-# run Apache in non-SGX Graphene against HTTP and HTTPS benchmarks
-make start-graphene-server &
+# run Apache in non-SGX Gramine against HTTP and HTTPS benchmarks
+make start-gramine-server &
 ../common_tools/benchmark-http.sh 127.0.0.1:8001
 ../common_tools/benchmark-http.sh https://127.0.0.1:8443
 kill -SIGINT %%
 
-# run Apache in Graphene-SGX against HTTP and HTTPS benchmarks
-SGX=1 make start-graphene-server &
+# run Apache in Gramine-SGX against HTTP and HTTPS benchmarks
+SGX=1 make start-gramine-server &
 ../common_tools/benchmark-http.sh 127.0.0.1:8001
 ../common_tools/benchmark-http.sh https://127.0.0.1:8443
 kill -SIGINT %%
@@ -50,8 +50,8 @@ with many threads each, and each thread handles one connection at a time.
 The supplied Makefile allows to run Apache in both configurations:
 ```sh
 make start-native-server                  # run with Prefork MPM
-make start-graphene-server                # run with Prefork MPM
+make start-gramine-server                # run with Prefork MPM
 
 make start-native-multithreaded-server    # run with Worker MPM
-make start-graphene-multithreaded-server  # run with Worker MPM
+make start-gramine-multithreaded-server  # run with Worker MPM
 ```

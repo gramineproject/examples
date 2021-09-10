@@ -1,7 +1,7 @@
 # This is a general manifest template for running GCC and its utility programs,
 # including as, cc1, collect2, ld.
 
-loader.preload = "file:{{ graphene.libos }}"
+loader.preload = "file:{{ gramine.libos }}"
 libos.entrypoint = "/usr/bin/gcc"
 loader.log_level = "{{ log_level }}"
 
@@ -12,7 +12,7 @@ loader.insecure__use_cmdline_argv = true
 
 fs.mount.lib1.type = "chroot"
 fs.mount.lib1.path = "/lib"
-fs.mount.lib1.uri = "file:{{ graphene.runtimedir() }}"
+fs.mount.lib1.uri = "file:{{ gramine.runtimedir() }}"
 
 fs.mount.lib2.type = "chroot"
 fs.mount.lib2.path = "{{ arch_libdir }}"
@@ -33,7 +33,7 @@ sgx.trusted_files.gcc = "file:/usr/bin/gcc"
 sgx.trusted_files.as = "file:/usr/bin/as"
 sgx.trusted_files.ld_ = "file:/usr/bin/ld"
 
-sgx.trusted_files.runtime = "file:{{ graphene.runtimedir() }}"
+sgx.trusted_files.runtime = "file:{{ gramine.runtimedir() }}"
 sgx.trusted_files.arch_libdir = "file:{{ arch_libdir }}/"
 sgx.trusted_files.usr_arch_libdir = "file:/usr/{{ arch_libdir }}/"
 sgx.trusted_files.gcc_data = "file:{{ gcc_lib_path }}/{{ gcc_major_version }}/"

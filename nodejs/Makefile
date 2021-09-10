@@ -6,9 +6,9 @@ ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
 SGX_SIGNER_KEY ?= ../../Pal/src/host/Linux-SGX/signer/enclave-key.pem
 
 ifeq ($(DEBUG),1)
-GRAPHENE_LOG_LEVEL = debug
+GRAMINE_LOG_LEVEL = debug
 else
-GRAPHENE_LOG_LEVEL = error
+GRAMINE_LOG_LEVEL = error
 endif
 
 .PHONY: all
@@ -18,8 +18,8 @@ all: nodejs.manifest.sgx nodejs.sig nodejs.token
 endif
 
 nodejs.manifest: nodejs.manifest.template
-	graphene-manifest \
-		-Dlog_level=$(GRAPHENE_LOG_LEVEL) \
+	gramine-manifest \
+		-Dlog_level=$(GRAMINE_LOG_LEVEL) \
 		-Darch_libdir=$(ARCH_LIBDIR) \
 		-Dnodejs_dir=$(NODEJS_DIR) \
 		$< >$@
@@ -27,7 +27,7 @@ nodejs.manifest: nodejs.manifest.template
 nodejs.manifest.sgx: nodejs.manifest helloworld.js
 	@test -s $(SGX_SIGNER_KEY) || \
 	    { echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
-	graphene-sgx-sign \
+	gramine-sgx-sign \
 		--key $(SGX_SIGNER_KEY) \
 		--manifest $< \
 		--output $@
@@ -35,17 +35,17 @@ nodejs.manifest.sgx: nodejs.manifest helloworld.js
 nodejs.sig: nodejs.manifest.sgx
 
 nodejs.token: nodejs.sig
-	graphene-sgx-get-token --output $@ --sig $<
+	gramine-sgx-get-token --output $@ --sig $<
 
 ifeq ($(SGX),)
-GRAPHENE = graphene-direct
+GRAMINE = gramine-direct
 else
-GRAPHENE = graphene-sgx
+GRAMINE = gramine-sgx
 endif
 
 .PHONY: check
 check: all
-	$(GRAPHENE) ./nodejs helloworld.js > OUTPUT
+	$(GRAMINE) ./nodejs helloworld.js > OUTPUT
 	@grep -q "Hello World" OUTPUT && echo "[ Success 1/1 ]"
 	@rm OUTPUT
 
