@@ -1,0 +1,33 @@
+# sgx
+*.manifest
+*.manifest.sgx
+*.sig
+*.token
+
+# No editor backup files.
+*.sw*
+*.backup
+*.orig
+\#*#
+*~
+
+# object file/libraries
+*.a
+*.o
+*.so
+*.so.*
+
+# gnu global
+GPATH
+GTAGS
+GSYMS
+GRTAGS
+
+# tags/etags
+tags
+TAGS
+
+# cscope
+cscope.*
+ncscope.*
+*cscope*
