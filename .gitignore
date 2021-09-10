@@ -1,0 +1,18 @@
+# sgx
+*.manifest
+*.manifest.sgx
+*.sig
+*.token
+
+# No editor backup files.
+*.sw*
+*.backup
+*.orig
+\#*#
+*~
+
+# object file/libraries
+*.a
+*.o
+*.so
+*.so.*
