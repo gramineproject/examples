@@ -60,18 +60,16 @@ addition, your application sample should have the following elements:
 - ``Makefile``:
   Users should be able to build your application sample by running the ``make``
   command. If your application needs extra building steps, please document them
-  in the ``README.md``. In addition, we ask you to provide sufficient comments
-  in the ``Makefile`` to help users understand the build process. If your
-  application also runs on Intel SGX, please include the commands for signing
-  and retrieving the SGX token in the ``Makefile``.
+  in the ``README.md``. If your application also runs on Intel SGX, please
+  include the commands for signing and retrieving the SGX token in the
+  ``Makefile``.
 
 - Manifest:
   Please provide the manifest needed for running your application sample. Do not
   hard-code any user-specific path or personal info in the manifest. The ideal
   way is to create a manifest template that contains variables to be replaced by
   runtime options in ``Makefile``. See other subdirectories for examples of the
-  manifest templates. We also ask you to provide sufficient comments in all the
-  manifests to help users understand the environment.
+  manifest templates.
 
 - Sample inputs and test suites:
   If you have any inputs and test suites for testing the application,
