@@ -1,6 +1,6 @@
-***************************************
-Example applications enabled in Gramine
-***************************************
+********************************
+Example applications for Gramine
+********************************
 
 .. This is not |~|, because that is in rst_prolog in conf.py, which GitHub cannot parse.
    GitHub doesn't appear to use it correctly anyway...
@@ -34,8 +34,8 @@ noise (see e.g. Memcached for a "stripped-down" example).
 Building examples
 =================
 
-All our examples use simple Makefiles to build the examples and enable them
-under Gramine. Use one of these commands:
+All our examples use simple Makefiles to build the original application (if
+needed) and configure it to run in Gramine. Use one of these commands:
 
 - ``make``: create non-SGX no-debug-log manifest
 - ``make DEBUG=1``: create non-SGX debug-log manifest
