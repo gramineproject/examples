@@ -33,8 +33,10 @@ sgx.nonpie_binary = true
 sgx.enclave_size = "2G"
 sgx.thread_num = 32
 
-sgx.trusted_files.nodejs = "file:{{ nodejs_dir }}/nodejs"
-sgx.trusted_files.runtime = "file:{{ gramine.runtimedir() }}/"
-sgx.trusted_files.arch_libdir = "file:{{ arch_libdir }}/"
-sgx.trusted_files.usr_arch_libdir = "file:/usr/{{ arch_libdir }}/"
-sgx.trusted_files.javascript = "file:helloworld.js"
+sgx.trusted_files = [
+  "file:{{ nodejs_dir }}/nodejs",
+  "file:{{ gramine.runtimedir() }}/",
+  "file:{{ arch_libdir }}/",
+  "file:/usr/{{ arch_libdir }}/",
+  "file:helloworld.js",
+]

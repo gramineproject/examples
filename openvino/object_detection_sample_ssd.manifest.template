@@ -31,18 +31,22 @@ fs.mount.cwd.uri = "file:{{ openvino_dir }}"
 sgx.enclave_size = "2G"
 sgx.thread_num = 16
 
-sgx.trusted_files.object_detection_sample_ssd = "file:{{ openvino_dir }}/bin/intel64/{{ openvino_build }}/object_detection_sample_ssd"
-sgx.trusted_files.runtime = "file:{{ gramine.runtimedir() }}/"
-sgx.trusted_files.arch_libdir = "file:{{ arch_libdir }}/"
-sgx.trusted_files.usr_arch_libdir = "file:/usr/{{ arch_libdir }}/"
-sgx.trusted_files.openvino_libs = "file:{{ openvino_dir }}/bin/intel64/{{ openvino_build }}/"
-sgx.trusted_files.opencv_libs = "file:{{ openvino_dir }}/inference-engine/temp/"
-sgx.trusted_files.modelxml = "file:{{ model_dir }}/VGG_VOC0712Plus_SSD_300x300_ft_iter_160000.xml"
-sgx.trusted_files.modelbin = "file:{{ model_dir }}/VGG_VOC0712Plus_SSD_300x300_ft_iter_160000.bin"
+sgx.trusted_files = [
+  "file:{{ openvino_dir }}/bin/intel64/{{ openvino_build }}/object_detection_sample_ssd",
+  "file:{{ gramine.runtimedir() }}/",
+  "file:{{ arch_libdir }}/",
+  "file:/usr/{{ arch_libdir }}/",
+  "file:{{ openvino_dir }}/bin/intel64/{{ openvino_build }}/",
+  "file:{{ openvino_dir }}/inference-engine/temp/",
+  "file:{{ model_dir }}/VGG_VOC0712Plus_SSD_300x300_ft_iter_160000.xml",
+  "file:{{ model_dir }}/VGG_VOC0712Plus_SSD_300x300_ft_iter_160000.bin",
+]
 
-sgx.allowed_files.imagesdir = "file:images"
-sgx.allowed_files.nsswitch = "file:/etc/nsswitch.conf"
-sgx.allowed_files.ethers = "file:/etc/ethers"
-sgx.allowed_files.hosts = "file:/etc/hosts"
-sgx.allowed_files.group = "file:/etc/group"
-sgx.allowed_files.passwd = "file:/etc/passwd"
+sgx.allowed_files = [
+  "file:images",
+  "file:/etc/nsswitch.conf",
+  "file:/etc/ethers",
+  "file:/etc/hosts",
+  "file:/etc/group",
+  "file:/etc/passwd",
+]

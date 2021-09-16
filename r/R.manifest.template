@@ -45,16 +45,20 @@ sys.stack.size = "8M"
 sgx.enclave_size = "1G"
 sgx.thread_num = 4
 
-sgx.trusted_files.r = "file:{{ r_exec }}"
-sgx.trusted_files.runtime = "file:{{ gramine.runtimedir() }}/"
-sgx.trusted_files.arch_libdir = "file:{{ arch_libdir }}/"
-sgx.trusted_files.usr_arch_libdir = "file:/usr/{{ arch_libdir }}/"
-sgx.trusted_files.stats_lib = "file:{{ r_home }}/"
-sgx.trusted_files.scripts = "file:scripts/"
+sgx.trusted_files = [
+  "file:{{ r_exec }}",
+  "file:{{ gramine.runtimedir() }}/",
+  "file:{{ arch_libdir }}/",
+  "file:/usr/{{ arch_libdir }}/",
+  "file:{{ r_home }}/",
+  "file:scripts/",
 
-# R uses shell to delete files, so we need to allow /bin/sh and /bin/rm to be accessed.
-# strace snippet: execve("/bin/sh", ["sh", "-c", "rm -rf /tmp/RtmpEiedDF"], [/* 41 vars */])
-sgx.trusted_files.rm = "file:/bin/rm"
-sgx.trusted_files.sh = "file:/bin/sh"
+  # R uses shell to delete files, so we need to allow /bin/sh and /bin/rm to be accessed.
+  # strace snippet: execve("/bin/sh", ["sh", "-c", "rm -rf /tmp/RtmpEiedDF"], [/* 41 vars */])
+  "file:/bin/rm",
+  "file:/bin/sh",
+]
 
-sgx.allowed_files.tmp = "file:/tmp"
+sgx.allowed_files = [
+  "file:/tmp",
+]

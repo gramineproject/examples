@@ -34,18 +34,22 @@ sgx.nonpie_binary = true
 sgx.enclave_size = "512M"
 sgx.thread_num = 32
 
-sgx.trusted_files.httpd = "file:{{ install_dir }}/bin/httpd"
-sgx.trusted_files.runtime = "file:{{ gramine.runtimedir() }}"
-sgx.trusted_files.arch_libdir = "file:{{ arch_libdir }}/"
-sgx.trusted_files.usr_arch_libdir = "file:/usr/{{ arch_libdir }}/"
-sgx.trusted_files.conf = "file:{{ install_dir }}/conf"
-sgx.trusted_files.htdocs = "file:{{ install_dir }}/htdocs"
-sgx.trusted_files.modules = "file:{{ install_dir }}/modules"
+sgx.trusted_files = [
+  "file:{{ install_dir }}/bin/httpd",
+  "file:{{ gramine.runtimedir() }}",
+  "file:{{ arch_libdir }}/",
+  "file:/usr/{{ arch_libdir }}/",
+  "file:{{ install_dir }}/conf",
+  "file:{{ install_dir }}/htdocs",
+  "file:{{ install_dir }}/modules",
+]
 
-sgx.allowed_files.logs      = "file:{{ install_dir }}/logs"
-sgx.allowed_files.nsswitch  = "file:/etc/nsswitch.conf"
-sgx.allowed_files.ethers    = "file:/etc/ethers"
-sgx.allowed_files.hosts     = "file:/etc/hosts"
-sgx.allowed_files.group     = "file:/etc/group"
-sgx.allowed_files.passwd    = "file:/etc/passwd"
-sgx.allowed_files.gaiconf   = "file:/etc/gai.conf"
+sgx.allowed_files = [
+  "file:{{ install_dir }}/logs",
+  "file:/etc/nsswitch.conf",
+  "file:/etc/ethers",
+  "file:/etc/hosts",
+  "file:/etc/group",
+  "file:/etc/passwd",
+  "file:/etc/gai.conf",
+]

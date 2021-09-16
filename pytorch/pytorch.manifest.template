@@ -45,40 +45,42 @@ sgx.nonpie_binary = true
 sgx.enclave_size = "16G"
 sgx.thread_num = 256
 
-sgx.trusted_files.python = "file:{{ entrypoint }}"
-sgx.trusted_files.runtime = "file:{{ gramine.runtimedir() }}/"
-sgx.trusted_files.arch_libdir = "file:{{ arch_libdir }}/"
-sgx.trusted_files.usr_arch_libdir = "file:/usr/{{ arch_libdir }}/"
-sgx.trusted_files.python_dir = "file:{{ python.stdlib }}/"
-sgx.trusted_files.dist = "file:{{ python.distlib }}/"
-sgx.trusted_files.home_lib = "file:{{ env.HOME }}/.local/lib/"
-sgx.trusted_files.python_local_lib = "file:{{
-    python.get_path('stdlib', vars={'installed_base': '/usr/local'}) }}"
+sgx.trusted_files = [
+  "file:{{ entrypoint }}",
+  "file:{{ gramine.runtimedir() }}/",
+  "file:{{ arch_libdir }}/",
+  "file:/usr/{{ arch_libdir }}/",
+  "file:{{ python.stdlib }}/",
+  "file:{{ python.distlib }}/",
+  "file:{{ env.HOME }}/.local/lib/",
+  "file:{{ python.get_path('stdlib', vars={'installed_base': '/usr/local'}) }}",
 
-sgx.trusted_files.script = "file:pytorchexample.py"
-sgx.trusted_files.classes = "file:classes.txt"
-sgx.trusted_files.image = "file:input.jpg"
+  "file:pytorchexample.py",
+  "file:classes.txt",
+  "file:input.jpg",
 
-# File containing the pre-trained model
-# Uncomment lines below if you want to use torchvision.model.alexnet(pretrained=True)
-# sgx.trusted_files.torch = "file:{{ env.HOME }}/.cache/torch/checkpoints/alexnet-owt-4df8aa71.pth"
+  # Pre-trained model saved as a file
+  "file:alexnet-pretrained.pt",
 
-# Pre-trained model saved as a file
-sgx.trusted_files.model = "file:alexnet-pretrained.pt"
+  # Uncomment line below if you want to use torchvision.model.alexnet(pretrained=True)
+  # "file:{{ env.HOME }}/.cache/torch/checkpoints/alexnet-owt-4df8aa71.pth",
+]
 
-sgx.allowed_files.tmp = "file:/tmp"
-sgx.allowed_files.aptconfd = "file:/etc/apt/apt.conf.d"
-sgx.allowed_files.aptconf = "file:/etc/apt/apt.conf"
-sgx.allowed_files.apport = "file:/etc/default/apport"
-sgx.allowed_files.nsswitch = "file:/etc/nsswitch.conf"
-sgx.allowed_files.group = "file:/etc/group"
-sgx.allowed_files.passwd = "file:/etc/passwd"
-sgx.allowed_files.hostconf = "file:/etc/host.conf"
-sgx.allowed_files.hosts = "file:/etc/hosts"
-sgx.allowed_files.gaiconf = "file:/etc/gai.conf"
-sgx.allowed_files.resolv = "file:/etc/resolv.conf"
-sgx.allowed_files.fstab = "file:/etc/fstab"
-sgx.allowed_files.result = "file:result.txt"
+sgx.allowed_files = [
+  "file:/tmp",
+  "file:/etc/apt/apt.conf.d",
+  "file:/etc/apt/apt.conf",
+  "file:/etc/default/apport",
+  "file:/etc/nsswitch.conf",
+  "file:/etc/group",
+  "file:/etc/passwd",
+  "file:/etc/host.conf",
+  "file:/etc/hosts",
+  "file:/etc/gai.conf",
+  "file:/etc/resolv.conf",
+  "file:/etc/fstab",
+  "file:result.txt",
+]
 
 # Gramine optionally provides patched OpenMP runtime library that runs faster
 # inside SGX enclaves (execute `make -C LibOS gcc` to generate it). Uncomment

@@ -29,18 +29,20 @@ fs.mount.tmp.uri = "file:/tmp"
 sgx.enclave_size = "1G"
 sgx.nonpie_binary = true
 
-sgx.trusted_files.gcc = "file:/usr/bin/gcc"
-sgx.trusted_files.as = "file:/usr/bin/as"
-sgx.trusted_files.ld_ = "file:/usr/bin/ld"
+sgx.trusted_files = [
+  "file:/usr/bin/gcc",
+  "file:/usr/bin/as",
+  "file:/usr/bin/ld",
+  "file:{{ gramine.runtimedir() }}",
+  "file:{{ arch_libdir }}/",
+  "file:/usr/{{ arch_libdir }}/",
+  "file:{{ gcc_lib_path }}/{{ gcc_major_version }}/",
+  "file:/usr/lib/debug/usr/{{ arch_libdir }}",
+]
 
-sgx.trusted_files.runtime = "file:{{ gramine.runtimedir() }}"
-sgx.trusted_files.arch_libdir = "file:{{ arch_libdir }}/"
-sgx.trusted_files.usr_arch_libdir = "file:/usr/{{ arch_libdir }}/"
-sgx.trusted_files.gcc_data = "file:{{ gcc_lib_path }}/{{ gcc_major_version }}/"
-sgx.trusted_files.hostdebug = "file:/usr/lib/debug/usr/{{ arch_libdir }}"
-
-sgx.allowed_files.tmp = "file:/tmp"
-sgx.allowed_files.test_files = "file:test_files"
-sgx.allowed_files.aout = "file:a.out"
-
-sgx.allowed_files.inc = "file:/usr/include"
+sgx.allowed_files = [
+  "file:/tmp",
+  "file:test_files",
+  "file:a.out",
+  "file:/usr/include",
+]
