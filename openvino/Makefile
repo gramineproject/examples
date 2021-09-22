@@ -1,65 +1,89 @@
+SHELL := /bin/bash # use bash syntax to activate virtual environment and to download models
+
+OPENVINO_DIR ?= $(INTEL_OPENVINO_DIR)
+
 THIS_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
 
-MODEL_DIR ?= $(THIS_DIR)model
-MODEL_COMMIT ?= acf297c73db8cb3f68791ae1fad4a7cc4a6039e5     # corresponds to tag "2019_R3"
-MODEL_NAME ?= VGG_VOC0712Plus_SSD_300x300_ft_iter_160000
+INFERENCE_ENGINE_CPP_SAMPLES_BUILD ?= $(THIS_DIR)inference_engine_cpp_samples_build
 
-OPENVINO_DIR ?= $(THIS_DIR)openvino
-OPENVINO_COMMIT ?= 023e7c2c3f8a8ac83564db09799d2049115d9cf6  # corresponds to tag "2020.4"
+MODEL_DIR ?= $(THIS_DIR)/model
+
+INTEL_MODELS = \
+	bert-large-uncased-whole-word-masking-squad-0001 \
+	bert-large-uncased-whole-word-masking-squad-int8-0001
+
+PUBLIC_MODELS = \
+	resnet-50-tf \
+	brain-tumor-segmentation-0001 \
+	brain-tumor-segmentation-0002 \
+	ssd_mobilenet_v1_coco
+
+VENV_DIR ?= $(THIS_DIR)/openvino
 
 SGX_SIGNER_KEY ?= ../../Pal/src/host/Linux-SGX/signer/enclave-key.pem
 
 ifeq ($(DEBUG),1)
 GRAMINE_LOG_LEVEL = debug
-OPENVINO_BUILD = Debug
 else
 GRAMINE_LOG_LEVEL = error
-OPENVINO_BUILD = Release
 endif
 
 .PHONY: all
-all: $(OPENVINO_DIR)/inference-engine/bin/intel64/$(OPENVINO_BUILD)/object_detection_sample_ssd \
-     $(MODEL_DIR)/$(MODEL_NAME).bin object_detection_sample_ssd.manifest
+all: benchmark_app benchmark_app.manifest $(VENV_DIR)/.INSTALLATION_OK intel_models public_models
 ifeq ($(SGX),1)
-all: object_detection_sample_ssd.manifest.sgx object_detection_sample_ssd.sig \
-     object_detection_sample_ssd.token
+all: benchmark_app.manifest.sgx benchmark_app.sig benchmark_app.token
 endif
 
-$(MODEL_DIR)/README.md:
-	git clone https://github.com/opencv/open_model_zoo.git $(MODEL_DIR)
-	git -C $(MODEL_DIR) checkout $(MODEL_COMMIT)
+.PHONY: intel_models
+intel_models: $(VENV_DIR)/.INSTALLATION_OK
+	@source $(VENV_DIR)/bin/activate \
+	&& cd $(OPENVINO_DIR)/deployment_tools/open_model_zoo/tools/downloader \
+	&& for model in $(INTEL_MODELS); do \
+		if [ ! -d $(abspath $(MODEL_DIR))/intel/$$model ]; then \
+			python3 ./downloader.py --name $$model -o $(abspath $(MODEL_DIR)); \
+			python3 ./converter.py --name $$model -d $(abspath $(MODEL_DIR)) -o $(abspath $(MODEL_DIR)); \
+		fi; \
+	done \
+	&& deactivate
 
-$(MODEL_DIR)/$(MODEL_NAME).bin: $(MODEL_DIR)/README.md
-	cd $(MODEL_DIR)/tools/downloader && python3 ./downloader.py \
-		--name ssd300 -o $(abspath $(MODEL_DIR))
-	cd $(OPENVINO_DIR)/model-optimizer && python3 ./mo.py \
-		--input_model $(abspath $(MODEL_DIR))/public/ssd300/models/VGGNet/VOC0712Plus/SSD_300x300_ft/$(MODEL_NAME).caffemodel \
-		--input_proto $(abspath $(MODEL_DIR))/public/ssd300/models/VGGNet/VOC0712Plus/SSD_300x300_ft/deploy.prototxt \
-		--output_dir $(abspath $(MODEL_DIR))
+.PHONY: public_models
+public_models: $(VENV_DIR)/.INSTALLATION_OK
+	@source $(VENV_DIR)/bin/activate \
+	&& cd $(OPENVINO_DIR)/deployment_tools/open_model_zoo/tools/downloader \
+	&& for model in $(PUBLIC_MODELS); do \
+		if [ ! -d $(abspath $(MODEL_DIR))/public/$$model ]; then \
+			python3 ./downloader.py --name $$model -o $(abspath $(MODEL_DIR)); \
+			python3 ./converter.py --name $$model -d $(abspath $(MODEL_DIR)) -o $(abspath $(MODEL_DIR)); \
+		fi; \
+	done \
+	&& deactivate
 
-$(OPENVINO_DIR)/README.md:
-	git clone https://github.com/openvinotoolkit/openvino.git $(OPENVINO_DIR)
-	git -C $(OPENVINO_DIR) checkout $(OPENVINO_COMMIT)
-	git -C $(OPENVINO_DIR)/inference-engine submodule update --init --recursive
+.PRECIOUS: $(VENV_DIR)/.INSTALLATION_OK
+$(VENV_DIR)/.INSTALLATION_OK:
+	mkdir -p model
+	python3 -m venv $(VENV_DIR) \
+	&& source $(VENV_DIR)/bin/activate \
+	&& pip install --upgrade pip \
+	&& pushd $(OPENVINO_DIR)/deployment_tools/open_model_zoo/tools/downloader \
+	&& python3 -mpip install -r ./requirements.in \
+	&& popd \
+	&& pushd $(OPENVINO_DIR)/deployment_tools/model_optimizer \
+	&& pip3 install -r requirements.txt \
+	&& popd \
+	&& deactivate \
+	&& touch $@
 
-$(OPENVINO_DIR)/inference-engine/bin/intel64/$(OPENVINO_BUILD)/object_detection_sample_ssd: $(OPENVINO_DIR)/README.md
-	cd $(OPENVINO_DIR)/inference-engine && mkdir -p build
-	cd $(OPENVINO_DIR)/inference-engine/build && cmake -DCMAKE_BUILD_TYPE=$(OPENVINO_BUILD) ../..
-	$(MAKE) -C $(OPENVINO_DIR)/inference-engine/build
-
-object_detection_sample_ssd.manifest: object_detection_sample_ssd.manifest.template
+benchmark_app.manifest: benchmark_app.manifest.template
 	gramine-manifest \
 		-Dlog_level=$(GRAMINE_LOG_LEVEL) \
 		-Darch_libdir=$(ARCH_LIBDIR) \
 		-Dopenvino_dir=$(abspath $(OPENVINO_DIR)) \
-		-Dmodel_dir=$(MODEL_DIR) \
-		-Dopenvino_build=$(OPENVINO_BUILD) \
+		-Dinference_engine_cpp_samples_build=$(abspath $(INFERENCE_ENGINE_CPP_SAMPLES_BUILD)) \
 		$< > $@
 
-object_detection_sample_ssd.manifest.sgx: object_detection_sample_ssd.manifest \
-		$(OPENVINO_DIR)/inference-engine/bin/intel64/$(OPENVINO_BUILD)/object_detection_sample_ssd
+benchmark_app.manifest.sgx: benchmark_app.manifest | benchmark_app
 	@test -s $(SGX_SIGNER_KEY) || \
 	    { echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
 	gramine-sgx-sign \
@@ -67,15 +91,22 @@ object_detection_sample_ssd.manifest.sgx: object_detection_sample_ssd.manifest \
 		--manifest $< \
 		--output $@
 
-object_detection_sample_ssd.sig: object_detection_sample_ssd.manifest.sgx
+benchmark_app.sig: benchmark_app.manifest.sgx
 
-object_detection_sample_ssd.token: object_detection_sample_ssd.sig
+benchmark_app.token: benchmark_app.sig
 	gramine-sgx-get-token --sig $< --output $@
+
+benchmark_app: $(OPENVINO_DIR)
+	mkdir -p $(INFERENCE_ENGINE_CPP_SAMPLES_BUILD)
+	cd $(INFERENCE_ENGINE_CPP_SAMPLES_BUILD) \
+	&& cmake -DCMAKE_BUILD_TYPE=Release $(OPENVINO_DIR)/inference_engine/samples/cpp \
+	&& make
+	ln -s $(INFERENCE_ENGINE_CPP_SAMPLES_BUILD)/intel64/Release/benchmark_app $@
 
 .PHONY: clean
 clean:
-	$(RM) *.manifest *.manifest.sgx *.token *.sig *.bmp
+	$(RM) *.manifest *.manifest.sgx *.token *.sig benchmark_app
 
 .PHONY: distclean
 distclean: clean
-	$(RM) -r $(OPENVINO_DIR) $(MODEL_DIR)
+	$(RM) -r $(MODEL_DIR) $(VENV_DIR) $(INFERENCE_ENGINE_CPP_SAMPLES_BUILD)
