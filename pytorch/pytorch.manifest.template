@@ -1,7 +1,8 @@
 # PyTorch manifest template
 
-loader.preload = "file:{{ gramine.libos }}"
+loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "{{ entrypoint }}"
+
 loader.log_level = "{{ log_level }}"
 
 loader.env.LD_LIBRARY_PATH = "/lib:/usr/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}"
@@ -46,6 +47,7 @@ sgx.enclave_size = "16G"
 sgx.thread_num = 256
 
 sgx.trusted_files = [
+  "file:{{ gramine.libos }}",
   "file:{{ entrypoint }}",
   "file:{{ gramine.runtimedir() }}/",
   "file:{{ arch_libdir }}/",
@@ -53,7 +55,7 @@ sgx.trusted_files = [
   "file:{{ python.stdlib }}/",
   "file:{{ python.distlib }}/",
   "file:{{ env.HOME }}/.local/lib/",
-  "file:{{ python.get_path('stdlib', vars={'installed_base': '/usr/local'}) }}",
+  "file:{{ python.get_path('stdlib', vars={'installed_base': '/usr/local'}) }}/",
 
   "file:pytorchexample.py",
   "file:classes.txt",

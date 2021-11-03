@@ -1,5 +1,6 @@
+loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "{{ entrypoint }}"
-loader.preload = "file:{{ gramine.libos }}"
+
 loader.log_level = "{{ log_level }}"
 
 loader.insecure__use_cmdline_argv = true
@@ -25,11 +26,12 @@ sgx.enclave_size = "16G"
 sgx.thread_num = 64
 
 sgx.trusted_files = [
+  "file:{{ gramine.libos }}",
   "file:{{ entrypoint }}",
   "file:{{ gramine.runtimedir() }}/",
   "file:{{ arch_libdir }}/",
   "file:/usr/{{ arch_libdir }}/",
-  "file:/usr/lib/jvm/java-11-openjdk-amd64/lib",
+  "file:/usr/lib/jvm/java-11-openjdk-amd64/lib"/,
   "file:/usr/lib/jvm/java-11-openjdk-amd64/conf/security/java.security",
   "file:/usr/share/java/java-atk-wrapper.jar",
   "file:MultiThreadMain.class",

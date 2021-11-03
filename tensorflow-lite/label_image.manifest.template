@@ -1,7 +1,8 @@
 # TensorFlow Lite example
 
-loader.preload = "file:{{ gramine.libos }}"
+loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "label_image"
+
 loader.log_level = "{{ log_level }}"
 
 loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}:."
@@ -26,6 +27,7 @@ sgx.enclave_size = "512M"
 sgx.thread_num = 16
 
 sgx.trusted_files = [
+  "file:{{ gramine.libos }}",
   "file:label_image",
   "file:{{ gramine.runtimedir() }}/",
   "file:{{ arch_libdir }}/",

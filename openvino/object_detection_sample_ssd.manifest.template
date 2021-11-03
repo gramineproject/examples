@@ -1,7 +1,8 @@
 # OpenVINO (object_detection_sample_ssd) manifest example
 
-loader.preload = "file:{{ gramine.libos }}"
+loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "{{ openvino_dir }}/bin/intel64/{{ openvino_build }}/object_detection_sample_ssd"
+
 loader.log_level = "{{ log_level }}"
 
 loader.env.LD_LIBRARY_PATH = "/lib:{{ openvino_dir }}/inference-engine/temp/tbb/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}"
@@ -32,6 +33,7 @@ sgx.enclave_size = "2G"
 sgx.thread_num = 16
 
 sgx.trusted_files = [
+  "file:{{ gramine.libos }}",
   "file:{{ openvino_dir }}/bin/intel64/{{ openvino_build }}/object_detection_sample_ssd",
   "file:{{ gramine.runtimedir() }}/",
   "file:{{ arch_libdir }}/",

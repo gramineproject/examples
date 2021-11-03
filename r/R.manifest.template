@@ -1,7 +1,8 @@
 # R manifest example
 
-loader.preload = "file:{{ gramine.libos }}"
+loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "{{ r_exec }}"
+
 loader.log_level = "{{ log_level }}"
 
 loader.env.LD_LIBRARY_PATH = "{{ r_home }}/lib:/lib:{{ arch_libdir }}:/usr/lib:/usr/{{ arch_libdir }}"
@@ -46,6 +47,7 @@ sgx.enclave_size = "1G"
 sgx.thread_num = 4
 
 sgx.trusted_files = [
+  "file:{{ gramine.libos }}",
   "file:{{ r_exec }}",
   "file:{{ gramine.runtimedir() }}/",
   "file:{{ arch_libdir }}/",

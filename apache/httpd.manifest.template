@@ -1,7 +1,8 @@
 # Apache manifest example
 
-loader.preload = "file:{{ gramine.libos }}"
+loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "{{ install_dir }}/bin/httpd"
+
 loader.log_level = "{{ log_level }}"
 
 loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr/lib:/usr/{{ arch_libdir }}"
@@ -35,13 +36,14 @@ sgx.enclave_size = "512M"
 sgx.thread_num = 32
 
 sgx.trusted_files = [
+  "file:{{ gramine.libos }}",
   "file:{{ install_dir }}/bin/httpd",
-  "file:{{ gramine.runtimedir() }}",
+  "file:{{ gramine.runtimedir() }}/",
   "file:{{ arch_libdir }}/",
   "file:/usr/{{ arch_libdir }}/",
-  "file:{{ install_dir }}/conf",
-  "file:{{ install_dir }}/htdocs",
-  "file:{{ install_dir }}/modules",
+  "file:{{ install_dir }}/conf/",
+  "file:{{ install_dir }}/htdocs/",
+  "file:{{ install_dir }}/modules/",
 ]
 
 sgx.allowed_files = [

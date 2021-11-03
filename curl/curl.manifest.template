@@ -1,7 +1,8 @@
 # Curl manifest file example
 
-loader.preload = "file:{{ gramine.libos }}"
+loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "{{ curl_dir }}/curl"
+
 loader.log_level = "{{ log_level }}"
 
 loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}"
@@ -33,8 +34,9 @@ sgx.enclave_size = "256M"
 sgx.thread_num = 4
 
 sgx.trusted_files = [
+  "file:{{ gramine.libos }}",
   "file:{{ curl_dir }}/curl",
-  "file:{{ gramine.runtimedir() }}",
+  "file:{{ gramine.runtimedir() }}/",
   "file:{{ arch_libdir }}/",
   "file:/usr/{{ arch_libdir }}/",
 ]
