@@ -27,8 +27,6 @@ More details about ResNet50 can be found at https://github.com/IntelAI/models/tr
 - To build the SGX version, do ``make PYTHONDISTPATH=path_to_python_dist_packages/ SGX=1``
 - Typically, ``path_to_python_dist_packages`` is ``/usr/local/lib/python3.6/dist-packages``, but can
 change based on python's installation directory.
-- Keras settings are configured in the file ``root/.keras/keras.json``. It is configured to use
-TensorFlow as backend.
 
 **WARNING:** Building BERT sample downloads about 5GB of data.
 
@@ -103,12 +101,11 @@ To use preheat option, add ``sgx.preheat_enclave = true`` to the manifest templa
   allocators can be used.
   - TCMalloc (Please update the binary location and name if different from default):
     - Install tcmalloc: ``sudo apt-get install google-perftools``
-    - Add the following lines in the manifest template and rebuild the sample.
-        - ``loader.env.LD_PRELOAD = "/usr/lib/x86_64-linux-gnu/libtcmalloc.so.4"``
-        - ``sgx.trusted_files.libtcmalloc = "file:/usr/lib/x86_64-linux-gnu/libtcmalloc.so.4"``
-        - ``sgx.trusted_files.libunwind = "file:/usr/lib/x86_64-linux-gnu/libunwind.so.8"``
+    - To use tcmalloc,
+        - Add ``loader.env.LD_PRELOAD = "/usr/lib/x86_64-linux-gnu/libtcmalloc.so.4"`` to the manifest template.
+        - Add ``"file:/usr/lib/x86_64-linux-gnu/libtcmalloc.so.4"`` and ``"file:/usr/lib/x86_64-linux-gnu/libunwind.so.8"`` to ``sgx.trusted_files``.
   - mimalloc (Please update the binary location and name if different from default):
     - Install mimalloc using the steps from https://github.com/microsoft/mimalloc
-    - Add the following lines in the manifest template and rebuild the sample.
-        - ``loader.env.LD_PRELOAD = "/usr/local/lib/mimalloc-1.7/libmimalloc.so.1.7"``
-        - ``sgx.trusted_files.libmimalloc = "file:/usr/local/lib/mimalloc-1.7/libmimalloc.so.1.7"``
+    - To use mimalloc,
+        - Add ``loader.env.LD_PRELOAD = "/usr/local/lib/mimalloc-1.7/libmimalloc.so.1.7"`` to the manifest template.
+        - Add ``"file:/usr/local/lib/mimalloc-1.7/libmimalloc.so.1.7"`` to ``sgx.trusted_files``.

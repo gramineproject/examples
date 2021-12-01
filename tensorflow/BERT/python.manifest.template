@@ -64,5 +64,4 @@ sgx.allowed_files = [
   "file:output/",
   "file:models/",
   "file:data/",
-  "file:root/.keras/keras.json",
 ]
