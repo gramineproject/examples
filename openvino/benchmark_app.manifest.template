@@ -1,16 +1,14 @@
 # OpenVINO (benchmark_app) manifest example
 
-loader.preload = "file:{{ graphene.libos }}"
+loader.preload = "file:{{ gramine.libos }}"
 libos.entrypoint = "benchmark_app"
 loader.log_level = "{{ log_level }}"
 
-loader.env.LD_LIBRARY_PATH = "/lib:{{ openvino_dir }}/deployment_tools/inference_engine/external/tbb/lib:{{ openvino_dir }}/deployment_tools/inference_engine/lib/intel64:{{ arch_libdir }}:{{ openvino_dir }}/opencv/lib:{{ openvino_dir }}/deployment_tools/ngraph/lib:/usr/{{ arch_libdir }}"
-
-loader.insecure__use_cmdline_argv = true
+loader.env.LD_LIBRARY_PATH = "/lib:{{ openvino_dir }}/deployment_tools/inference_engine/external/tbb/lib:{{ openvino_dir }}/deployment_tools/inference_engine/lib/intel64:{{ openvino_dir }}/opencv/lib:{{ openvino_dir }}/deployment_tools/ngraph/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}"
 
 fs.mount.lib.type = "chroot"
 fs.mount.lib.path = "/lib"
-fs.mount.lib.uri = "file:{{ graphene.runtimedir() }}"
+fs.mount.lib.uri = "file:{{ gramine.runtimedir() }}"
 
 fs.mount.lib2.type = "chroot"
 fs.mount.lib2.path = "{{ arch_libdir }}"
@@ -32,29 +30,30 @@ fs.mount.samples.type = "chroot"
 fs.mount.samples.path = "{{ inference_engine_cpp_samples_build }}"
 fs.mount.samples.uri = "file:{{ inference_engine_cpp_samples_build }}"
 
-sgx.nonpie_binary = true
 sgx.enclave_size = "32G"
 sgx.thread_num = 196
 sgx.preheat_enclave = true
+loader.insecure__use_cmdline_argv = true
 libos.check_invalid_pointers = false
 
 sgx.trusted_files = [
-  "file:{{ graphene.runtimedir() }}/",
+  "file:{{ gramine.runtimedir() }}/",
   "file:{{ arch_libdir }}/",
   "file:/usr/{{ arch_libdir }}/",
   "file:{{ openvino_dir }}/deployment_tools/inference_engine/lib/intel64/",
   "file:{{ openvino_dir }}/deployment_tools/inference_engine/external/tbb/lib/",
-  "file:{{ inference_engine_cpp_samples_build }}/intel64/Release/lib/libformat_reader.so",
   "file:{{ openvino_dir }}/opencv/lib/",
-  "file:{{ openvino_dir }}/deployment_tools/ngraph/lib/libngraph.so",
+  "file:{{ openvino_dir }}/deployment_tools/ngraph/lib/",
+  "file:{{ inference_engine_cpp_samples_build }}/intel64/Release/lib/",
   "file:benchmark_app",
-  "file:./model",
+  "file:./model/"
 ]
 
 sgx.allowed_files = [
-  "file:/etc/nsswitch.conf",
   "file:/etc/ethers",
-  "file:/etc/hosts",
   "file:/etc/group",
+  "file:/etc/hosts",
+  "file:/etc/nsswitch.conf",
   "file:/etc/passwd",
+  "file:output.txt"
 ]

@@ -1,4 +1,4 @@
-SHELL := /bin/bash #Use bash syntax to activate virtual environment and to download models
+SHELL := /bin/bash # use bash syntax to activate virtual environment and to download models
 
 OPENVINO_DIR ?= $(INTEL_OPENVINO_DIR)
 
@@ -6,7 +6,7 @@ THIS_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
 
-INFERENCE_ENGINE_CPP_SAMPLES_BUILD ?=  $(THIS_DIR)inference_engine_cpp_samples_build
+INFERENCE_ENGINE_CPP_SAMPLES_BUILD ?= $(THIS_DIR)inference_engine_cpp_samples_build
 
 MODEL_DIR ?= $(THIS_DIR)model
 
@@ -25,9 +25,9 @@ VENV_DIR ?= $(THIS_DIR)/openvino
 SGX_SIGNER_KEY ?= ../../Pal/src/host/Linux-SGX/signer/enclave-key.pem
 
 ifeq ($(DEBUG),1)
-GRAPHENE_LOG_LEVEL = debug
+GRAMINE_LOG_LEVEL = debug
 else
-GRAPHENE_LOG_LEVEL = error
+GRAMINE_LOG_LEVEL = error
 endif
 
 .PHONY: all
@@ -72,28 +72,31 @@ $(VENV_DIR):
 	&& deactivate
 
 benchmark_app.manifest: benchmark_app.manifest.template
-	graphene-manifest \
-	-Dlog_level=$(GRAPHENE_LOG_LEVEL) \
-	-Darch_libdir=$(ARCH_LIBDIR) \
-	-Dopenvino_dir=$(abspath $(OPENVINO_DIR)) \
-	-Dinference_engine_cpp_samples_build=$(abspath $(INFERENCE_ENGINE_CPP_SAMPLES_BUILD)) \
-	$< > $@
+	gramine-manifest \
+		-Dlog_level=$(GRAMINE_LOG_LEVEL) \
+		-Darch_libdir=$(ARCH_LIBDIR) \
+		-Dopenvino_dir=$(abspath $(OPENVINO_DIR)) \
+		-Dinference_engine_cpp_samples_build=$(abspath $(INFERENCE_ENGINE_CPP_SAMPLES_BUILD)) \
+		$< > $@
 
 benchmark_app.manifest.sgx: benchmark_app.manifest | benchmark_app
 	@test -s $(SGX_SIGNER_KEY) || \
 		{ echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
-	graphene-sgx-sign \
-	-key $(SGX_SIGNER_KEY) \
-	-manifest $< -output $@
+	gramine-sgx-sign \
+		--key $(SGX_SIGNER_KEY) \
+		--manifest $< \
+		--output $@
 
 benchmark_app.sig: benchmark_app.manifest.sgx
 
 benchmark_app.token: benchmark_app.sig
-	graphene-sgx-get-token --sig $< --output $@
+	gramine-sgx-get-token --sig $< --output $@
 
 benchmark_app: $(OPENVINO_DIR)
 	mkdir -p $(INFERENCE_ENGINE_CPP_SAMPLES_BUILD)
-	cd $(INFERENCE_ENGINE_CPP_SAMPLES_BUILD) && cmake -DCMAKE_BUILD_TYPE=Release $(OPENVINO_DIR)/inference_engine/samples/cpp && make
+	cd $(INFERENCE_ENGINE_CPP_SAMPLES_BUILD) \
+	&& cmake -DCMAKE_BUILD_TYPE=Release $(OPENVINO_DIR)/inference_engine/samples/cpp \
+	&& make
 	ln -s $(INFERENCE_ENGINE_CPP_SAMPLES_BUILD)/intel64/Release/benchmark_app $@
 
 .PHONY: clean
