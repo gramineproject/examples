@@ -1,0 +1,6 @@
+data/
+*.log
+*.manifest
+*.patched
+*.sgx
+*.list
