@@ -1,0 +1,63 @@
+# Intel(R) Extension for Scikit-learn* manifest example
+
+loader.entrypoint = "file:{{ gramine.libos }}"
+libos.entrypoint = "{{ entrypoint }}"
+
+loader.log_level = "{{ log_level }}"
+
+loader.env.LD_LIBRARY_PATH = "/lib:{{ python.stdlib }}/lib:{{ arch_libdir }}:/usr/lib:/usr/{{ arch_libdir }}:/home/user/.local/lib"
+loader.env.PYTHONPATH = "{{ python.get_path('stdlib', vars={'installed_base': '/home/user/.local/'}) }}/site-packages/"
+
+loader.insecure__use_cmdline_argv = true
+
+sys.enable_sigterm_injection = true
+
+fs.mount.lib.type = "chroot"
+fs.mount.lib.path = "/lib"
+fs.mount.lib.uri = "file:{{ gramine.runtimedir() }}"
+
+fs.mount.lib2.type = "chroot"
+fs.mount.lib2.path = "{{ arch_libdir }}"
+fs.mount.lib2.uri = "file:{{ arch_libdir }}"
+
+fs.mount.usr.type = "chroot"
+fs.mount.usr.path = "/usr"
+fs.mount.usr.uri = "file:/usr"
+
+fs.mount.tmp.type = "chroot"
+fs.mount.tmp.path = "/tmp"
+fs.mount.tmp.uri = "file:/tmp"
+
+fs.mount.pyhome.type = "chroot"
+fs.mount.pyhome.path = "{{ python.stdlib }}"
+fs.mount.pyhome.uri = "file:{{ python.stdlib }}"
+
+fs.mount.pydisthome.type = "chroot"
+fs.mount.pydisthome.path = "{{ python.distlib }}"
+fs.mount.pydisthome.uri = "file:{{ python.distlib }}"
+
+fs.mount.pip.type = "chroot"
+fs.mount.pip.path = "/home/user/.local"
+fs.mount.pip.uri = "file:{{ env.HOME }}/.local"
+
+sgx.nonpie_binary = true
+sgx.enclave_size = "8G"
+sys.stack.size = "2M"
+sgx.thread_num = 256
+
+sgx.trusted_files = [
+  "file:{{ gramine.libos }}",
+  "file:{{ entrypoint }}",
+  "file:{{ gramine.runtimedir() }}/",
+  "file:{{ arch_libdir }}/",
+  "file:/usr/{{ arch_libdir }}/",
+  "file:{{ python.stdlib }}/",
+  "file:{{ python.distlib }}/",
+  "file:{{ env.HOME }}/.local/",
+  "file:data/",
+  "file:scripts/"
+]
+
+sgx.allowed_files = [
+  "file:/tmp"
+]
