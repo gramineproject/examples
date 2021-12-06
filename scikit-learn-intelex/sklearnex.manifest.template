@@ -1,0 +1,55 @@
+# Intel(R) Extension for Scikit-learn* manifest example
+
+loader.entrypoint = "file:{{ gramine.libos }}"
+libos.entrypoint = "{{ entrypoint }}"
+
+loader.log_level = "{{ log_level }}"
+
+loader.env.LD_LIBRARY_PATH = "{{ python.stdlib }}/lib:/lib:{{ arch_libdir }}:/usr/lib:/usr/{{ arch_libdir }}"
+
+loader.insecure__use_cmdline_argv = true
+
+sys.enable_sigterm_injection = true
+
+fs.mount.usr.type = "chroot"
+fs.mount.usr.path = "/usr"
+fs.mount.usr.uri = "file:/usr"
+
+fs.mount.tmp.type = "chroot"
+fs.mount.tmp.path = "/tmp"
+fs.mount.tmp.uri = "file:/tmp"
+
+sgx.debug = true
+sgx.nonpie_binary = true
+sgx.enclave_size = "8G"
+sys.stack.size = "8M"
+sgx.thread_num = 100 
+
+sgx.trusted_files = [
+  "file:{{ gramine.libos }}",
+  "file:{{ entrypoint }}",
+  "file:{{ gramine.runtimedir() }}/",
+  "file:{{ arch_libdir }}/",
+  "file:/usr/{{ arch_libdir }}/",
+  "file:{{ python.stdlib }}/",
+  "file:{{ python.distlib }}/",
+  PLACEHOLDER
+  "file:{{ onedal_libs }}/libonedal_core.so",
+  "file:{{ onedal_libs }}/libonedal_thread.so",
+  "file:{{ onedal_libs }}/libtbb.so.12",
+  "file:{{ onedal_libs }}/libtbbmalloc.so.2",
+  "file:{{ onedal_libs }}/libonedal.so",
+  "file:data/",
+  "file:scripts/"
+]
+
+sgx.allowed_files = [
+  "file:/etc/ethers",
+  "file:/etc/hosts",
+  "file:/etc/group",
+  "file:/etc/passwd",
+  "file:/etc/gai.conf",
+  "file:/etc/host.conf",
+  "file:/etc/resolv.conf",
+  "file:/tmp",
+]
