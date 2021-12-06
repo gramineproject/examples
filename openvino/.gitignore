@@ -3,7 +3,3 @@
 /model/
 /openvino/
 /output.txt
-*.manifest
-*.manifest.sgx
-*.sig
-*.token

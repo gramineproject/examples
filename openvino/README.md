@@ -34,15 +34,13 @@ The following models have been enabled and tested with Gramine-SGX:
     - regular user: `source /home/<USER>/intel/openvino_2021/bin/setupvars.sh`
 2. Build: `make SGX=1`
 
-## Running the benchmark
+## Running the benchmark in Gramine-SGX
+
+### Throughput runs
 
 Options `-nireq`, `-nstreams` and `-nthreads` should be set to the
 `number of physical cores * 2` (take into account hyperthreading) for achieving maximum
 performance.
-
-### Throughput runs
-
-#### Gramine-SGX
 
 ```bash
 $ export OPTIMAL_VALUE=<number of physical cores * 2>
@@ -57,14 +55,7 @@ For example, in a system with 36 physical cores, please export `OPTIMAL_VALUE` a
 $ export OPTIMAL_VALUE=72
 ```
 
-#### Native
-
-To run the benchmark in a native baremetal (outside Gramine), replace `gramine-sgx benchmark_app`
-with `./benchmark_app` in the above command.
-
 ### Latency runs
-
-#### Gramine-SGX
 
 ```bash
 $ KMP_AFFINITY=granularity=fine,noverbose,compact,1,0 numactl --cpubind=0 --membind=0 \
@@ -73,27 +64,26 @@ $ KMP_AFFINITY=granularity=fine,noverbose,compact,1,0 numactl --cpubind=0 --memb
     -d CPU -b 1 -t 20 -api sync
 ```
 
-#### Native
+## Running the benchmark natively
 
-To run the benchmark in a native baremetal (outside Gramine), replace `gramine-sgx benchmark_app`
+To run the benchmark natively (outside Gramine), replace `gramine-sgx benchmark_app`
 with `./benchmark_app` in the above command.
 
 ## Notes
 
 - The models require ~3GB of disk space.
-- After setting up OpenVINO environment variables if you want to build Gramine after
-cleaning you need to unset `LD_LIBRARY_PATH`. Please make sure to set up OpenVINO environment
+- After setting up OpenVINO environment variables if you want to re-build gramine you need to unset `LD_LIBRARY_PATH`. Please make sure to set up OpenVINO environment
 variables after building Gramine again.
 - To get `number of physical cores`, do `lscpu | grep 'Core(s) per socket'`.
-- Option `i <image files>` is optional. A user may use this option as required.
+- Option `-i <image files>` is optional. The user may use this option to benchmark specific images rather than randomly generated ones.
 - Please tune the batch size to get the best performance on your system.
-- Model files for bert-large can be found in `model/intel` directory and for rest of
-the models these are stored in `model/public` directory.
+- Models for bert-large can be found in `model/intel` directory; the rest of
+the models can be found in `model/public` directory.
 - For bert-large and brain-tumor-segmentation models the enclave
-size must be set to 64/128 GB for capturing throughput.
+size must be set to 64/128 GB for throughput runs.
 - In multi-socket systems for bert-large-uncased-whole-word-masking-squad-0001 and
-brain-tumor-segmentation-0001 FP32/FP16 models please expand memory nodes usage with
-`numactl --membind` if memory allocation fails for capturing throughput.
+brain-tumor-segmentation-0001 FP32/FP16 models, add more NUMA nodes using
+`numactl --membind` if memory allocation fails (for throughput runs).
 
 ## Performance considerations
 
@@ -112,7 +102,7 @@ done
 ### Manifest options for performance
 
 - Preheat manifest option pre-faults the enclave memory and moves the performance penalty to
-gramine-sgx startup (before the workload starts executing). To use the preheat option, make sure
+Gramine-SGX startup (before the workload starts executing). To use the preheat option, make sure
 that `sgx.preheat_enclave = true` is added to the manifest template.
 - Skipping invalid user pointer checks when the application does not invoke system calls with
 invalid pointers (typical case) can help improve performance. To use this option, make sure
@@ -121,14 +111,14 @@ that `libos.check_invalid_pointers = false` is added to the manifest template.
 ### Memory allocator libraries
 
 TCMalloc and mimalloc are memory allocator libraries from Google and Microsoft that can help
-improve performance significantly based on the workloads. At any point, only one of these
+improve performance significantly based on the workloads. Only one of these
 allocators can be used.
 
 #### TCMalloc
 
 (Please update the binary location and name if different from default.)
 - Install tcmalloc: `sudo apt-get install google-perftools`
-- Modify the manifest file:
+- Modify the manifest template file:
     - Add `loader.env.LD_PRELOAD = "/usr/lib/x86_64-linux-gnu/libtcmalloc.so.4"`
     - Append below entries to `sgx.trusted_files`:
         - `"file:/usr/lib/x86_64-linux-gnu/libtcmalloc.so.4"`
@@ -139,7 +129,7 @@ allocators can be used.
 
 (Please update the binary location and name if different from default.)
 - Install mimalloc using the steps from https://github.com/microsoft/mimalloc
-- Modify the manifest file:
+- Modify the manifest template file:
     - Add the `/usr/local` FS mount point:
         - `fs.mount.usr_local.type = "chroot"`
         - `fs.mount.usr_local.path = "/usr/local"`
