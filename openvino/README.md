@@ -72,17 +72,19 @@ with `./benchmark_app` in the above command.
 ## Notes
 
 - The models require ~3GB of disk space.
-- After setting up OpenVINO environment variables if you want to re-build gramine you need to unset `LD_LIBRARY_PATH`. Please make sure to set up OpenVINO environment
-variables after building Gramine again.
+- After setting up OpenVINO environment variables if you want to re-build
+Gramine you need to unset `LD_LIBRARY_PATH`. Please make sure to set up
+OpenVINO environment variables after building Gramine again.
 - To get `number of physical cores`, do `lscpu | grep 'Core(s) per socket'`.
-- Option `-i <image files>` is optional. The user may use this option to benchmark specific images rather than randomly generated ones.
+- Option `-i <image files>` is optional. The user may use this option to
+benchmark specific images rather than randomly generated ones.
 - Please tune the batch size to get the best performance on your system.
-- Models for bert-large can be found in `model/intel` directory; the rest of
-the models can be found in `model/public` directory.
+- Models for bert-large can be found in `model/intel` directory; the rest
+of the models can be found in `model/public` directory.
 - For bert-large and brain-tumor-segmentation models the enclave
 size must be set to 64/128 GB for throughput runs.
-- In multi-socket systems for bert-large-uncased-whole-word-masking-squad-0001 and
-brain-tumor-segmentation-0001 FP32/FP16 models, add more NUMA nodes using
+- In multi-socket systems for bert-large-uncased-whole-word-masking-squad-0001
+and brain-tumor-segmentation-0001 FP32/FP16 models, add more NUMA nodes using
 `numactl --membind` if memory allocation fails (for throughput runs).
 
 ## Performance considerations
