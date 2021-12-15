@@ -1,5 +1,7 @@
 # OpenVINO (object_detection_sample_ssd) manifest example
 
+loader.preload = "file:{{ gramine.libos }}"  # for compatibility with v1.0
+
 loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "{{ openvino_dir }}/bin/intel64/{{ openvino_build }}/object_detection_sample_ssd"
 

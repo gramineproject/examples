@@ -1,6 +1,8 @@
 # This is a general manifest template for running GCC and its utility programs,
 # including as, cc1, collect2, ld.
 
+loader.preload = "file:{{ gramine.libos }}"  # for compatibility with v1.0
+
 loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "/usr/bin/gcc"
 
