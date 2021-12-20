@@ -51,7 +51,7 @@ OMP_NUM_THREADS=36 KMP_AFFINITY=granularity=fine,verbose,compact,1,0 taskset -c 
 ```
 - To run int8 inference on ``gramine-direct`` (non-SGX version), replace ``gramine-sgx`` with
 ``gramine-direct`` in the above command.
-- To run int8 inference on native baremetal (outside Gramine), replace ``gramine-sgx ./python`` with
+- To run int8 inference natively (outside Gramine), replace ``gramine-sgx ./python`` with
 ``python3`` in the above command.
 
 ## Run inference on ResNet50 model
@@ -68,7 +68,7 @@ OMP_NUM_THREADS=36 KMP_AFFINITY=granularity=fine,verbose,compact,1,0 taskset -c 
 ```
 - To run inference on ``gramine-direct`` (non-SGX version), replace ``gramine-sgx`` with
 ``gramine-direct`` in the above command.
-- To run inference on native baremetal (outside Gramine), replace ``gramine-sgx ./python`` with
+- To run inference natively (outside Gramine), replace ``gramine-sgx ./python`` with
 ``python3`` in the above command.
 
 ## Notes on optimal performance
@@ -87,25 +87,51 @@ performance:
 - To get the number of cores per socket, do ``lscpu | grep 'Core(s) per socket'``.
 
 ## Performance considerations
-- Linux systems have CPU frequency scaling governor that helps the system to scale the CPU frequency
-to achieve best performance or to save power based on the requirement.
-To set the CPU frequency scaling governor to performance mode:
+### CPU frequency scaling
 
-  - ``for ((i=0; i<$(nproc); i++)); do echo 'performance' > /sys/devices/system/cpu/cpu$i/cpufreq/scaling_governor; done``
+Linux systems have CPU frequency scaling governor that helps the system to scale the CPU frequency
+to achieve best performance or to save power based on the requirement. To achieve the best
+performance, please set the CPU frequency scaling governor to `performance` mode.
+
+```bash
+for ((i=0; i<$(nproc); i++)); do
+    echo 'performance' > /sys/devices/system/cpu/cpu$i/cpufreq/scaling_governor;
+done
+```
+
+### Manifest options for performance
 
 - Preheat manifest option pre-faults the enclave memory and moves the performance penalty to
-gramine-sgx invocation (before the workload starts execution).
-To use preheat option, add ``sgx.preheat_enclave = true`` to the manifest template.
-- TCMalloc and mimalloc are memory allocator libraries from Google and Microsoft that can help
-  improve performance significantly based on the workloads. At any point, only one of these
-  allocators can be used.
-  - TCMalloc (Please update the binary location and name if different from default):
-    - Install tcmalloc: ``sudo apt-get install google-perftools``
-    - To use tcmalloc,
-        - Add ``loader.env.LD_PRELOAD = "/usr/lib/x86_64-linux-gnu/libtcmalloc.so.4"`` to the manifest template.
-        - Add ``"file:/usr/lib/x86_64-linux-gnu/libtcmalloc.so.4"`` and ``"file:/usr/lib/x86_64-linux-gnu/libunwind.so.8"`` to ``sgx.trusted_files``.
-  - mimalloc (Please update the binary location and name if different from default):
-    - Install mimalloc using the steps from https://github.com/microsoft/mimalloc
-    - To use mimalloc,
-        - Add ``loader.env.LD_PRELOAD = "/usr/local/lib/mimalloc-1.7/libmimalloc.so.1.7"`` to the manifest template.
-        - Add ``"file:/usr/local/lib/mimalloc-1.7/libmimalloc.so.1.7"`` to ``sgx.trusted_files``.
+Gramine-SGX startup (before the workload starts executing). To use the preheat option, make sure
+that `sgx.preheat_enclave = true` is added to the manifest template.
+
+### Memory allocator libraries
+
+TCMalloc and mimalloc are memory allocator libraries from Google and Microsoft that can help
+improve performance significantly based on the workloads. Only one of these
+allocators can be used.
+
+#### TCMalloc
+
+(Please update the binary location and name if different from default.)
+- Install tcmalloc: `sudo apt-get install google-perftools`
+- Modify the manifest template file:
+    - Add `loader.env.LD_PRELOAD = "/usr/lib/x86_64-linux-gnu/libtcmalloc.so.4"`
+    - Append below entries to `sgx.trusted_files`:
+        - `"file:/usr/lib/x86_64-linux-gnu/libtcmalloc.so.4"`
+        - `"file:/usr/lib/x86_64-linux-gnu/libunwind.so.8"`
+- Save the manifest template and rebuild this example.
+
+#### mimalloc
+
+(Please update the binary location and name if different from default.)
+- Install mimalloc using the steps from https://github.com/microsoft/mimalloc
+- Modify the manifest template file:
+    - Add the `/usr/local` FS mount point:
+        - `fs.mount.usr_local.type = "chroot"`
+        - `fs.mount.usr_local.path = "/usr/local"`
+        - `fs.mount.usr_local.uri = "file:/usr/local"`
+    - Add `loader.env.LD_PRELOAD = "/usr/local/lib/mimalloc-1.7/libmimalloc.so.1.7"`
+    - Append below entry to `sgx.trusted_files`:
+        - `"file:/usr/local/lib/mimalloc-1.7/libmimalloc.so.1.7"`
+- Save the manifest template and rebuild this example.

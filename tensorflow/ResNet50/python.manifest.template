@@ -1,5 +1,5 @@
+loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "{{ entrypoint }}"
-loader.preload = "file:{{ gramine.libos }}"
 
 loader.log_level = "{{ log_level }}"
 
@@ -57,7 +57,8 @@ sgx.trusted_files = [
   "file:{{ arch_libdir }}/",
   "file:/usr/{{ arch_libdir }}/",
   "file:resnet50v1_5_int8_pretrained_model.pb",
-  "file:{{ entrypoint }}/",
+  "file:{{ gramine.libos }}",
+  "file:{{ entrypoint }}",
   "file:{{ python.stdlib }}/",
   "file:{{ python.distlib }}/",
   "file:{{ pythondistpath }}/",
@@ -66,6 +67,5 @@ sgx.trusted_files = [
 sgx.allowed_files = [
   "file:/tmp/",
   "file:/etc/",
-  "file:/proc/",
   "file:models/",
 ]

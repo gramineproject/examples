@@ -1,5 +1,5 @@
 libos.entrypoint = "{{ entrypoint }}"
-loader.preload = "file:{{ gramine.libos }}"
+loader.entrypoint = "file:{{ gramine.libos }}"
 
 loader.log_level = "{{ log_level }}"
 
@@ -52,7 +52,8 @@ sgx.trusted_files = [
   "file:{{ gramine.runtimedir() }}/",
   "file:{{ arch_libdir }}/",
   "file:/usr/{{ arch_libdir }}/",
-  "file:{{ entrypoint }}/",
+  "file:{{ gramine.libos }}",
+  "file:{{ entrypoint }}",
   "file:{{ python.stdlib }}/",
   "file:{{ python.distlib }}/",
   "file:{{ pythondistpath }}/",

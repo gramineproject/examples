@@ -1,4 +1,4 @@
-# BERT sample for Tensorflow
+# BERT sample for TensorFlow
 
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
 SGX_SIGNER_KEY ?= ../../../Pal/src/host/Linux-SGX/signer/enclave-key.pem
