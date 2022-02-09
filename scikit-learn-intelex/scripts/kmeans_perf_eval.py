@@ -1,3 +1,7 @@
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (c) 2021 Intel Corporation
+#                    Andrey Morkovkin <andrey.morkovkin@intel.com>
+
 from timeit import default_timer as timer
 import pandas as pd
 
@@ -5,7 +9,7 @@ def run(X, y, is_patched):
     if is_patched:
         from sklearnex import patch_sklearn
         patch_sklearn()
-    
+
     from sklearn.model_selection import train_test_split
     from sklearn.preprocessing import MinMaxScaler
     from sklearn.cluster import KMeans
@@ -19,7 +23,7 @@ def run(X, y, is_patched):
     x_test = scaler_x.transform(x_test)
 
     params = {
-        'n_clusters': 10,    
+        'n_clusters': 10,
         'random_state': 123,
         'copy_x': False,
     }
@@ -54,6 +58,6 @@ def main():
     print('*** Intel® extension for Scikit-learn ***')
     run(X, y, is_patched=True)
     print('Kmeans perf evaluation finished')
-    
+
 if __name__ == '__main__':
     main()

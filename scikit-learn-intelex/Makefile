@@ -1,8 +1,7 @@
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
 
 SGX_SIGNER_KEY ?= ../../Pal/src/host/Linux-SGX/signer/enclave-key.pem
-ONEDAL_LIBS ?= /usr/local/lib
-PYTHON_VERSION ?= python3.9
+PYTHON_VERSION ?= python3
 
 ifeq ($(DEBUG),1)
 GRAMINE_LOG_LEVEL = debug
@@ -13,20 +12,13 @@ endif
 .PHONY: all
 all: sklearnex.manifest
 ifeq ($(SGX),1)
-all: trusted_files.list sklearnex.manifest.template.patched sklearnex.manifest.sgx sklearnex.sig sklearnex.token
+all: sklearnex.manifest.sgx sklearnex.sig sklearnex.token
 endif
 
-trusted_files.list:
-	echo "$(shell $(PYTHON_VERSION) utils/get_trusted_files.py)" > $@
-
-sklearnex.manifest.template.patched: sklearnex.manifest.template trusted_files.list
-	sed 's|PLACEHOLDER|$(shell cat trusted_files.list)|' $< > $@
-
-sklearnex.manifest: sklearnex.manifest.template.patched
+sklearnex.manifest: sklearnex.manifest.template
 	gramine-manifest \
 		-Dlog_level=$(GRAMINE_LOG_LEVEL) \
 		-Darch_libdir=$(ARCH_LIBDIR) \
-		-Donedal_libs=$(ONEDAL_LIBS) \
 		-Dentrypoint=$(realpath $(shell sh -c "command -v $(PYTHON_VERSION)")) \
 		$< >$@
 
@@ -51,7 +43,7 @@ check: all
 
 .PHONY: clean
 clean:
-	$(RM) *.list *.manifest *.patched *.manifest.sgx *.token *.sig OUTPUT* *.PID TEST_STDOUT TEST_STDERR
+	$(RM) *.manifest *.manifest.sgx *.token *.sig OUTPUT* TEST_STDOUT TEST_STDERR
 	$(RM) -r __pycache__
 
 .PHONY: distclean

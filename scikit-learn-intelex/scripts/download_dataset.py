@@ -1,3 +1,7 @@
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (c) 2021 Intel Corporation
+#                    Andrey Morkovkin <andrey.morkovkin@intel.com>
+
 from sklearn.datasets import fetch_openml
 
 def main():
