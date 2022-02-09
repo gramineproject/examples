@@ -11,7 +11,7 @@ For generating the manifest and running the test scripts, please run the followi
 command to install the required packages (Ubuntu-specific):
 
 ```
-sudo apt-get install scikit-learn-intelex pandas numpy
+pip install scikit-learn-intelex pandas numpy
 ```
 
 ## Download datasets
