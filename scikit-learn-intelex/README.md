@@ -34,10 +34,10 @@ Run `make SGX=1` (non-debug) or `make SGX=1 DEBUG=1` (debug) in the directory.
 
 By default, the `make` command creates the manifest for the Python3 and oneDAL binaries from
 the system installation. If you have a local installation, you may create the
-manifest with the `ONEDAL_LIBS` variable. For example (default paths are below):
+manifest with the `PYTHON_VERSION` variable. For example (default value is below):
 
 ```
-make PYTHON_VERSION=python3 ONEDAL_LIBS=/usr/local/lib SGX=1
+make PYTHON_VERSION=python3 SGX=1
 ```
 
 # Run Intel(R) Extension for Scikit-learn* with Gramine
