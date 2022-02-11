@@ -17,7 +17,7 @@ For OpenVINO installation step-by-step instructions please refer to this
 
 ## Supported models for Gramine-SGX
 
-The following models have been enabled and tested with Gramine-SGX:
+The following models have been tested with Gramine-SGX:
 
 - bert-large-uncased-whole-word-masking-squad-0001 (FP16/FP32)
 - bert-large-uncased-whole-word-masking-squad-int8-0001 (INT8)
@@ -39,20 +39,19 @@ The following models have been enabled and tested with Gramine-SGX:
 ### Throughput runs
 
 Options `-nireq`, `-nstreams` and `-nthreads` should be set to the
-`number of physical cores * 2` (take into account hyperthreading) for achieving maximum
-performance.
+`number of logical threads` for achieving maximum performance.
 
 ```bash
-$ export OPTIMAL_VALUE=<number of physical cores * 2>
+$ export THREADS_CNT=<Core(s) per socket * Thread(s) per core>
 $ KMP_AFFINITY=granularity=fine,noverbose,compact,1,0 numactl --cpubind=0 --membind=0 \
     gramine-sgx benchmark_app -i <image files> \
     -m model/<public | intel>/<model_dir>/<INT8 | FP16 | FP32>/<model_xml_file> \
     -d CPU -b 1 -t 20 \
-    -nstreams OPTIMAL_VALUE -nthreads OPTIMAL_VALUE -nireq OPTIMAL_VALUE
+    -nstreams THREADS_CNT -nthreads THREADS_CNT -nireq THREADS_CNT
 ```
-For example, in a system with 36 physical cores, please export `OPTIMAL_VALUE` as below.
+For example, in a system with 36 physical cores per socket and 2 threads per core, please export `THREADS_CNT` as below.
 ```bash
-$ export OPTIMAL_VALUE=72
+$ export THREADS_CNT=72
 ```
 
 ### Latency runs
@@ -75,7 +74,8 @@ with `./benchmark_app` in the above command.
 - After setting up OpenVINO environment variables if you want to re-build
 Gramine you need to unset `LD_LIBRARY_PATH`. Please make sure to set up
 OpenVINO environment variables after building Gramine again.
-- To get `number of physical cores`, do `lscpu | grep 'Core(s) per socket'`.
+- To get `Core(s) per socket`, do `lscpu | grep 'Core(s) per socket'`.
+- To get `Thread(s) per core`, do `lscpu | grep 'Thread(s) per core'`.
 - Option `-i <image files>` is optional. The user may use this option to
 benchmark specific images rather than randomly generated ones.
 - Please tune the batch size to get the best performance on your system.
@@ -114,7 +114,7 @@ that `libos.check_invalid_pointers = false` is added to the manifest template.
 
 TCMalloc and mimalloc are memory allocator libraries from Google and Microsoft that can help
 improve performance significantly based on the workloads. Only one of these
-allocators can be used.
+allocators can be used at the same time.
 
 #### TCMalloc
 

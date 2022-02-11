@@ -31,13 +31,13 @@ GRAMINE_LOG_LEVEL = error
 endif
 
 .PHONY: all
-all: benchmark_app benchmark_app.manifest $(VENV_DIR) intel_models public_models
+all: benchmark_app benchmark_app.manifest $(VENV_DIR)/.INSTALLATION_OK intel_models public_models
 ifeq ($(SGX),1)
 all: benchmark_app.manifest.sgx benchmark_app.sig benchmark_app.token
 endif
 
 .PHONY: intel_models
-intel_models: $(VENV_DIR)
+intel_models: $(VENV_DIR)/.INSTALLATION_OK
 	@source $(VENV_DIR)/bin/activate \
 	&& cd $(OPENVINO_DIR)/deployment_tools/open_model_zoo/tools/downloader \
 	&& for model in $(INTEL_MODELS); do \
@@ -49,7 +49,7 @@ intel_models: $(VENV_DIR)
 	&& deactivate
 
 .PHONY: public_models
-public_models: $(VENV_DIR)
+public_models: $(VENV_DIR)/.INSTALLATION_OK
 	@source $(VENV_DIR)/bin/activate \
 	&& cd $(OPENVINO_DIR)/deployment_tools/open_model_zoo/tools/downloader \
 	&& for model in $(PUBLIC_MODELS); do \
@@ -60,16 +60,20 @@ public_models: $(VENV_DIR)
 	done \
 	&& deactivate
 
-$(VENV_DIR):
+.PRECIOUS: $(VENV_DIR)/.INSTALLATION_OK
+$(VENV_DIR)/.INSTALLATION_OK:
 	mkdir -p model
 	python3 -m venv $(VENV_DIR) \
 	&& source $(VENV_DIR)/bin/activate \
 	&& pip install --upgrade pip \
-	&& cd $(OPENVINO_DIR)/deployment_tools/open_model_zoo/tools/downloader \
+	&& pushd $(OPENVINO_DIR)/deployment_tools/open_model_zoo/tools/downloader \
 	&& python3 -mpip install -r ./requirements.in \
-	&& cd $(OPENVINO_DIR)/deployment_tools/model_optimizer \
+	&& popd \
+	&& pushd $(OPENVINO_DIR)/deployment_tools/model_optimizer \
 	&& pip3 install -r requirements.txt \
-	&& deactivate
+	&& popd \
+	&& deactivate \
+	&& touch $@
 
 benchmark_app.manifest: benchmark_app.manifest.template
 	gramine-manifest \
