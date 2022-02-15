@@ -11,10 +11,10 @@ Example applications for Gramine
 
 
 This repository contains a curated set of Gramine examples. These examples are
-tested only against stable Gramine releases (i.e., these examples are not
-guaranteed to work with non-release versions of Gramine, including the latest
-master-branch commits of Gramine). The examples were tested on Ubuntu 18.04 and
-20.04.
+tested only against the most recent Gramine release (i.e., these examples are
+not guaranteed to work with older releases and unreleased versions of Gramine,
+including the latest master branch commits of Gramine). The examples were
+tested on Ubuntu 18.04 and 20.04.
 
 For instructions how to build and run each application under Gramine, please
 see the README in each subdirectory.
