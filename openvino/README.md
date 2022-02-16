@@ -44,7 +44,7 @@ Options `-nireq`, `-nstreams` and `-nthreads` should be set to the
 `number of logical cores on the socket 0` for achieving maximum performance.
 
 ```bash
-$ export THREADS_CNT=<Core(s) per socket * Thread(s) per core>
+$ export THREADS_CNT=<number of logical cores on the socket 0>
 $ KMP_AFFINITY=granularity=fine,noverbose,compact,1,0 numactl --cpubind=0 --membind=0 \
     gramine-sgx benchmark_app -i <image files> \
     -m model/<public | intel>/<model_dir>/<INT8 | FP16 | FP32>/<model_xml_file> \
@@ -76,8 +76,6 @@ with `./benchmark_app` in the above command.
 - After setting up OpenVINO environment variables if you want to re-build
 Gramine you need to unset `LD_LIBRARY_PATH`. Please make sure to set up
 OpenVINO environment variables after building Gramine again.
-- To get `Core(s) per socket`, do `lscpu | grep 'Core(s) per socket'`.
-- To get `Thread(s) per core`, do `lscpu | grep 'Thread(s) per core'`.
 - Option `-i <image files>` is optional. The user may use this option to
 benchmark specific images rather than randomly generated ones.
 - Please tune the batch size to get the best performance on your system.
