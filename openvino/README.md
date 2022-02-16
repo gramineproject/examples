@@ -36,10 +36,12 @@ The following models have been tested with Gramine-SGX:
 
 ## Running the benchmark in Gramine-SGX
 
+The below commands are utilizing only socket 0.
+
 ### Throughput runs
 
 Options `-nireq`, `-nstreams` and `-nthreads` should be set to the
-`number of logical cores per socket` for achieving maximum performance.
+`number of logical cores on the socket 0` for achieving maximum performance.
 
 ```bash
 $ export THREADS_CNT=<Core(s) per socket * Thread(s) per core>
