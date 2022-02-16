@@ -7,11 +7,18 @@ the Makefile and a template for generating the manifest.
 
 ## Installing prerequisites
 
+First, please set environment variable that is corresponding to your Python's binaries.
+That Python is going to be used for preparation and building:
+
+```
+export ${PYTHON_VERSION}=python3
+```
+
 For generating the manifest and running the test scripts, please run the following
 command to install the required packages (Ubuntu-specific):
 
 ```
-pip install scikit-learn-intelex pandas numpy
+${PYTHON_VERSION} -m pip install scikit-learn-intelex pandas numpy
 ```
 
 ## Download datasets
@@ -19,7 +26,7 @@ pip install scikit-learn-intelex pandas numpy
 Before run, please download MNIST dataset by the following command:
 
 ```
-python scripts/download_dataset.py
+${PYTHON_VERSION} scripts/download_dataset.py
 ```
 
 ## Building for Linux
@@ -30,16 +37,6 @@ Run `make` (non-debug) or `make DEBUG=1` (debug) in the directory.
 
 Run `make SGX=1` (non-debug) or `make SGX=1 DEBUG=1` (debug) in the directory.
 
-## Building with a local Python/oneDAL installation
-
-By default, the `make` command creates the manifest for the Python3 and oneDAL binaries from
-the system installation. If you have a local installation, you may create the
-manifest with the `PYTHON_VERSION` variable. For example (default value is below):
-
-```
-make PYTHON_VERSION=python3 SGX=1
-```
-
 # Run Intel(R) Extension for Scikit-learn* with Gramine
 
 Here's an example of running Python scripts under Gramine:
@@ -47,15 +44,15 @@ Here's an example of running Python scripts under Gramine:
 Without SGX:
 
 ```
-gramine-direct ./python scripts/kmeans_example.py
-gramine-direct ./python scripts/kmeans_perf_eval.py
+gramine-direct ./sklearnex scripts/kmeans_example.py
+gramine-direct ./sklearnex scripts/kmeans_perf_eval.py
 ```
 
 With SGX:
 
 ```
-gramine-sgx ./python scripts/kmeans_example.py
-gramine-sgx ./python scripts/kmeans_perf_eval.py
+gramine-sgx ./sklearnex scripts/kmeans_example.py
+gramine-sgx ./sklearnex scripts/kmeans_perf_eval.py
 ```
 
 You can also manually run included tests:
