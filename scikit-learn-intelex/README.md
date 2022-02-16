@@ -11,7 +11,7 @@ First, please set environment variable that is corresponding to your Python's bi
 That Python is going to be used for preparation and building:
 
 ```
-export ${PYTHON_VERSION}=python3
+export PYTHON_VERSION=python3
 ```
 
 For generating the manifest and running the test scripts, please run the following
