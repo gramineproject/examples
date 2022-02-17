@@ -1,7 +1,6 @@
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
 
 SGX_SIGNER_KEY ?= ../../Pal/src/host/Linux-SGX/signer/enclave-key.pem
-PYTHON_VERSION ?= python3
 
 ifeq ($(DEBUG),1)
 GRAMINE_LOG_LEVEL = debug
@@ -19,7 +18,7 @@ sklearnex.manifest: sklearnex.manifest.template
 	gramine-manifest \
 		-Dlog_level=$(GRAMINE_LOG_LEVEL) \
 		-Darch_libdir=$(ARCH_LIBDIR) \
-		-Dentrypoint=$(realpath $(shell sh -c "command -v $(PYTHON_VERSION)")) \
+		-Dentrypoint=$(realpath $(shell sh -c "command -v python3")) \
 		$< >$@
 
 sklearnex.manifest.sgx: sklearnex.manifest

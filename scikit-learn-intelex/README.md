@@ -7,18 +7,11 @@ the Makefile and a template for generating the manifest.
 
 ## Installing prerequisites
 
-First, please set environment variable that is corresponding to your Python's binaries.
-That Python is going to be used for preparation and building:
-
-```
-export PYTHON_VERSION=python3
-```
-
 For generating the manifest and running the test scripts, please run the following
 command to install the required packages (Ubuntu-specific):
 
 ```
-${PYTHON_VERSION} -m pip install scikit-learn-intelex pandas numpy
+python3 -m pip install scikit-learn-intelex pandas numpy
 ```
 
 ## Download datasets
@@ -26,7 +19,7 @@ ${PYTHON_VERSION} -m pip install scikit-learn-intelex pandas numpy
 Before run, please download MNIST dataset by the following command:
 
 ```
-${PYTHON_VERSION} scripts/download_dataset.py
+python3 scripts/download_dataset.py
 ```
 
 ## Building for Linux
@@ -39,7 +32,7 @@ Run `make SGX=1` (non-debug) or `make SGX=1 DEBUG=1` (debug) in the directory.
 
 # Run Intel(R) Extension for Scikit-learn* with Gramine
 
-Here's an example of running Python scripts under Gramine:
+Here's an example of running Intel(R) Extension for Scikit-learn* scripts under Gramine:
 
 Without SGX:
 
