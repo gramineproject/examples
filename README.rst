@@ -31,6 +31,17 @@ to contribute a new example to Gramine and you take the Redis example as a
 template, we recommend to remove the comments from your copies as they only add
 noise (see e.g. Memcached for a "stripped-down" example).
 
+Known unsupported applications
+==============================
+
+Some applications are known to *not* run in Gramine. Typically this is because
+these applications depend on features currently not implemented in Gramine.
+
+We are aware of the following unsupported applications:
+
+- Apache web server: depends on Sys-V semaphores, unimplemented in Gramine.
+
+
 Building examples
 =================
 

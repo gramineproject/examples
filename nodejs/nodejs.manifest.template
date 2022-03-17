@@ -1,7 +1,10 @@
 # Node.js manifest file example
 
-loader.preload = "file:{{ gramine.libos }}"
+loader.preload = "file:{{ gramine.libos }}"  # for compatibility with v1.0
+
+loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "{{ nodejs_dir }}/nodejs"
+
 loader.log_level = "{{ log_level }}"
 
 loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}"
@@ -34,6 +37,7 @@ sgx.enclave_size = "2G"
 sgx.thread_num = 32
 
 sgx.trusted_files = [
+  "file:{{ gramine.libos }}",
   "file:{{ nodejs_dir }}/nodejs",
   "file:{{ gramine.runtimedir() }}/",
   "file:{{ arch_libdir }}/",
