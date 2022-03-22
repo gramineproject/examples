@@ -1,0 +1,43 @@
+libos.entrypoint = "{{ entrypoint }}"
+loader.entrypoint = "file:{{ gramine.libos }}"
+
+loader.log_level = "{{ log_level }}"
+
+loader.insecure__use_cmdline_argv = true
+loader.insecure__use_host_env = true
+loader.insecure__disable_aslr = true
+
+loader.env.LD_LIBRARY_PATH = "{{ python.stdlib }}/lib:/lib:{{ arch_libdir }}:/usr/lib:/usr/{{ arch_libdir }}"
+loader.pal_internal_mem_size = "512M"
+
+fs.mounts = [
+  { path = "/lib", uri = "file:{{ gramine.runtimedir() }}" },
+  { path = "/usr", uri = "file:/usr" },
+  { type = "tmpfs", path = "/tmp" },
+  { path = "{{ arch_libdir }}", uri = "file:{{ arch_libdir }}" },
+  { path = "{{ python.stdlib }}", uri = "file:{{ python.stdlib }}" },
+  { path = "{{ python.distlib }}", uri = "file:{{ python.distlib }}" },
+  { path = "{{ pythondistpath }}", uri = "file:{{ pythondistpath }}" },
+]
+
+sgx.enclave_size = "32G"
+sgx.thread_num = 256
+sgx.preheat_enclave = true
+sgx.nonpie_binary = true
+
+sgx.trusted_files = [
+  "file:{{ gramine.runtimedir() }}/",
+  "file:{{ arch_libdir }}/",
+  "file:/usr/{{ arch_libdir }}/",
+  "file:{{ gramine.libos }}",
+  "file:{{ entrypoint }}",
+  "file:{{ python.stdlib }}/",
+  "file:{{ python.distlib }}/",
+  "file:{{ pythondistpath }}/",
+  "file:models/",
+  "file:data/",
+]
+
+sgx.allowed_files = [
+  "file:output/",
+]
