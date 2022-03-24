@@ -3,8 +3,6 @@ THIS_DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 ARCH_LONG ?= $(shell $(CC) -dumpmachine)
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
 
-SGX_SIGNER_KEY ?= ../../Pal/src/host/Linux-SGX/signer/enclave-key.pem
-
 BZIP2_MIRRORS ?= \
 	https://people.csail.mit.edu/smcc/projects/single-file-programs/bzip2.c \
 	https://packages.gramineproject.io/distfiles/single-file-programs/bzip2.c
@@ -46,10 +44,7 @@ gcc.sig gcc.manifest.sgx: sgx_outputs
 
 .INTERMEDIATE: sgx_outputs
 sgx_outputs: gcc.manifest
-	@test -s $(SGX_SIGNER_KEY) || \
-	    { echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
 	gramine-sgx-sign \
-		--key $(SGX_SIGNER_KEY) \
 		--manifest gcc.manifest \
 		--output gcc.manifest.sgx
 

@@ -2,8 +2,6 @@ manifests = $(addsuffix .manifest,label_image)
 exec_target = $(manifests)
 target = label_image
 
-SGX_SIGNER_KEY ?= ../../Pal/src/host/Linux-SGX/signer/enclave-key.pem
-
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
 
 TF_DIR ?= tensorflow
@@ -65,10 +63,7 @@ label_image.manifest: label_image.manifest.template libtensorflow_framework.so l
 		$< > $@
 
 label_image.manifest.sgx: label_image.manifest inception_v3.tflite labels.txt
-	@test -s $(SGX_SIGNER_KEY) || \
-	    { echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
 	gramine-sgx-sign \
-		--key $(SGX_SIGNER_KEY) \
 		--manifest $< \
 		--output $@
 	gramine-sgx-get-token \

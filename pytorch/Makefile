@@ -2,8 +2,6 @@
 
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
 
-SGX_SIGNER_KEY ?= ../../Pal/src/host/Linux-SGX/signer/enclave-key.pem
-
 ifeq ($(DEBUG),1)
 GRAMINE_LOG_LEVEL = debug
 else
@@ -30,10 +28,7 @@ pytorch.sig pytorch.manifest.sgx: sgx_outputs
 
 .INTERMEDIATE: sgx_outputs
 sgx_outputs: pytorch.manifest
-	@test -s $(SGX_SIGNER_KEY) || \
-	    { echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
 	gramine-sgx-sign \
-		--key $(SGX_SIGNER_KEY) \
 		--output pytorch.manifest.sgx \
 		--manifest pytorch.manifest
 
