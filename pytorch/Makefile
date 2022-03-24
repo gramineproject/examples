@@ -2,7 +2,7 @@
 
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
 
-SGX_SIGNER_KEY ?= ../../Pal/src/host/Linux-SGX/signer/enclave-key.pem
+PILLOW_PATH ?= $(shell pip3 show pillow | grep -P 'Location' | sed 's/Location:.\(.*\)\python.*/\1/')
 
 ifeq ($(DEBUG),1)
 GRAMINE_LOG_LEVEL = debug
@@ -19,6 +19,7 @@ endif
 %.manifest: %.manifest.template
 	gramine-manifest \
 		-Dlog_level=$(GRAMINE_LOG_LEVEL) \
+		-Dpillow_path=$(PILLOW_PATH) \
 		-Darch_libdir=$(ARCH_LIBDIR) \
 		-Dentrypoint=$(realpath $(shell sh -c "command -v python3")) \
 		$< > $@
@@ -30,10 +31,7 @@ pytorch.sig pytorch.manifest.sgx: sgx_outputs
 
 .INTERMEDIATE: sgx_outputs
 sgx_outputs: pytorch.manifest
-	@test -s $(SGX_SIGNER_KEY) || \
-	    { echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
 	gramine-sgx-sign \
-		--key $(SGX_SIGNER_KEY) \
 		--output pytorch.manifest.sgx \
 		--manifest pytorch.manifest
 

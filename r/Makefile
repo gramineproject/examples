@@ -2,8 +2,6 @@
 R_HOME ?= /usr/lib/R
 R_EXEC = $(R_HOME)/bin/exec/R
 
-SGX_SIGNER_KEY ?= ../../Pal/src/host/Linux-SGX/signer/enclave-key.pem
-
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
 
 ifeq ($(DEBUG),1)
@@ -30,10 +28,7 @@ R.manifest: R.manifest.template
 		$< >$@
 
 %.manifest.sgx: %.manifest
-	@test -s $(SGX_SIGNER_KEY) || \
-	    { echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
 	gramine-sgx-sign \
-		--key $(SGX_SIGNER_KEY) \
 		--manifest $< \
 		--output $@
 

@@ -22,8 +22,6 @@ PUBLIC_MODELS = \
 
 VENV_DIR ?= $(THIS_DIR)/openvino
 
-SGX_SIGNER_KEY ?= ../../Pal/src/host/Linux-SGX/signer/enclave-key.pem
-
 ifeq ($(DEBUG),1)
 GRAMINE_LOG_LEVEL = debug
 else
@@ -84,10 +82,7 @@ benchmark_app.manifest: benchmark_app.manifest.template
 		$< > $@
 
 benchmark_app.manifest.sgx: benchmark_app.manifest | benchmark_app
-	@test -s $(SGX_SIGNER_KEY) || \
-	    { echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
 	gramine-sgx-sign \
-		--key $(SGX_SIGNER_KEY) \
 		--manifest $< \
 		--output $@
 
