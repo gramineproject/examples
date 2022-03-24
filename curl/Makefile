@@ -3,8 +3,6 @@ CURL_DIR ?= /usr/bin
 
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
 
-SGX_SIGNER_KEY ?= ../../Pal/src/host/Linux-SGX/signer/enclave-key.pem
-
 ifeq ($(DEBUG),1)
 GRAMINE_LOG_LEVEL = debug
 else
@@ -26,10 +24,7 @@ curl.manifest: curl.manifest.template
 		$< >$@
 
 curl.manifest.sgx: curl.manifest
-	@test -s $(SGX_SIGNER_KEY) || \
-	    { echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
 	gramine-sgx-sign \
-		--key $(SGX_SIGNER_KEY) \
 		--manifest curl.manifest \
 		--output $@
 

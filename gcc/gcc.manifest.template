@@ -11,21 +11,13 @@ loader.env.PATH = "/bin:/usr/bin"
 
 loader.insecure__use_cmdline_argv = true
 
-fs.mount.lib1.type = "chroot"
-fs.mount.lib1.path = "/lib"
-fs.mount.lib1.uri = "file:{{ gramine.runtimedir() }}"
-
-fs.mount.lib2.type = "chroot"
-fs.mount.lib2.path = "{{ arch_libdir }}"
-fs.mount.lib2.uri = "file:{{ arch_libdir }}"
-
-fs.mount.usr.type = "chroot"
-fs.mount.usr.path = "/usr"
-fs.mount.usr.uri = "file:/usr"
-
-fs.mount.tmp.type = "chroot"
-fs.mount.tmp.path = "/tmp"
-fs.mount.tmp.uri = "file:/tmp"
+fs.mounts = [
+  { type = "chroot", uri = "file:{{ gramine.runtimedir() }}", path = "/lib" },
+  { type = "chroot", uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
+  { type = "chroot", uri = "file:/usr", path = "/usr" },
+  { type = "chroot", uri = "file:/tmp", path = "/tmp" },
+  { type = "chroot", uri = "file:/lib64", path = "/lib64" },
+]
 
 sgx.enclave_size = "1G"
 sgx.nonpie_binary = true
@@ -39,7 +31,7 @@ sgx.trusted_files = [
   "file:{{ arch_libdir }}/",
   "file:/usr/{{ arch_libdir }}/",
   "file:{{ gcc_lib_path }}/{{ gcc_major_version }}/",
-  "file:/usr/lib/debug/usr/{{ arch_libdir }}/",
+  "file:/lib64/",
 ]
 
 sgx.allowed_files = [
