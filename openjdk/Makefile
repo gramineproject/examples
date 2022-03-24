@@ -1,7 +1,5 @@
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
 
-SGX_SIGNER_KEY ?= ../../Pal/src/host/Linux-SGX/signer/enclave-key.pem
-
 ifeq ($(DEBUG),1)
 GRAMINE_LOG_LEVEL = debug
 else
@@ -30,10 +28,7 @@ java.manifest: java.manifest.template
 		$< >$@
 
 java.manifest.sgx: java.manifest
-	@test -s $(SGX_SIGNER_KEY) || \
-		{ echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
 	gramine-sgx-sign \
-		--key $(SGX_SIGNER_KEY) \
 		--manifest $< \
 		--output $@
 

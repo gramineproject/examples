@@ -10,17 +10,11 @@ loader.env.PATH = "/bin:/usr/bin"
 
 loader.insecure__use_cmdline_argv = true
 
-fs.mount.lib1.type = "chroot"
-fs.mount.lib1.path = "/lib"
-fs.mount.lib1.uri = "file:{{ gramine.runtimedir() }}"
-
-fs.mount.lib2.type = "chroot"
-fs.mount.lib2.path = "{{ arch_libdir }}"
-fs.mount.lib2.uri = "file:{{ arch_libdir }}"
-
-fs.mount.lib3.type = "chroot"
-fs.mount.lib3.path = "/usr{{ arch_libdir }}"
-fs.mount.lib3.uri = "file:/usr{{ arch_libdir }}"
+fs.mounts = [
+  { type = "chroot", uri = "file:{{ gramine.runtimedir() }}", path = "/lib" },
+  { type = "chroot", uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
+  { type = "chroot", uri = "file:/usr/{{ arch_libdir }}", path = "/usr/{{ arch_libdir }}" },
+]
 
 sgx.nonpie_binary = true
 sgx.enclave_size = "512M"
