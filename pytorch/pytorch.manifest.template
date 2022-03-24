@@ -16,35 +16,18 @@ loader.insecure__use_host_env = true
 
 loader.pal_internal_mem_size = "128M"
 
-fs.mount.lib.type = "chroot"
-fs.mount.lib.path = "/lib"
-fs.mount.lib.uri = "file:{{ gramine.runtimedir() }}/"
-
-fs.mount.lib2.type = "chroot"
-fs.mount.lib2.path = "{{ arch_libdir }}"
-fs.mount.lib2.uri = "file:{{ arch_libdir }}"
-
-fs.mount.usr.type = "chroot"
-fs.mount.usr.path = "/usr"
-fs.mount.usr.uri = "file:/usr"
-
-fs.mount.etc.type = "chroot"
-fs.mount.etc.path = "/etc"
-fs.mount.etc.uri = "file:/etc"
-
-fs.mount.tmp.type = "chroot"
-fs.mount.tmp.path = "/tmp"
-fs.mount.tmp.uri = "file:/tmp"
+fs.mounts = [
+  { type = "chroot", uri = "file:{{ gramine.runtimedir() }}", path = "/lib" },
+  { type = "chroot", uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
+  { type = "chroot", uri = "file:/usr", path = "/usr" },
+  { type = "chroot", uri = "file:/etc", path = "/etc" },
+  { type = "chroot", uri = "file:/tmp", path = "/tmp" },
+  { type = "chroot", uri = "file:{{ pillow_path }}", path = "{{ pillow_path }}" },
+]
 
 # PyTorch loads its pre-trained models from here
-# Uncomment lines below if you want to use torchvision.model.alexnet(pretrained=True)
-# fs.mount.torch.type = "chroot"
-# fs.mount.torch.path = "{{ env.HOME }}/.cache/torch"
-# fs.mount.torch.uri = "file:{{ env.HOME }}/.cache/torch"
-
-fs.mount.pip.type = "chroot"
-fs.mount.pip.path = "{{ env.HOME }}/.local/lib"
-fs.mount.pip.uri = "file:{{ env.HOME }}/.local/lib"
+# Add below uncommented line to fs.mounts array if you want to use torchvision.model.alexnet(pretrained=True)
+# { type = "chroot", uri = "file:{{ env.HOME }}/.cache/torch", path = "{{ env.HOME }}/.cache/torch" }
 
 sgx.nonpie_binary = true
 sgx.enclave_size = "16G"
@@ -58,7 +41,7 @@ sgx.trusted_files = [
   "file:/usr/{{ arch_libdir }}/",
   "file:{{ python.stdlib }}/",
   "file:{{ python.distlib }}/",
-  "file:{{ env.HOME }}/.local/lib/",
+  "file:{{ pillow_path }}",
   "file:{{ python.get_path('stdlib', vars={'installed_base': '/usr/local'}) }}/",
 
   "file:pytorchexample.py",

@@ -13,21 +13,12 @@ loader.insecure__use_host_env = true
 # Node.js requires eventfd2() emulation otherwise fails on `(uv_loop_init(&tracing_loop_)) == (0)'
 sys.insecure__allow_eventfd = true
 
-fs.mount.nodejs.type = "chroot"
-fs.mount.nodejs.path = "{{ nodejs_dir }}/nodejs"
-fs.mount.nodejs.uri = "file:{{ nodejs_dir }}/nodejs"
-
-fs.mount.lib.type = "chroot"
-fs.mount.lib.path = "/lib"
-fs.mount.lib.uri = "file:{{ gramine.runtimedir() }}"
-
-fs.mount.lib2.type = "chroot"
-fs.mount.lib2.path = "{{ arch_libdir }}"
-fs.mount.lib2.uri = "file:{{ arch_libdir }}"
-
-fs.mount.lib3.type = "chroot"
-fs.mount.lib3.path = "/usr/{{ arch_libdir }}"
-fs.mount.lib3.uri = "file:/usr/{{ arch_libdir }}"
+fs.mounts = [
+  { type = "chroot", uri = "file:{{ gramine.runtimedir() }}", path = "/lib" },
+  { type = "chroot", uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
+  { type = "chroot", uri = "file:/usr/{{ arch_libdir }}", path = "/usr/{{ arch_libdir }}" },
+  { type = "chroot", uri = "file:{{ nodejs_dir }}/nodejs", path = "{{ nodejs_dir }}/nodejs" },
+]
 
 sgx.nonpie_binary = true
 # Node.js expects around 1.7GB of heap on startup, see https://github.com/nodejs/node/issues/13018

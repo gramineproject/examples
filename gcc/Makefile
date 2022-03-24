@@ -3,8 +3,6 @@ THIS_DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 ARCH_LONG ?= $(shell $(CC) -dumpmachine)
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
 
-SGX_SIGNER_KEY ?= ../../Pal/src/host/Linux-SGX/signer/enclave-key.pem
-
 BZIP2_MIRRORS ?= \
 	https://people.csail.mit.edu/smcc/projects/single-file-programs/bzip2.c \
 	https://packages.gramineproject.io/distfiles/single-file-programs/bzip2.c

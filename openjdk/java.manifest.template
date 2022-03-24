@@ -7,17 +7,11 @@ loader.insecure__use_cmdline_argv = true
 
 loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr/lib:/usr/{{ arch_libdir }}"
 
-fs.mount.lib.type = "chroot"
-fs.mount.lib.path = "/lib"
-fs.mount.lib.uri = "file:{{ gramine.runtimedir() }}"
-
-fs.mount.lib2.type = "chroot"
-fs.mount.lib2.path = "{{ arch_libdir }}"
-fs.mount.lib2.uri = "file:{{ arch_libdir }}"
-
-fs.mount.usr.type = "chroot"
-fs.mount.usr.path = "/usr"
-fs.mount.usr.uri = "file:/usr"
+fs.mounts = [
+  { type = "chroot", uri = "file:{{ gramine.runtimedir() }}", path = "/lib" },
+  { type = "chroot", uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
+  { type = "chroot", uri = "file:/usr", path = "/usr" },
+]
 
 # If using 64G or greater enclave sizes, the JVM flag `-Xmx8G` can be omitted in gramine-sgx.
 sgx.enclave_size = "16G"

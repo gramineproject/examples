@@ -22,8 +22,6 @@ PUBLIC_MODELS = \
 
 VENV_DIR ?= $(THIS_DIR)/openvino
 
-SGX_SIGNER_KEY ?= ../../Pal/src/host/Linux-SGX/signer/enclave-key.pem
-
 ifeq ($(DEBUG),1)
 GRAMINE_LOG_LEVEL = debug
 else

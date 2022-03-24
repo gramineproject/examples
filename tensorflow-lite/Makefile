@@ -2,8 +2,6 @@ manifests = $(addsuffix .manifest,label_image)
 exec_target = $(manifests)
 target = label_image
 
-SGX_SIGNER_KEY ?= ../../Pal/src/host/Linux-SGX/signer/enclave-key.pem
-
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
 
 TF_DIR ?= tensorflow

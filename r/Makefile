@@ -2,8 +2,6 @@
 R_HOME ?= /usr/lib/R
 R_EXEC = $(R_HOME)/bin/exec/R
 
-SGX_SIGNER_KEY ?= ../../Pal/src/host/Linux-SGX/signer/enclave-key.pem
-
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
 
 ifeq ($(DEBUG),1)
