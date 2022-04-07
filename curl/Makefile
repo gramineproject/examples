@@ -47,7 +47,7 @@ endif
 .PHONY: check
 check: all
 	(cd test-docroot; exec python3 -m http.server -b 127.0.0.1 19111) & httpd_pid=$$!; \
-	../../Scripts/wait_for_server 5 127.0.0.1 19111; \
+	../common_tools/wait_for_server 5 127.0.0.1 19111; \
 	$(GRAMINE) ./curl http://127.0.0.1:19111/ > OUTPUT; rc=$$?; \
 	kill $$httpd_pid; exit $$rc
 
