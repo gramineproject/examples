@@ -11,16 +11,37 @@ loader.env.LD_LIBRARY_PATH = "{{ python.stdlib }}/lib:/lib:{{ arch_libdir }}:/us
 
 loader.pal_internal_mem_size = "512M"
 
-fs.mounts = [
-  { path = "/lib", uri = "file:{{ gramine.runtimedir() }}" },
-  { path = "/usr", uri = "file:/usr" },
-  { path = "/bin", uri = "file:/bin" },
-  { type = "tmpfs", path = "/tmp" },
-  { path = "{{ arch_libdir }}", uri = "file:{{ arch_libdir }}" },
-  { path = "{{ python.stdlib }}", uri = "file:{{ python.stdlib }}" },
-  { path = "{{ python.distlib }}", uri = "file:{{ python.distlib }}" },
-  { path = "{{ pythondistpath }}", uri = "file:{{ pythondistpath }}" },
-]
+fs.mount.lib.type = "chroot"
+fs.mount.lib.path = "/lib"
+fs.mount.lib.uri = "file:{{ gramine.runtimedir() }}"
+
+fs.mount.lib2.type = "chroot"
+fs.mount.lib2.path = "{{ arch_libdir }}"
+fs.mount.lib2.uri = "file:{{ arch_libdir }}"
+
+fs.mount.usr.type = "chroot"
+fs.mount.usr.path = "/usr"
+fs.mount.usr.uri = "file:/usr"
+
+fs.mount.bin.type = "chroot"
+fs.mount.bin.path = "/bin"
+fs.mount.bin.uri = "file:/bin"
+
+fs.mount.pyhome.type = "chroot"
+fs.mount.pyhome.path = "{{ python.stdlib }}"
+fs.mount.pyhome.uri = "file:{{ python.stdlib }}"
+
+fs.mount.pydisthome.type = "chroot"
+fs.mount.pydisthome.path = "{{ python.distlib }}"
+fs.mount.pydisthome.uri = "file:{{ python.distlib }}"
+
+fs.mount.pydistpath.type = "chroot"
+fs.mount.pydistpath.path = "{{ pythondistpath }}"
+fs.mount.pydistpath.uri = "file:{{ pythondistpath }}"
+
+fs.mount.tmp.type = "tmpfs"
+fs.mount.tmp.path = "/tmp"
+fs.mount.tmp.uri = "file:/tmp"
 
 sgx.enclave_size = "32G"
 sgx.thread_num = 300
