@@ -33,7 +33,6 @@ sgx.trusted_files = [
   "file:/usr/{{ arch_libdir }}/",
   "file:/usr/lib/jvm/java-11-openjdk-amd64/lib/",
   "file:/usr/lib/jvm/java-11-openjdk-amd64/conf/security/java.security",
-  "file:/usr/share/java/java-atk-wrapper.jar",
   "file:MultiThreadMain.class",
   "file:SyncedCounter.class",
 ]
