@@ -43,7 +43,7 @@ fs.mount.bin.uri = "file:/bin"
 
 sgx.nonpie_binary = true
 sys.stack.size = "8M"
-sgx.enclave_size = "1G"
+sgx.enclave_size = "2G"
 sgx.thread_num = 4
 
 sgx.trusted_files = [
