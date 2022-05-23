@@ -25,15 +25,17 @@ curl.manifest: curl.manifest.template
 		-Dcurl_dir=$(CURL_DIR) \
 		$< >$@
 
-curl.manifest.sgx: curl.manifest
-	@test -s $(SGX_SIGNER_KEY) || \
-	    { echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
-	gramine-sgx-sign \
-		--key $(SGX_SIGNER_KEY) \
-		--manifest curl.manifest \
-		--output $@
+# Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
+# for details on this workaround see
+# https://github.com/gramineproject/gramine/blob/e8735ea06c/CI-Examples/helloworld/Makefile
+curl.manifest.sgx curl.sig: sgx_sign
+	@:
 
-curl.sig: curl.manifest.sgx
+.INTERMEDIATE: sgx_sign
+sgx_sign: curl.manifest
+	gramine-sgx-sign \
+		--manifest $< \
+		--output $<.sgx
 
 curl.token: curl.sig
 	gramine-sgx-get-token --output $@ --sig $^

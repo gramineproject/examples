@@ -83,18 +83,20 @@ benchmark_app.manifest: benchmark_app.manifest.template
 		-Dinference_engine_cpp_samples_build=$(abspath $(INFERENCE_ENGINE_CPP_SAMPLES_BUILD)) \
 		$< > $@
 
-benchmark_app.manifest.sgx: benchmark_app.manifest | benchmark_app
-	@test -s $(SGX_SIGNER_KEY) || \
-	    { echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
-	gramine-sgx-sign \
-		--key $(SGX_SIGNER_KEY) \
-		--manifest $< \
-		--output $@
+# Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
+# for details on this workaround see
+# https://github.com/gramineproject/gramine/blob/e8735ea06c/CI-Examples/helloworld/Makefile
+benchmark_app.manifest.sgx benchmark_app.sig: sgx_sign
+	@:
 
-benchmark_app.sig: benchmark_app.manifest.sgx
+.INTERMEDIATE: sgx_sign
+sgx_sign: benchmark_app.manifest | benchmark_app
+	gramine-sgx-sign \
+		--manifest $< \
+		--output $<.sgx
 
 benchmark_app.token: benchmark_app.sig
-	gramine-sgx-get-token --sig $< --output $@
+	gramine-sgx-get-token --output $@ --sig $<
 
 benchmark_app: $(OPENVINO_DIR)
 	mkdir -p $(INFERENCE_ENGINE_CPP_SAMPLES_BUILD)

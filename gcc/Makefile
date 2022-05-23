@@ -31,7 +31,7 @@ ifeq ($(SGX),1)
 all: gcc.manifest.sgx gcc.sig gcc.token
 endif
 
-%.manifest: %.manifest.template
+gcc.manifest: gcc.manifest.template
 	gramine-manifest \
 		-Dlog_level=$(GRAMINE_LOG_LEVEL) \
 		-Darch_libdir=$(ARCH_LIBDIR) \
@@ -40,20 +40,18 @@ endif
 		$< >$@
 
 # Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
-# we need to hack around.
-gcc.sig gcc.manifest.sgx: sgx_outputs
+# for details on this workaround see
+# https://github.com/gramineproject/gramine/blob/e8735ea06c/CI-Examples/helloworld/Makefile
+gcc.manifest.sgx gcc.sig: sgx_sign
 	@:
 
-.INTERMEDIATE: sgx_outputs
-sgx_outputs: gcc.manifest
-	@test -s $(SGX_SIGNER_KEY) || \
-	    { echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
+.INTERMEDIATE: sgx_sign
+sgx_sign: gcc.manifest
 	gramine-sgx-sign \
-		--key $(SGX_SIGNER_KEY) \
-		--manifest gcc.manifest \
-		--output gcc.manifest.sgx
+		--manifest $< \
+		--output $<.sgx
 
-%.token: %.sig
+gcc.token: gcc.sig
 	gramine-sgx-get-token --output $@ --sig $<
 
 test_files/bzip2.c:

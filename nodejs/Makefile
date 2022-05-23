@@ -24,15 +24,17 @@ nodejs.manifest: nodejs.manifest.template
 		-Dnodejs_dir=$(NODEJS_DIR) \
 		$< >$@
 
-nodejs.manifest.sgx: nodejs.manifest helloworld.js
-	@test -s $(SGX_SIGNER_KEY) || \
-	    { echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
-	gramine-sgx-sign \
-		--key $(SGX_SIGNER_KEY) \
-		--manifest $< \
-		--output $@
+# Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
+# for details on this workaround see
+# https://github.com/gramineproject/gramine/blob/e8735ea06c/CI-Examples/helloworld/Makefile
+nodejs.manifest.sgx nodejs.sig: sgx_sign
+	@:
 
-nodejs.sig: nodejs.manifest.sgx
+.INTERMEDIATE: sgx_sign
+sgx_sign: nodejs.manifest helloworld.js
+	gramine-sgx-sign \
+		--manifest $< \
+		--output $<.sgx
 
 nodejs.token: nodejs.sig
 	gramine-sgx-get-token --output $@ --sig $<

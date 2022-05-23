@@ -16,7 +16,7 @@ ifeq ($(SGX),1)
 all: pytorch.manifest.sgx pytorch.sig pytorch.token
 endif
 
-%.manifest: %.manifest.template
+pytorch.manifest: pytorch.manifest.template
 	gramine-manifest \
 		-Dlog_level=$(GRAMINE_LOG_LEVEL) \
 		-Darch_libdir=$(ARCH_LIBDIR) \
@@ -24,20 +24,18 @@ endif
 		$< > $@
 
 # Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
-# we need to hack around.
-pytorch.sig pytorch.manifest.sgx: sgx_outputs
+# for details on this workaround see
+# https://github.com/gramineproject/gramine/blob/e8735ea06c/CI-Examples/helloworld/Makefile
+pytorch.manifest.sgx pytorch.sig: sgx_sign
 	@:
 
-.INTERMEDIATE: sgx_outputs
-sgx_outputs: pytorch.manifest
-	@test -s $(SGX_SIGNER_KEY) || \
-	    { echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
+.INTERMEDIATE: sgx_sign
+sgx_sign: pytorch.manifest
 	gramine-sgx-sign \
-		--key $(SGX_SIGNER_KEY) \
-		--output pytorch.manifest.sgx \
-		--manifest pytorch.manifest
+		--manifest $< \
+		--output $<.sgx
 
-%.token: %.sig
+pytorch.token: pytorch.sig
 	gramine-sgx-get-token --output $@ --sig $<
 
 .PHONY: clean

@@ -29,15 +29,17 @@ java.manifest: java.manifest.template
 		-Dentrypoint=$(realpath $(shell sh -c "command -v java")) \
 		$< >$@
 
-java.manifest.sgx: java.manifest
-	@test -s $(SGX_SIGNER_KEY) || \
-		{ echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
-	gramine-sgx-sign \
-		--key $(SGX_SIGNER_KEY) \
-		--manifest $< \
-		--output $@
+# Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
+# for details on this workaround see
+# https://github.com/gramineproject/gramine/blob/e8735ea06c/CI-Examples/helloworld/Makefile
+java.manifest.sgx java.sig: sgx_sign
+	@:
 
-java.sig: java.manifest.sgx
+.INTERMEDIATE: sgx_sign
+sgx_sign: java.manifest
+	gramine-sgx-sign \
+		--manifest $< \
+		--output $<.sgx
 
 java.token: java.sig
 	gramine-sgx-get-token --output $@ --sig $<
