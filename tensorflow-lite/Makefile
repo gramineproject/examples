@@ -64,15 +64,20 @@ label_image.manifest: label_image.manifest.template libtensorflow_framework.so l
 		-Darch_libdir=$(ARCH_LIBDIR) \
 		$< > $@
 
-label_image.manifest.sgx: label_image.manifest inception_v3.tflite labels.txt
-	@test -s $(SGX_SIGNER_KEY) || \
-	    { echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
+# Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
+# see https://github.com/gramineproject/gramine/blob/master/CI-Examples/helloworld/Makefile for
+# details on this workaround.
+label_image.manifest.sgx label_image.sig: sgx_sign
+	@:
+
+.INTERMEDIATE: sgx_sign
+sgx_sign: label_image.manifest inception_v3.tflite labels.txt
 	gramine-sgx-sign \
-		--key $(SGX_SIGNER_KEY) \
 		--manifest $< \
-		--output $@
-	gramine-sgx-get-token \
-		--output label_image.token --sig label_image.sig
+		--output $<.sgx
+
+label_image.token: label_image.sig
+	gramine-sgx-get-token --output $@ --sig $<
 
 .PHONY: check
 check: all

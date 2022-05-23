@@ -29,17 +29,19 @@ R.manifest: R.manifest.template
 		-Dr_exec=$(R_EXEC) \
 		$< >$@
 
-%.manifest.sgx: %.manifest
-	@test -s $(SGX_SIGNER_KEY) || \
-	    { echo "SGX signer private key was not found, please specify SGX_SIGNER_KEY!"; exit 1; }
+# Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
+# see https://github.com/gramineproject/gramine/blob/master/CI-Examples/helloworld/Makefile for
+# details on this workaround.
+R.manifest.sgx R.sig: sgx_sign
+	@:
+
+.INTERMEDIATE: sgx_sign
+sgx_sign: R.manifest
 	gramine-sgx-sign \
-		--key $(SGX_SIGNER_KEY) \
 		--manifest $< \
-		--output $@
+		--output $<.sgx
 
-R.sig: R.manifest.sgx
-
-%.token: %.sig
+R.token: R.sig
 	gramine-sgx-get-token --output $@ --sig $<
 
 ifeq ($(SGX),)
