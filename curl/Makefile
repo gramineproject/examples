@@ -26,8 +26,8 @@ curl.manifest: curl.manifest.template
 		$< >$@
 
 # Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
-# see https://github.com/gramineproject/gramine/blob/master/CI-Examples/helloworld/Makefile for
-# details on this workaround.
+# for details on this workaround see
+# https://github.com/gramineproject/gramine/blob/e8735ea06c/CI-Examples/helloworld/Makefile
 curl.manifest.sgx curl.sig: sgx_sign
 	@:
 
