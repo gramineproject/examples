@@ -18,7 +18,7 @@ fs.mounts = [
   { type = "chroot", uri = "file:{{ curl_dir }}", path = "{{ curl_dir }}" },
 ]
 
-sgx.enclave_size = "256M"
+sgx.enclave_size = "512M"
 sgx.thread_num = 4
 
 sgx.trusted_files = [
