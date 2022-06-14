@@ -14,15 +14,22 @@ endif
 
 mysqld.manifest: mysqld.manifest.template
 	gramine-manifest \
-                -Dlog_level=$(GRAMINE_LOG_LEVEL) \
-                -Darch_libdir=$(ARCH_LIBDIR) \
-		-Dentrypoint=$(realpath $(shell sh -c "command -v mysqld")) \
-                $< >$@
+        -Dlog_level=$(GRAMINE_LOG_LEVEL) \
+        -Darch_libdir=$(ARCH_LIBDIR) \
+        -Dentrypoint=$(realpath $(shell sh -c "command -v mysqld")) \
+         $< >$@
 
-mysqld.manifest.sgx: mysqld.manifest
+# Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
+# for details on this workaround see
+# https://github.com/gramineproject/gramine/blob/e8735ea06c/CI-Examples/helloworld/Makefile
+mysqld.manifest.sgx mysqld.sig: sgx_sign
+	@:
+
+.INTERMEDIATE: sgx_sign
+sgx_sign: mysqld.manifest
 	gramine-sgx-sign \
-                --manifest $< \
-                --output $@
+        --manifest $< \
+        --output $<.sgx
 
 mysqld.token: mysqld.sig
 	gramine-sgx-get-token --output $@ --sig $<
