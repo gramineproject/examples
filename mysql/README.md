@@ -1,59 +1,52 @@
-# Mysql example
-# This example is tested with mysql Ver 8.0.29
+# MySQL example
+This example is tested with MySQL version 8.0.29.
 
-This directory contains an example for running Mysql-Server in Gramine, including
+This directory contains an example for running Mysql server in Gramine, including
 the Makefile and a template for generating the manifest.
 
-# Prerequisites Steps
+# Pre-requisites
 
-## Install mysql-server on baremetal:
-    sudo apt-get install mysql-server
+- `sudo apt-get install mysql-server` to install MySQL server.
+- Comment out the log line `log_error = /var/log/mysql/error.log` in the config file 
+ `/etc/mysql/mysql.conf.d/mysqld.cnf` to see the log on console.
+- `systemctl stop mysql.service` to stop the default MySQL service .We will manually
+ run MySQL process.
+- `sudo mkdir /var/run/mysqld && sudo chown -R <current_user>:<current_user> /var/run/mysqld` 
+to allow MySQL server to create socket file `mysqld.sock`.
+- `sudo chown -R <current_user>:<current_user> /var/lib/mysql-files` to allow MySQL server for 
+internal usage.
+- `sudo chown -R <current_user>:<current_user> /var/lib/mysql-keyring` to allow MySQL server for 
+internal usage.
+- `mysqld --initialize-insecure --datadir=mysql-data/` to initialize data directory.
 
-## Comment log in /etc/mysql/mysql.conf.d/mysqld.cnf to see the logs on console:
-    #log_error = /var/log/mysql/error.log
+# Build
 
-## Stop mysql service, we need to manually run mysql with mysqld:
-    systemctl stop mysql.service
-    sudo mkdir /var/run/mysqld && sudo chown -R <current_user>:<current_user> /var/run/mysqld
-    sudo chown -R <current_user>:<current_user> /var/lib/mysql-files
-    sudo chown -R <current_user>:<current_user> /var/lib/mysql-keyring
+Run `make` to build the non-SGX version and `make SGX=1` to build the SGX
+version.
 
-## Prepare new data directory:
-    sudo mkdir /tmp/mysql && sudo chown -R <current_user>:<current_user> /tmp/mysql
+# Run
 
-## Add the following 2 lines to /etc/apparmor.d/usr.sbin.mysqld:
-    /tmp/mysql r,
-    /tmp/mysql/** rwk,
+Execute any one of the following commands to run the workload:
 
-## Restart apparmor:
-    sudo service apparmor restart
+- Natively: `mysqld --datadir /tmp/mysql`.
+- Gramine w/o SGX: `gramine-direct mysqld -u root --datadir /tmp/mysql`.
+- Gramine with SGX: `gramine-sgx mysqld -u root --datadir /tmp/mysql`.
 
-## Initialize mysql:
-    mysqld --initialize-insecure --datadir=/tmp/mysql
-    sudo rm /tmp/mysql/undo*
+# Testing client connection and running sysbench benchmarking
 
-# Generating the manifest
+Run below command from new terminal:
 
-## Installing prerequisites
+- `mysql -P 3306 --protocol=tcp -uroot` to connect a client to MySQL server.
+- `mysql> exit` to disconnect the client.
 
-## Building for Linux
+Run Sysbench benchmarking:
 
-Run `make` (non-debug) or `make DEBUG=1` (debug) in the directory.
+- `sudo apt install -y sysbench` to install sysbench.
+- `sudo mysqladmin -h 127.0.0.1 -P 3306 create sbtest` to create test database.
 
-## Building for SGX
-
-Run `make SGX=1` (non-debug) or `make SGX=1 DEBUG=1` (debug) in the directory.
-
-# Run Mysql with Gramine
-
-Here's an example of running Mysql under Gramine:
-
-Without SGX:
-```
-gramine-direct mysqld -u root --datadir /tmp/mysql
-```
-
-With SGX:
-```
-gramine-sgx mysqld -u root --datadir /tmp/mysql
-```
+- `sysbench --db-driver=mysql --mysql-host=127.0.0.1 --mysql-port=3306 --mysql-user=root --mysql-db=sbtest --time=20 --report-interval=5 oltp_read_write --tables=2 --table_size=100000 --threads=32 prepare` to
+ create records in test database.
+- `sysbench --db-driver=mysql --mysql-host=127.0.0.1 --mysql-port=3306 --mysql-user=root --mysql-db=sbtest --time=20 --report-interval=5 oltp_read_write --tables=2 --table_size=100000 --threads=32 run` to
+ run the sysbench benchmarks.
+- `sysbench --db-driver=mysql --mysql-host=127.0.0.1 --mysql-port=3306 --mysql-user=root --mysql-db=sbtest --time=20 --report-interval=5 oltp_read_write --tables=2 --table_size=100000 --threads=32 cleanup` to
+delete the records from test database.

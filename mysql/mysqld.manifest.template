@@ -1,5 +1,4 @@
-# mysql manifest example
-loader.preload = "file:{{ gramine.libos }}" # for compatibility with v1.0
+# MySQL manifest example
 
 loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "{{ entrypoint }}"
@@ -7,21 +6,21 @@ libos.entrypoint = "{{ entrypoint }}"
 loader.log_level = "{{ log_level }}"
 
 loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr/lib:/usr/{{ arch_libdir }}"
-loader.env.PATH = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+loader.PATH = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 loader.insecure__use_cmdline_argv = true
 sys.enable_sigterm_injection = true
 
 sgx.nonpie_binary = true
-sgx.enclave_size = "4G"
-sys.stack.size = "16M"
-sgx.thread_num = 64
+sgx.enclave_size = "8G"
+sgx.thread_num = 128
 
 fs.mounts = [
   { path = "/lib", uri = "file:{{ gramine.runtimedir() }}" },
   { path = "{{ arch_libdir }}", uri = "file:{{ arch_libdir }}" },
   { path = "/usr/{{ arch_libdir }}", uri = "file:/usr/{{ arch_libdir }}" },
-  { path = "/usr", uri = "file:/usr" },
+  { path = "/usr/sbin/mysqld", uri = "file:/usr/sbin/mysqld" },
+  { path = "/usr/lib/mysql", uri = "file:/usr/lib/mysql" },
   { path = "/var/lib/mysql-files", uri = "file:/var/lib/mysql-files" },
   { path = "/var/lib/mysql-keyring", uri = "file:/var/lib/mysql-keyring" },
   { path = "/var/run/mysqld", uri = "file:/var/run/mysqld" },
@@ -35,7 +34,6 @@ sgx.trusted_files = [
   "file:{{ arch_libdir }}/",
   "file:/usr/{{ arch_libdir }}/",
   "file:/usr/lib/mysql/",
-  "file:/usr/share/mysql-8.0/",
 ]
 
 sgx.allowed_files = [
