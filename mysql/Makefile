@@ -1,4 +1,6 @@
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
+UID ?= $(shell id -u)
+GID ?= $(shell id -g)
 
 ifeq ($(DEBUG),1)
 GRAMINE_LOG_LEVEL = debug
@@ -16,6 +18,8 @@ mysqld.manifest: mysqld.manifest.template
 	gramine-manifest \
         -Dlog_level=$(GRAMINE_LOG_LEVEL) \
         -Darch_libdir=$(ARCH_LIBDIR) \
+        -Duid=$(UID) \
+        -Dgid=$(GID) \
         -Dentrypoint=$(realpath $(shell sh -c "command -v mysqld")) \
          $< >$@
 
