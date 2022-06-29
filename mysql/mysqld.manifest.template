@@ -26,7 +26,6 @@ fs.mounts = [
   { path = "/var/lib/mysql-files", uri = "file:/var/lib/mysql-files" },
   { path = "/var/lib/mysql-keyring", uri = "file:/var/lib/mysql-keyring" },
   { path = "/var/run/mysqld", uri = "file:/var/run/mysqld" },
-  { path = "/lib/mysql/plugin", uri = "file:/lib/mysql/plugin" },
   { path = "/tmp", uri = "file:/tmp" },
 ]
 
@@ -37,10 +36,9 @@ sgx.trusted_files = [
   "file:{{ arch_libdir }}/",
   "file:/usr/{{ arch_libdir }}/",
   "file:/usr/lib/mysql/",
-  "file:/lib/mysql/plugin/",
 ]
 
 sgx.allowed_files = [
   "file:/var/run/mysqld/",
-  "file:/tmp/",
+  "file:/tmp/",     # MySQL data will be stored in plaintext; this is insecure!
 ]
