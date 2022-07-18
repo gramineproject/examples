@@ -141,9 +141,7 @@ same time.
 - Install mimalloc using the steps from https://github.com/microsoft/mimalloc
 - Modify the manifest template file:
     - Add the `/usr/local` FS mount point:
-        - `fs.mount.usr_local.type = "chroot"`
-        - `fs.mount.usr_local.path = "/usr/local"`
-        - `fs.mount.usr_local.uri = "file:/usr/local"`
+        - `{ uri = "file:/usr/local", path = "/usr/local" }`
     - Add `loader.env.LD_PRELOAD = "/usr/local/lib/mimalloc-1.7/libmimalloc.so.1.7"`
     - Append below entry to `sgx.trusted_files`:
         - `"file:/usr/local/lib/mimalloc-1.7/libmimalloc.so.1.7"`

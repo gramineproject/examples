@@ -6,12 +6,12 @@ loader.log_level = "{{ log_level }}"
 loader.env.LD_LIBRARY_PATH = "/lib:{{ openvino_dir }}/deployment_tools/inference_engine/external/tbb/lib:{{ openvino_dir }}/deployment_tools/inference_engine/lib/intel64:{{ openvino_dir }}/opencv/lib:{{ openvino_dir }}/deployment_tools/ngraph/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}"
 
 fs.mounts = [
-  { type = "chroot", uri = "file:{{ gramine.runtimedir() }}", path = "/lib" },
-  { type = "chroot", uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
-  { type = "chroot", uri = "file:/usr/{{ arch_libdir }}", path = "/usr/{{ arch_libdir }}" },
-  { type = "chroot", uri = "file:/etc", path = "/etc" },
-  { type = "chroot", uri = "file:{{ openvino_dir }}", path = "{{ openvino_dir }}" },
-  { type = "chroot", uri = "file:{{ inference_engine_cpp_samples_build }}", path = "{{ inference_engine_cpp_samples_build }}" },
+  { uri = "file:{{ gramine.runtimedir() }}", path = "/lib" },
+  { uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
+  { uri = "file:/usr/{{ arch_libdir }}", path = "/usr/{{ arch_libdir }}" },
+  { uri = "file:/etc", path = "/etc" },
+  { uri = "file:{{ openvino_dir }}", path = "{{ openvino_dir }}" },
+  { uri = "file:{{ inference_engine_cpp_samples_build }}", path = "{{ inference_engine_cpp_samples_build }}" },
 ]
 
 loader.insecure__use_cmdline_argv = true

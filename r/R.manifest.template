@@ -18,17 +18,17 @@ loader.insecure__use_cmdline_argv = true
 sys.enable_sigterm_injection = true
 
 fs.mounts = [
-  { type = "chroot", uri = "file:{{ gramine.runtimedir() }}", path = "/lib" },
-  { type = "chroot", uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
-  { type = "chroot", uri = "file:/usr", path = "/usr" },
-  { type = "chroot", uri = "file:/tmp", path = "/tmp" },
-  { type = "chroot", uri = "file:/bin", path = "/bin" },
-  { type = "chroot", uri = "file:{{ r_home }}", path = "{{ r_home }}" },
+  { uri = "file:{{ gramine.runtimedir() }}", path = "/lib" },
+  { uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
+  { uri = "file:/usr", path = "/usr" },
+  { uri = "file:/tmp", path = "/tmp" },
+  { uri = "file:/bin", path = "/bin" },
+  { uri = "file:{{ r_home }}", path = "{{ r_home }}" },
 ]
 
 sgx.nonpie_binary = true
 sys.stack.size = "8M"
-sgx.enclave_size = "2G"
+sgx.enclave_size = "2G"   # for the R-benchmark-25.R script, specify at least "16G"
 sgx.thread_num = 4
 
 sgx.trusted_files = [

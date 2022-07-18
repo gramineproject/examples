@@ -11,11 +11,11 @@ loader.env.HOME = "{{ home }}"
 loader.insecure__use_cmdline_argv = true
 
 fs.mounts = [
-  { type = "chroot", uri = "file:{{ gramine.runtimedir() }}", path = "/lib" },
-  { type = "chroot", uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
-  { type = "chroot", uri = "file:/usr/{{ arch_libdir }}", path = "/usr{{ arch_libdir }}" },
-  { type = "chroot", uri = "file:/etc", path = "/etc" },
-  { type = "chroot", uri = "file:{{ curl_dir }}", path = "{{ curl_dir }}" },
+  { uri = "file:{{ gramine.runtimedir() }}", path = "/lib" },
+  { uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
+  { uri = "file:/usr/{{ arch_libdir }}", path = "/usr{{ arch_libdir }}" },
+  { uri = "file:/etc", path = "/etc" },
+  { uri = "file:{{ curl_dir }}", path = "{{ curl_dir }}" },
 ]
 
 sgx.enclave_size = "512M"

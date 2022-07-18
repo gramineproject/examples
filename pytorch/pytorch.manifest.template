@@ -17,12 +17,12 @@ loader.insecure__use_host_env = true
 loader.pal_internal_mem_size = "128M"
 
 fs.mounts = [
-  { type = "chroot", uri = "file:{{ gramine.runtimedir() }}", path = "/lib" },
-  { type = "chroot", uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
-  { type = "chroot", uri = "file:/usr", path = "/usr" },
-  { type = "chroot", uri = "file:/etc", path = "/etc" },
-  { type = "chroot", uri = "file:/tmp", path = "/tmp" },
-  { type = "chroot", uri = "file:{{ pillow_path }}", path = "{{ pillow_path }}" },
+  { uri = "file:{{ gramine.runtimedir() }}", path = "/lib" },
+  { uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
+  { uri = "file:/usr", path = "/usr" },
+  { uri = "file:/etc", path = "/etc" },
+  { uri = "file:/tmp", path = "/tmp" },
+  { uri = "file:{{ pillow_path }}", path = "{{ pillow_path }}" },
 ]
 
 # PyTorch loads its pre-trained models from here

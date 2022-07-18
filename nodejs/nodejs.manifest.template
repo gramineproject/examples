@@ -14,10 +14,10 @@ loader.insecure__use_host_env = true
 sys.insecure__allow_eventfd = true
 
 fs.mounts = [
-  { type = "chroot", uri = "file:{{ gramine.runtimedir() }}", path = "/lib" },
-  { type = "chroot", uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
-  { type = "chroot", uri = "file:/usr/{{ arch_libdir }}", path = "/usr/{{ arch_libdir }}" },
-  { type = "chroot", uri = "file:{{ nodejs_dir }}/nodejs", path = "{{ nodejs_dir }}/nodejs" },
+  { uri = "file:{{ gramine.runtimedir() }}", path = "/lib" },
+  { uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
+  { uri = "file:/usr/{{ arch_libdir }}", path = "/usr/{{ arch_libdir }}" },
+  { uri = "file:{{ nodejs_dir }}/nodejs", path = "{{ nodejs_dir }}/nodejs" },
 ]
 
 sgx.nonpie_binary = true
