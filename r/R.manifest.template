@@ -21,9 +21,10 @@ fs.mounts = [
   { uri = "file:{{ gramine.runtimedir() }}", path = "/lib" },
   { uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
   { uri = "file:/usr", path = "/usr" },
-  { uri = "file:/tmp", path = "/tmp" },
   { uri = "file:/bin", path = "/bin" },
   { uri = "file:{{ r_home }}", path = "{{ r_home }}" },
+
+  { type = "tmpfs", path = "/tmp" },
 ]
 
 sgx.nonpie_binary = true
@@ -44,8 +45,4 @@ sgx.trusted_files = [
   # strace snippet: execve("/bin/sh", ["sh", "-c", "rm -rf /tmp/RtmpEiedDF"], [/* 41 vars */])
   "file:/bin/rm",
   "file:/bin/sh",
-]
-
-sgx.allowed_files = [
-  "file:/tmp",
 ]
