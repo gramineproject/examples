@@ -47,4 +47,4 @@ percentage = torch.nn.functional.softmax(out, dim=1)[0] * 100
 with open("result.txt", "w") as outfile:
     outfile.write(str([(classes[idx], percentage[idx].item()) for idx in indices[0][:5]]))
 
-print("Done. Result is written to `result.txt`.")
+print("Done. The result was written to `result.txt`.")
