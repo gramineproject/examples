@@ -46,3 +46,5 @@ percentage = torch.nn.functional.softmax(out, dim=1)[0] * 100
 # Print the 5 most likely predictions.
 with open("result.txt", "w") as outfile:
     outfile.write(str([(classes[idx], percentage[idx].item()) for idx in indices[0][:5]]))
+
+print("Done. The result was written to `result.txt`.")
