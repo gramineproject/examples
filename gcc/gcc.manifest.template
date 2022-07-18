@@ -15,9 +15,14 @@ fs.mounts = [
   { type = "chroot", uri = "file:{{ gramine.runtimedir() }}", path = "/lib" },
   { type = "chroot", uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
   { type = "chroot", uri = "file:/usr", path = "/usr" },
-  { type = "chroot", uri = "file:/tmp", path = "/tmp" },
   { type = "chroot", uri = "file:/lib64", path = "/lib64" },
+
+  # cannot replace /tmp with "tmpfs" mount because Gramine currently doesn't support multi-process
+  # "tmpfs" files (e.g., "tmpfs" files created in a child process are not visible in the parent)
+  { type = "chroot", uri = "file:/tmp", path = "/tmp" },
 ]
+
+loader.pal_internal_mem_size = "64M"
 
 sgx.enclave_size = "1G"
 sgx.nonpie_binary = true
@@ -32,11 +37,10 @@ sgx.trusted_files = [
   "file:/usr/{{ arch_libdir }}/",
   "file:{{ gcc_lib_path }}/{{ gcc_major_version }}/",
   "file:/lib64/",
+  "file:/usr/include/",
 ]
 
 sgx.allowed_files = [
   "file:/tmp",
   "file:test_files",
-  "file:a.out",
-  "file:/usr/include",
 ]

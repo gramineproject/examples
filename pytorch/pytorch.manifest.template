@@ -21,8 +21,9 @@ fs.mounts = [
   { type = "chroot", uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
   { type = "chroot", uri = "file:/usr", path = "/usr" },
   { type = "chroot", uri = "file:/etc", path = "/etc" },
-  { type = "chroot", uri = "file:/tmp", path = "/tmp" },
   { type = "chroot", uri = "file:{{ pillow_path }}", path = "{{ pillow_path }}" },
+
+  { type = "tmpfs", path = "/tmp" },
 ]
 
 # PyTorch loads its pre-trained models from here
@@ -30,8 +31,8 @@ fs.mounts = [
 # { type = "chroot", uri = "file:{{ env.HOME }}/.cache/torch", path = "{{ env.HOME }}/.cache/torch" }
 
 sgx.nonpie_binary = true
-sgx.enclave_size = "16G"
-sgx.thread_num = 256
+sgx.enclave_size = "2G"
+sgx.thread_num = 16
 
 sgx.trusted_files = [
   "file:{{ gramine.libos }}",
@@ -45,29 +46,16 @@ sgx.trusted_files = [
   "file:{{ python.get_path('stdlib', vars={'installed_base': '/usr/local'}) }}/",
 
   "file:pytorchexample.py",
+
   "file:classes.txt",
   "file:input.jpg",
-
-  # Pre-trained model saved as a file
-  "file:alexnet-pretrained.pt",
+  "file:alexnet-pretrained.pt",  # Pre-trained model saved as a file
 
   # Uncomment line below if you want to use torchvision.model.alexnet(pretrained=True)
   # "file:{{ env.HOME }}/.cache/torch/checkpoints/alexnet-owt-4df8aa71.pth",
 ]
 
 sgx.allowed_files = [
-  "file:/tmp",
-  "file:/etc/apt/apt.conf.d",
-  "file:/etc/apt/apt.conf",
-  "file:/etc/default/apport",
-  "file:/etc/nsswitch.conf",
-  "file:/etc/group",
-  "file:/etc/passwd",
-  "file:/etc/host.conf",
-  "file:/etc/hosts",
-  "file:/etc/gai.conf",
-  "file:/etc/resolv.conf",
-  "file:/etc/fstab",
   "file:result.txt",
 ]
 
