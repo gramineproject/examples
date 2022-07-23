@@ -31,8 +31,8 @@ fs.mounts = [
 # { type = "chroot", uri = "file:{{ env.HOME }}/.cache/torch", path = "{{ env.HOME }}/.cache/torch" }
 
 sgx.nonpie_binary = true
-sgx.enclave_size = "2G"
-sgx.thread_num = 16
+sgx.enclave_size = "4G"
+sgx.thread_num = 32
 
 sgx.trusted_files = [
   "file:{{ gramine.libos }}",
