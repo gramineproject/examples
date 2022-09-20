@@ -12,7 +12,7 @@ loader.env.HOME = ""
 loader.env.PWD = ""
 loader.env.R_ARCH = ""
 loader.env.R_HOME = "{{ r_home }}"
-
+loader.env.OMP_NUM_THREADS="4"
 loader.insecure__use_cmdline_argv = true
 
 sys.enable_sigterm_injection = true
