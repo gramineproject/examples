@@ -18,7 +18,7 @@ fs.mounts = [
 
 sgx.nonpie_binary = true
 sgx.enclave_size = "512M"
-sgx.thread_num = 16
+sgx.max_threads = 16
 
 sgx.trusted_files = [
   "file:{{ gramine.libos }}",

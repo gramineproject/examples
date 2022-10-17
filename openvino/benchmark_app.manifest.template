@@ -17,7 +17,7 @@ fs.mounts = [
 loader.insecure__use_cmdline_argv = true
 
 sgx.enclave_size = "32G"
-sgx.thread_num = 196
+sgx.max_threads = 196
 
 sgx.preheat_enclave = true
 libos.check_invalid_pointers = false
