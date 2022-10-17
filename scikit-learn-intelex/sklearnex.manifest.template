@@ -39,7 +39,7 @@ fs.mounts = [
 
 sgx.nonpie_binary = true
 sgx.enclave_size = "16G"
-sgx.thread_num = 128
+sgx.max_threads = 128
 sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 
 sgx.trusted_files = [

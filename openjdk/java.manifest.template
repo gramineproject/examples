@@ -17,7 +17,7 @@ fs.mounts = [
 sgx.enclave_size = "16G"
 
 # SGX needs minimum 64 threads for loading OpenJDK runtime.
-sgx.thread_num = 64
+sgx.max_threads = 64
 
 # `require_exinfo = true` is needed because OpenJDK queries fault info on page faults
 sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
