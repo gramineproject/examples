@@ -31,7 +31,7 @@ fs.mounts = [
 sgx.nonpie_binary = true
 sys.stack.size = "8M"
 sgx.enclave_size = "2G"   # for the R-benchmark-25.R script, specify at least "16G"
-sgx.thread_num = 4
+sgx.thread_num = 8
 
 sgx.trusted_files = [
   "file:{{ gramine.libos }}",
