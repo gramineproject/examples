@@ -1,7 +1,5 @@
 # Intel(R) Extension for Scikit-learn* manifest example
 
-loader.preload = "file:{{ gramine.libos }}"  # for compatibility with v1.0
-
 loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "{{ entrypoint }}"
 
@@ -11,41 +9,34 @@ loader.env.LD_LIBRARY_PATH = "/lib:{{ python.stdlib }}/lib:{{ arch_libdir }}:/us
 loader.env.PYTHONPATH = "{{ python.get_path('stdlib', vars={'installed_base': '/home/user/.local/'}) }}/site-packages/"
 
 loader.insecure__use_cmdline_argv = true
+loader.uid = {{ env_user_uid }}
+loader.gid = {{ env_user_gid }}
 
 sys.enable_sigterm_injection = true
+fs.mounts = [
+  { path = "/lib/x86_64-linux-gnu/", uri = "file:{{ gramine.runtimedir() }}" },
+  { path = "{{ arch_libdir }}", uri = "file:{{ arch_libdir }}" },
+  { path = "/usr/{{ arch_libdir }}", uri = "file:/usr/{{ arch_libdir }}" },
+  { path = "/usr", uri = "file:/usr" },
+  { path = "{{ python.stdlib }}", uri = "file:{{ python.stdlib }}" },
+  { path = "{{ python.distlib }}", uri = "file:{{ python.distlib }}" },
+  { path = "/etc", uri = "file:/etc" },
+  { path = "/home/user/.local", uri = "file:{{ env.HOME }}/.local" },
 
-fs.mount.lib.type = "chroot"
-fs.mount.lib.path = "/lib"
-fs.mount.lib.uri = "file:{{ gramine.runtimedir() }}"
+  { type = "tmpfs", path = "/tmp" },
+]
 
-fs.mount.lib2.type = "chroot"
-fs.mount.lib2.path = "{{ arch_libdir }}"
-fs.mount.lib2.uri = "file:{{ arch_libdir }}"
-
-fs.mount.usr.type = "chroot"
-fs.mount.usr.path = "/usr"
-fs.mount.usr.uri = "file:/usr"
-
-fs.mount.tmp.type = "chroot"
-fs.mount.tmp.path = "/tmp"
-fs.mount.tmp.uri = "file:/tmp"
-
-fs.mount.pyhome.type = "chroot"
-fs.mount.pyhome.path = "{{ python.stdlib }}"
-fs.mount.pyhome.uri = "file:{{ python.stdlib }}"
-
-fs.mount.pydisthome.type = "chroot"
-fs.mount.pydisthome.path = "{{ python.distlib }}"
-fs.mount.pydisthome.uri = "file:{{ python.distlib }}"
-
-fs.mount.pip.type = "chroot"
-fs.mount.pip.path = "/home/user/.local"
-fs.mount.pip.uri = "file:{{ env.HOME }}/.local"
+#sgx.debug = true
+#sgx.profile.enable = "main"
+#sgx.profile.with_stack = true
+#sgx.file_check_policy = "allow_all_but_log"
 
 sgx.nonpie_binary = true
-sgx.enclave_size = "8G"
-sys.stack.size = "2M"
-sgx.thread_num = 256
+sgx.enclave_size = "16G"
+sys.stack.size = "8M"
+sgx.max_threads = 256
+loader.pal_internal_mem_size = "128M"
+sys.enable_extra_runtime_domain_names_conf = true
 
 sgx.trusted_files = [
   "file:{{ gramine.libos }}",
@@ -57,9 +48,5 @@ sgx.trusted_files = [
   "file:{{ python.distlib }}/",
   "file:{{ env.HOME }}/.local/",
   "file:data/",
-  "file:scripts/"
-]
-
-sgx.allowed_files = [
-  "file:/tmp"
+  "file:scripts/",
 ]
