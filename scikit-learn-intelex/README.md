@@ -1,14 +1,15 @@
-# Intel(R) Extension for Scikit-learn* example
+# Intel(R) Extension for Scikit-learn example
 
-This directory contains an example for running Intel(R) Extension for Scikit-learn* with Gramine, including
-the Makefile and a template for generating the manifest.
+This directory contains an example for running Intel(R) Extension for
+Scikit-learn with Gramine, including the Makefile and a template for generating
+the manifest.
 
 # Generating the manifest
 
 ## Installing prerequisites
 
-For generating the manifest and running the test scripts, please run the following
-command to install the required packages (Ubuntu-specific):
+For generating the manifest and running the test scripts, please run the
+following command to install the required packages (Ubuntu-specific):
 
 ```
 python3 -m pip install scikit-learn-intelex pandas numpy
@@ -30,9 +31,7 @@ Run `make` (non-debug) or `make DEBUG=1` (debug) in the directory.
 
 Run `make SGX=1` (non-debug) or `make SGX=1 DEBUG=1` (debug) in the directory.
 
-# Run Intel(R) Extension for Scikit-learn* with Gramine
-
-Here's an example of running Intel(R) Extension for Scikit-learn* scripts under Gramine:
+# Run Intel(R) Extension for Scikit-learn with Gramine
 
 Without SGX:
 
@@ -51,5 +50,5 @@ gramine-sgx ./sklearnex scripts/kmeans_perf_eval.py
 You can also manually run included tests:
 
 ```
-SGX=1 ./run-tests.sh
+SGX=1 ./run_tests.sh
 ```
