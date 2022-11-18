@@ -9,34 +9,30 @@ loader.env.LD_LIBRARY_PATH = "/lib:{{ python.stdlib }}/lib:{{ arch_libdir }}:/us
 loader.env.PYTHONPATH = "{{ python.get_path('stdlib', vars={'installed_base': '/home/user/.local/'}) }}/site-packages/"
 
 loader.insecure__use_cmdline_argv = true
+
 loader.uid = {{ env_user_uid }}
 loader.gid = {{ env_user_gid }}
 
-sys.enable_sigterm_injection = true
+loader.pal_internal_mem_size = "128M"
+
+sys.stack.size = "8M"
+sys.enable_extra_runtime_domain_names_conf = true
+
 fs.mounts = [
+  { path = "{{ entrypoint }}", uri = "file:{{ entrypoint }}" },
   { path = "/lib/x86_64-linux-gnu/", uri = "file:{{ gramine.runtimedir() }}" },
   { path = "{{ arch_libdir }}", uri = "file:{{ arch_libdir }}" },
   { path = "/usr/{{ arch_libdir }}", uri = "file:/usr/{{ arch_libdir }}" },
-  { path = "/usr", uri = "file:/usr" },
   { path = "{{ python.stdlib }}", uri = "file:{{ python.stdlib }}" },
   { path = "{{ python.distlib }}", uri = "file:{{ python.distlib }}" },
-  { path = "/etc", uri = "file:/etc" },
   { path = "/home/user/.local", uri = "file:{{ env.HOME }}/.local" },
 
   { type = "tmpfs", path = "/tmp" },
 ]
 
-#sgx.debug = true
-#sgx.profile.enable = "main"
-#sgx.profile.with_stack = true
-#sgx.file_check_policy = "allow_all_but_log"
-
 sgx.nonpie_binary = true
 sgx.enclave_size = "16G"
-sys.stack.size = "8M"
-sgx.max_threads = 256
-loader.pal_internal_mem_size = "128M"
-sys.enable_extra_runtime_domain_names_conf = true
+sgx.thread_num = 256
 
 sgx.trusted_files = [
   "file:{{ gramine.libos }}",
