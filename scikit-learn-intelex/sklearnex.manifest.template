@@ -5,10 +5,14 @@ libos.entrypoint = "{{ entrypoint }}"
 
 loader.log_level = "{{ log_level }}"
 
-loader.env.LD_LIBRARY_PATH = "/lib:{{ python.stdlib }}/lib:{{ arch_libdir }}:/usr/lib:/usr/{{ arch_libdir }}:/home/user/.local/lib"
+loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}:{{ python.stdlib }}/lib:/home/user/.local/lib"
 loader.env.PYTHONPATH = "{{ python.get_path('stdlib', vars={'installed_base': '/home/user/.local/'}) }}/site-packages/"
 
 loader.insecure__use_cmdline_argv = true
+
+# apparently, older Python3 uses ASCII encoding by default, but we need UTF-8 for trademark symbol
+loader.env.PYTHONIOENCODING = "utf-8"
+loader.env.OMP_NUM_THREADS = "8"
 
 loader.uid = {{ env_user_uid }}
 loader.gid = {{ env_user_gid }}
@@ -20,7 +24,7 @@ sys.enable_extra_runtime_domain_names_conf = true
 
 fs.mounts = [
   { path = "{{ entrypoint }}", uri = "file:{{ entrypoint }}" },
-  { path = "/lib/x86_64-linux-gnu/", uri = "file:{{ gramine.runtimedir() }}" },
+  { path = "/lib", uri = "file:{{ gramine.runtimedir() }}" },
   { path = "{{ arch_libdir }}", uri = "file:{{ arch_libdir }}" },
   { path = "/usr/{{ arch_libdir }}", uri = "file:/usr/{{ arch_libdir }}" },
   { path = "{{ python.stdlib }}", uri = "file:{{ python.stdlib }}" },
@@ -32,7 +36,7 @@ fs.mounts = [
 
 sgx.nonpie_binary = true
 sgx.enclave_size = "16G"
-sgx.thread_num = 256
+sgx.thread_num = 128
 
 sgx.trusted_files = [
   "file:{{ gramine.libos }}",
