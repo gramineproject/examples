@@ -59,12 +59,10 @@ sgx.allowed_files = [
   "file:result.txt",
 ]
 
-# Gramine optionally provides patched OpenMP runtime library that runs faster
-# inside SGX enclaves (execute `make -C LibOS gcc` to generate it). Uncomment
-# the lines below to use the patched library. PyTorch's SGX perf overhead
-# decreases on some workloads from 25% to 8% with this patched library. Note
-# that we need to preload the library because PyTorch's distribution renames
-# libgomp.so to smth like libgomp-7c85b1e2.so.1, so it's not just a matter of
-# searching in the Gramine's Runtime path first, but a matter of intercepting
-# OpenMP functions.
+# Gramine optionally provides patched OpenMP runtime library that runs faster inside SGX enclaves
+# (add `-Dlibgomp=enabled` when configuring the build). Uncomment the line below to use the patched
+# library. PyTorch's SGX perf overhead decreases on some workloads from 25% to 8% with this patched
+# library. Note that we need to preload the library because PyTorch's distribution renames
+# libgomp.so to smth like libgomp-7c85b1e2.so.1, so it's not just a matter of searching in the
+# Gramine's Runtime path first, but a matter of intercepting OpenMP functions.
 # loader.env.LD_PRELOAD = "/lib/libgomp.so.1"
