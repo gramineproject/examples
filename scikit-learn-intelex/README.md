@@ -11,7 +11,10 @@ the manifest.
 For generating the manifest and running the test scripts, please run the
 following command to install the required packages (Ubuntu-specific):
 
-```
+```sh
+# required for Ubuntu 18.04 as its default pip doesn't have scikit-learn package
+python3 -m pip install --upgrade pip
+
 python3 -m pip install scikit-learn-intelex pandas numpy
 ```
 
@@ -19,7 +22,7 @@ python3 -m pip install scikit-learn-intelex pandas numpy
 
 Before run, please download MNIST dataset by the following command:
 
-```
+```sh
 python3 scripts/download_dataset.py
 ```
 
@@ -35,20 +38,20 @@ Run `make SGX=1` (non-debug) or `make SGX=1 DEBUG=1` (debug) in the directory.
 
 Without SGX:
 
-```
+```sh
 gramine-direct ./sklearnex scripts/kmeans_example.py
 gramine-direct ./sklearnex scripts/kmeans_perf_eval.py
 ```
 
 With SGX:
 
-```
+```sh
 gramine-sgx ./sklearnex scripts/kmeans_example.py
 gramine-sgx ./sklearnex scripts/kmeans_perf_eval.py
 ```
 
 You can also manually run included tests:
 
-```
+```sh
 SGX=1 ./run_tests.sh
 ```
