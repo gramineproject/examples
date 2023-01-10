@@ -5,13 +5,11 @@ libos.entrypoint = "{{ entrypoint }}"
 
 loader.log_level = "{{ log_level }}"
 
-loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}:{{ python.stdlib }}/lib:/home/user/.local/lib"
-loader.env.PYTHONPATH = "{{ python.get_path('stdlib', vars={'installed_base': '/home/user/.local/'}) }}/site-packages/"
+loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}:/home/user/.local/lib"
+loader.env.HOME = "{{ env.HOME }}"
 
 loader.insecure__use_cmdline_argv = true
 
-# apparently, older Python3 uses ASCII encoding by default, but we need UTF-8 for trademark symbol
-loader.env.PYTHONIOENCODING = "utf-8"
 loader.env.OMP_NUM_THREADS = "8"
 
 loader.uid = {{ env_user_uid }}
@@ -27,9 +25,14 @@ fs.mounts = [
   { path = "/lib", uri = "file:{{ gramine.runtimedir() }}" },
   { path = "{{ arch_libdir }}", uri = "file:{{ arch_libdir }}" },
   { path = "/usr/{{ arch_libdir }}", uri = "file:/usr/{{ arch_libdir }}" },
-  { path = "{{ python.stdlib }}", uri = "file:{{ python.stdlib }}" },
-  { path = "{{ python.distlib }}", uri = "file:{{ python.distlib }}" },
-  { path = "/home/user/.local", uri = "file:{{ env.HOME }}/.local" },
+{% for path in python.get_sys_path(entrypoint) %}
+  { path = "{{ path }}", uri = "file:{{ path }}" },
+{% endfor %}
+
+  # scikit-learn and its dependencies install shared libs under this path (e.g. daal4py package
+  # installs libonedal_core.so lib); note that we use `/home/user/` prefix inside Gramine and
+  # specify this prefix in LD_LIBRARY_PATH envvar above
+  { path = "/home/user/.local/lib", uri = "file:{{ env.HOME }}/.local/lib" },
 
   { type = "tmpfs", path = "/tmp" },
 ]
@@ -44,9 +47,10 @@ sgx.trusted_files = [
   "file:{{ gramine.runtimedir() }}/",
   "file:{{ arch_libdir }}/",
   "file:/usr/{{ arch_libdir }}/",
-  "file:{{ python.stdlib }}/",
-  "file:{{ python.distlib }}/",
-  "file:{{ env.HOME }}/.local/",
+{% for path in python.get_sys_path(entrypoint) %}
+  "file:{{ path }}{{ '/' if path.is_dir() else '' }}",
+{% endfor %}
+  "file:{{ env.HOME }}/.local/lib/",
   "file:data/",
   "file:scripts/",
 ]

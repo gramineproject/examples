@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
-# Copyright (c) 2021 Intel Corporation
+# Copyright (C) 2021 Intel Corporation
 #                    Andrey Morkovkin <andrey.morkovkin@intel.com>
 
 
@@ -34,23 +34,23 @@ def main():
     start = timer()
     model = KMeans(**params).fit(x_train, y_train)
     train_patched = timer() - start
-    print(f'Intel® extension for Scikit-learn train time: {train_patched:.3f} s')
+    print(f'Intel extension for Scikit-learn train time: {train_patched:.3f} s')
 
     inertia_opt = model.inertia_
     n_iter_opt = model.n_iter_
-    print(f'Intel® extension for Scikit-learn inertia: {inertia_opt:.3f}')
-    print(f'Intel® extension for Scikit-learn number of iterations: {n_iter_opt}')
+    print(f'Intel extension for Scikit-learn inertia: {inertia_opt:.3f}')
+    print(f'Intel extension for Scikit-learn number of iterations: {n_iter_opt}')
 
     davies_bouldin_value = davies_bouldin_score(x_train, model.labels_)
-    print(f'Intel® extension for Scikit-learn Davies-Bouldin metric on train data: {davies_bouldin_value:.3f}')
+    print(f'Intel extension for Scikit-learn Davies-Bouldin metric on train data: {davies_bouldin_value:.3f}')
 
     start = timer()
     predicted_labels = model.predict(x_test)
     test_time = timer() - start
-    print(f'Intel® extension for Scikit-learn predict time: {test_time:.3f} s')
+    print(f'Intel extension for Scikit-learn predict time: {test_time:.3f} s')
 
     davies_bouldin_value = davies_bouldin_score(x_test, predicted_labels)
-    print(f'Intel® extension for Scikit-learn Davies-Bouldin metric on test data: {davies_bouldin_value:.3f}')
+    print(f'Intel extension for Scikit-learn Davies-Bouldin metric on test data: {davies_bouldin_value:.3f}')
     print('Kmeans example finished')
 
 if __name__ == '__main__':

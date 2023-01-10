@@ -15,7 +15,7 @@ following command to install the required packages (Ubuntu-specific):
 # required for Ubuntu 18.04 as its default pip doesn't have scikit-learn package
 python3 -m pip install --upgrade pip
 
-python3 -m pip install scikit-learn-intelex pandas numpy
+python3 -m pip install scikit-learn-intelex==2023.0.1 pandas numpy
 ```
 
 ## Download datasets

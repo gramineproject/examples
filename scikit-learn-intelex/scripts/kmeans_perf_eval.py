@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
-# Copyright (c) 2021 Intel Corporation
+# Copyright (C) 2021 Intel Corporation
 #                    Andrey Morkovkin <andrey.morkovkin@intel.com>
 
 from timeit import default_timer as timer
@@ -55,7 +55,7 @@ def main():
 
     print('*** Stock Scikit-learn ***')
     run(X, y, is_patched=False)
-    print('*** Intel® extension for Scikit-learn ***')
+    print('*** Intel extension for Scikit-learn ***')
     run(X, y, is_patched=True)
     print('Kmeans perf evaluation finished')
 
