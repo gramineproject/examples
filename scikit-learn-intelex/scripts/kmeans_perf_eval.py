@@ -24,6 +24,7 @@ def run(X, y, is_patched):
 
     params = {
         'n_clusters': 10,
+        'n_init': 10,
         'random_state': 123,
         'copy_x': False,
     }
