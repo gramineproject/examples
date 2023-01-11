@@ -19,6 +19,7 @@ fs.mounts = [
 sgx.nonpie_binary = true
 sgx.enclave_size = "512M"
 sgx.thread_num = 16
+sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 
 sgx.trusted_files = [
   "file:{{ gramine.libos }}",

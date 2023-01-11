@@ -18,8 +18,9 @@ loader.insecure__use_cmdline_argv = true
 
 sgx.enclave_size = "32G"
 sgx.thread_num = 196
+sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 
-sgx.preheat_enclave = true
+sgx.preheat_enclave = {{ 'false' if env.get('EDMM', '0') == '1' else 'true' }}
 libos.check_invalid_pointers = false
 
 sgx.trusted_files = [
