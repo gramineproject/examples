@@ -18,6 +18,8 @@ sgx.enclave_size = "16G"
 
 # SGX needs minimum 64 threads for loading OpenJDK runtime.
 sgx.thread_num = 64
+sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
+sgx.require_exinfo = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 
 sgx.trusted_files = [
   "file:{{ gramine.libos }}",
