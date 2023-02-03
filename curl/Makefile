@@ -12,7 +12,7 @@ endif
 .PHONY: all
 all: curl.manifest
 ifeq ($(SGX),1)
-all: curl.manifest.sgx curl.sig curl.token
+all: curl.manifest.sgx curl.sig
 endif
 
 curl.manifest: curl.manifest.template
@@ -34,9 +34,6 @@ sgx_sign: curl.manifest
 	gramine-sgx-sign \
 		--manifest $< \
 		--output $<.sgx
-
-curl.token: curl.sig
-	gramine-sgx-get-token --output $@ --sig $^
 
 ifeq ($(SGX),)
 GRAMINE = gramine-direct

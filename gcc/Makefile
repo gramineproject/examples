@@ -26,7 +26,7 @@ GCC_LIB_PATH ?= /usr/lib/gcc/$(ARCH_LONG)
 .PHONY: all
 all: gcc.manifest test_files/bzip2.c test_files/gzip.c
 ifeq ($(SGX),1)
-all: gcc.manifest.sgx gcc.sig gcc.token
+all: gcc.manifest.sgx gcc.sig
 endif
 
 gcc.manifest: gcc.manifest.template
@@ -48,9 +48,6 @@ sgx_sign: gcc.manifest
 	gramine-sgx-sign \
 		--manifest $< \
 		--output $<.sgx
-
-gcc.token: gcc.sig
-	gramine-sgx-get-token --output $@ --sig $<
 
 test_files/bzip2.c:
 	../common_tools/download --output $@ --sha256 $(BZIP2_HASH) $(foreach mirror,$(BZIP2_MIRRORS),--url $(mirror))

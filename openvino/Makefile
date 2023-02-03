@@ -31,7 +31,7 @@ endif
 .PHONY: all
 all: benchmark_app benchmark_app.manifest $(VENV_DIR)/.INSTALLATION_OK intel_models public_models
 ifeq ($(SGX),1)
-all: benchmark_app.manifest.sgx benchmark_app.sig benchmark_app.token
+all: benchmark_app.manifest.sgx benchmark_app.sig
 endif
 
 .PHONY: intel_models
@@ -92,9 +92,6 @@ sgx_sign: benchmark_app.manifest | benchmark_app
 	gramine-sgx-sign \
 		--manifest $< \
 		--output $<.sgx
-
-benchmark_app.token: benchmark_app.sig
-	gramine-sgx-get-token --output $@ --sig $<
 
 benchmark_app: $(OPENVINO_DIR)
 	mkdir -p $(INFERENCE_ENGINE_CPP_SAMPLES_BUILD)

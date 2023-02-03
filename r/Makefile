@@ -16,7 +16,7 @@ export LD_LIBRARY_PATH
 .PHONY: all
 all: R.manifest
 ifeq ($(SGX),1)
-all: R.manifest.sgx R.sig R.token
+all: R.manifest.sgx R.sig
 endif
 
 R.manifest: R.manifest.template
@@ -38,9 +38,6 @@ sgx_sign: R.manifest
 	gramine-sgx-sign \
 		--manifest $< \
 		--output $<.sgx
-
-R.token: R.sig
-	gramine-sgx-get-token --output $@ --sig $<
 
 ifeq ($(SGX),)
 GRAMINE = gramine-direct

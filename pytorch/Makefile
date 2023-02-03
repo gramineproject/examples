@@ -14,7 +14,7 @@ endif
 .PHONY: all
 all: pytorch.manifest
 ifeq ($(SGX),1)
-all: pytorch.manifest.sgx pytorch.sig pytorch.token
+all: pytorch.manifest.sgx pytorch.sig
 endif
 
 pytorch.manifest: pytorch.manifest.template
@@ -36,9 +36,6 @@ sgx_sign: pytorch.manifest
 	gramine-sgx-sign \
 		--manifest $< \
 		--output $<.sgx
-
-pytorch.token: pytorch.sig
-	gramine-sgx-get-token --output $@ --sig $<
 
 .PHONY: clean
 clean:

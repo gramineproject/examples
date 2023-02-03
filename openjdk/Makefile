@@ -17,7 +17,7 @@ CLASS_FILES = $(SOURCE_FILES:.java=.class)
 .PHONY: all
 all: $(CLASS_FILES) java.manifest
 ifeq ($(SGX),1)
-all: java.manifest.sgx java.sig java.token
+all: java.manifest.sgx java.sig
 endif
 
 java.manifest: java.manifest.template
@@ -38,9 +38,6 @@ sgx_sign: java.manifest
 	gramine-sgx-sign \
 		--manifest $< \
 		--output $<.sgx
-
-java.token: java.sig
-	gramine-sgx-get-token --output $@ --sig $<
 
 .PHONY: clean
 clean:

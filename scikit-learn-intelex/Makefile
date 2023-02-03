@@ -9,7 +9,7 @@ endif
 .PHONY: all
 all: sklearnex.manifest
 ifeq ($(SGX),1)
-all: sklearnex.manifest.sgx sklearnex.sig sklearnex.token
+all: sklearnex.manifest.sgx sklearnex.sig
 endif
 
 sklearnex.manifest: sklearnex.manifest.template
@@ -31,9 +31,6 @@ sgx_sign: sklearnex.manifest
 	gramine-sgx-sign \
 		--manifest $< \
 		--output $<.sgx
-
-sklearnex.token: sklearnex.sig
-	gramine-sgx-get-token --output $@ --sig $<
 
 .PHONY: clean
 clean:
