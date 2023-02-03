@@ -19,7 +19,7 @@ endif
 .PHONY: all
 all: label_image.manifest
 ifeq ($(SGX),1)
-all: label_image.manifest.sgx label_image.sig label_image.token
+all: label_image.manifest.sgx label_image.sig
 endif
 
 ifeq ($(SGX),)
@@ -73,9 +73,6 @@ sgx_sign: label_image.manifest inception_v3.tflite labels.txt
 	gramine-sgx-sign \
 		--manifest $< \
 		--output $<.sgx
-
-label_image.token: label_image.sig
-	gramine-sgx-get-token --output $@ --sig $<
 
 .PHONY: check
 check: all

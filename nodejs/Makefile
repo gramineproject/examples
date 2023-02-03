@@ -12,7 +12,7 @@ endif
 .PHONY: all
 all: nodejs.manifest
 ifeq ($(SGX),1)
-all: nodejs.manifest.sgx nodejs.sig nodejs.token
+all: nodejs.manifest.sgx nodejs.sig
 endif
 
 nodejs.manifest: nodejs.manifest.template
@@ -33,9 +33,6 @@ sgx_sign: nodejs.manifest helloworld.js
 	gramine-sgx-sign \
 		--manifest $< \
 		--output $<.sgx
-
-nodejs.token: nodejs.sig
-	gramine-sgx-get-token --output $@ --sig $<
 
 ifeq ($(SGX),)
 GRAMINE = gramine-direct
