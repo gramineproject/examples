@@ -23,7 +23,6 @@ fs.mounts = [
 # Node.js expects around 1.7GB of heap on startup, see https://github.com/nodejs/node/issues/13018
 sgx.enclave_size = "2G"
 
-sgx.nonpie_binary = true
 sgx.max_threads = 32
 sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 

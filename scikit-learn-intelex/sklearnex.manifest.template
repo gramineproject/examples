@@ -37,7 +37,6 @@ fs.mounts = [
   { type = "tmpfs", path = "/tmp" },
 ]
 
-sgx.nonpie_binary = true
 sgx.enclave_size = "16G"
 sgx.max_threads = 128
 sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
