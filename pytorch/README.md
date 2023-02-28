@@ -1,5 +1,7 @@
 # PyTorch
 
+This example was tested with torchvision version 0.13.0 and Ubuntu 20.04.
+
 This directory contains steps and artifacts to run a PyTorch sample workload on
 Gramine. Specifically, this example uses a pre-trained model for image
 classification.
