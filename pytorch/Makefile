@@ -12,12 +12,12 @@ GRAMINE_LOG_LEVEL = error
 endif
 
 .PHONY: all
-all: pytorch.manifest
+all: alexnet-pytorch.py.manifest
 ifeq ($(SGX),1)
-all: pytorch.manifest.sgx pytorch.sig
+all: alexnet-pytorch.py.manifest.sgx alexnet-pytorch.py.sig
 endif
 
-pytorch.manifest: pytorch.manifest.template
+alexnet-pytorch.py.manifest: alexnet-pytorch.py.manifest.template
 	gramine-manifest \
 		-Dlog_level=$(GRAMINE_LOG_LEVEL) \
 		-Dpillow_path=$(PILLOW_PATH) \
@@ -28,11 +28,11 @@ pytorch.manifest: pytorch.manifest.template
 # Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
 # for details on this workaround see
 # https://github.com/gramineproject/gramine/blob/e8735ea06c/CI-Examples/helloworld/Makefile
-pytorch.manifest.sgx pytorch.sig: sgx_sign
+alexnet-pytorch.py.manifest.sgx alexnet-pytorch.py.sig: sgx_sign
 	@:
 
 .INTERMEDIATE: sgx_sign
-sgx_sign: pytorch.manifest
+sgx_sign: alexnet-pytorch.py.manifest
 	gramine-sgx-sign \
 		--manifest $< \
 		--output $<.sgx

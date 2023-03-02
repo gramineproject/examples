@@ -1,7 +1,7 @@
 from torchvision import models
 import torch
 
-output_filename = "alexnet-pretrained.pt"
+output_filename = "alexnet-pretrained-model.pt"
 alexnet = models.alexnet(weights=models.AlexNet_Weights.IMAGENET1K_V1)
 torch.save(alexnet, output_filename)
 

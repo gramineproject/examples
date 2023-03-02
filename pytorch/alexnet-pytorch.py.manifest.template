@@ -1,18 +1,19 @@
 # PyTorch manifest template
 
 loader.entrypoint = "file:{{ gramine.libos }}"
-libos.entrypoint = "{{ entrypoint }}"
+libos.entrypoint = "alexnet-pytorch.py"
 
-loader.log_level = "{{ log_level }}"
+loader.log_level = "none"
+loader.log_file = "/dev/null"
 
 loader.env.LD_LIBRARY_PATH = "/lib:/usr/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}"
+loader.env.HOME = "/root"
 
 # Restrict the maximum number of threads to prevent insufficient memory
 # issue, observed on CentOS/RHEL.
-loader.env.OMP_NUM_THREADS = "8"
+loader.env.OMP_NUM_THREADS = "16"
 
-loader.insecure__use_cmdline_argv = true
-loader.insecure__use_host_env = true
+#loader.insecure__use_host_env = true
 
 loader.pal_internal_mem_size = "128M"
 
@@ -31,13 +32,15 @@ fs.mounts = [
 # { type = "chroot", uri = "file:{{ env.HOME }}/.cache/torch", path = "{{ env.HOME }}/.cache/torch" }
 
 sgx.nonpie_binary = true
+sys.brk.max_size = "1G"
 sgx.enclave_size = "4G"
-sgx.max_threads = 32
+sgx.max_threads = 64
 sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 
 sgx.trusted_files = [
   "file:{{ gramine.libos }}",
   "file:{{ entrypoint }}",
+  "file:/usr/bin/python3",
   "file:{{ gramine.runtimedir() }}/",
   "file:{{ arch_libdir }}/",
   "file:/usr/{{ arch_libdir }}/",
@@ -46,18 +49,14 @@ sgx.trusted_files = [
   "file:{{ pillow_path }}",
   "file:{{ python.get_path('stdlib', vars={'installed_base': '/usr/local'}) }}/",
 
-  "file:pytorchexample.py",
+  "file:alexnet-pytorch.py",
 
   "file:classes.txt",
   "file:input.jpg",
-  "file:alexnet-pretrained.pt",  # Pre-trained model saved as a file
+  "file:alexnet-pretrained-model.pt",  # Pre-trained model saved as a file
 
   # Uncomment line below if you want to use torchvision.model.alexnet(pretrained=True)
   # "file:{{ env.HOME }}/.cache/torch/checkpoints/alexnet-owt-4df8aa71.pth",
-]
-
-sgx.allowed_files = [
-  "file:result.txt",
 ]
 
 # Gramine optionally provides patched OpenMP runtime library that runs faster inside SGX enclaves
@@ -66,4 +65,4 @@ sgx.allowed_files = [
 # library. Note that we need to preload the library because PyTorch's distribution renames
 # libgomp.so to smth like libgomp-7c85b1e2.so.1, so it's not just a matter of searching in the
 # Gramine's Runtime path first, but a matter of intercepting OpenMP functions.
-# loader.env.LD_PRELOAD = "/lib/libgomp.so.1"
+loader.env.LD_PRELOAD = "/lib/libgomp.so.1"
