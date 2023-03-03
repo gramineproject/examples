@@ -1,0 +1,45 @@
+# swtpm (TPM emulator) manifest file example
+
+loader.entrypoint = "file:{{ gramine.libos }}"
+libos.entrypoint = "{{ entrypoint }}"
+loader.log_level = "{{ log_level }}"
+
+loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}"
+
+loader.argv = [
+  "swtpm", "socket", "--tpm2",
+  "--tpmstate", "dir=/myvtpm2",
+  "--seccomp", "action=none",
+  "--server", "type=tcp,port=2321,disconnect",
+  "--ctrl", "type=tcp,port=2320",
+  "--flags", "not-need-init,startup-clear",
+]
+
+sys.enable_sigterm_injection = true
+sys.enable_extra_runtime_domain_names_conf = true
+
+fs.mounts = [
+  { path = "/lib", uri = "file:{{ gramine.runtimedir() }}" },
+  { path = "{{ arch_libdir }}", uri = "file:{{ arch_libdir }}" },
+  { path = "/usr/{{ arch_libdir }}", uri = "file:/usr/{{ arch_libdir }}" },
+  { path = "/usr/lib/swtpm/", uri = "file:/usr/lib/swtpm/" },
+
+  { path = "{{ entrypoint }}", uri = "file:{{ entrypoint }}" },
+  { type = "encrypted", path = "/myvtpm2/", uri = "file:myvtpm2/", key_name = "{{ encryption_key }}" },
+]
+
+{% if encryption_key == "direct" %}
+fs.insecure__keys.direct = "ffeeddccbbaa99887766554433221100"
+{% endif %}
+
+sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
+sgx.enclave_size = "1G"
+
+sgx.trusted_files = [
+  "file:{{ gramine.libos }}",
+  "file:{{ entrypoint }}",
+  "file:{{ gramine.runtimedir() }}/",
+  "file:{{ arch_libdir }}/",
+  "file:/usr/{{ arch_libdir }}/",
+  "file:/usr/lib/swtpm/",
+]
