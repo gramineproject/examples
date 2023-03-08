@@ -30,7 +30,7 @@ $ swtpm socket --tpm2 --tpmstate dir=/myvtpm2 --seccomp action=none \
 
 This configuration means:
 - run `swtpm` in TPM2 mode,
-- save all TPM state under `/myvtpm2/` dir (encrypted under Gramine with SGX),
+- save all TPM state under `/myvtpm2/` dir (transparently encrypted by Gramine),
 - don't use seccomp (Gramine doesn't support it, and it's not needed in Gramine env anyway),
 - listen for client connections on TCP/IP port 2321 (in contrast to CUSE or chardev),
 - create a control channel on TCP/IP port 2320,
@@ -92,10 +92,13 @@ bash -c "exec 100<>/dev/tcp/localhost/2321; \
 ## output must be like this:
 ##   0000000 80 01 00 00 00 0a 00 00 00 00
 
-## 3 step: ask TPM to hash string "1234" in PCR 17
+## 3 step: check TPM Established flag (must be 0)
+swtpm_ioctl --tcp localhost:2320 -e
+
+## 4 step: ask TPM to hash string "1234" in PCR 17
 swtpm_ioctl --tcp localhost:2320 -h 1234
 
-## 4 step: read PCR 17
+## 5 step: read PCR 17
 bash -c "exec 100<>/dev/tcp/localhost/2321; \
     echo -en '\x80\x01\x00\x00\x00\x14\x00\x00\x01\x7e\x00\x00\x00\x01\x00\x0b\x03\x00\x00\x02' >&100; \
     od -tx1 <&100"
@@ -106,9 +109,9 @@ bash -c "exec 100<>/dev/tcp/localhost/2321; \
 ##   0000040 d6 49 bf b0 c9 22 fd 33 0f 79 b2 00 43 28 9d af
 ##   0000060 d6 0d 01 a4 c4 37 3c f2 8a db 56 c9 b4 54
 
-## 5 step: check TPM Established flag (must be 1)
+## 6 step: check TPM Established flag (must be 1)
 swtpm_ioctl --tcp localhost:2320 -e
 
-## 6 step: shutdown TPM
+## 7 step: shutdown TPM
 swtpm_ioctl --tcp localhost:2320 -s
 ```

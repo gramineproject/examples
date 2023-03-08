@@ -48,12 +48,6 @@ sgx_sign: swtpm.manifest
 		--manifest $< \
 		--output $<.sgx
 
-ifeq ($(SGX),)
-GRAMINE = gramine-direct
-else
-GRAMINE = gramine-sgx
-endif
-
 .PHONY: clean
 clean:
 	$(RM) *.token *.sig *.manifest.sgx *.manifest myvtpm2/.lock myvtpm2/*.permall
