@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
 # PyTorch and the pre-trained model must be installed on the system. See README for details.
 
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)

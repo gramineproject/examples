@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
 manifests = $(addsuffix .manifest,label_image)
 exec_target = $(manifests)
 target = label_image

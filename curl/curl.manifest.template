@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
 # Curl manifest file example
 
 loader.entrypoint = "file:{{ gramine.libos }}"

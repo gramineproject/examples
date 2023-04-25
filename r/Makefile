@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
 # Installation location of R. By default, Gramine will run the system R executable.
 R_HOME ?= /usr/lib/R
 R_EXEC = $(R_HOME)/bin/exec/R
