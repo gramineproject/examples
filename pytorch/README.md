@@ -24,12 +24,12 @@ installation.
   DNS-resolver libraries.
 - `sudo apt install python3-pip lsb-release` to install `pip` and `lsb_release`.
   The former is required to install additional Python packages while the latter
-is used by the Makefile.
+  is used by the Makefile.
 - `pip3 install --user torchvision pillow` to install the torchvision and pillow
   Python packages and their dependencies (usually in $HOME/.local). WARNING:
-This downloads several hundred megabytes of data!
+  This downloads several hundred megabytes of data!
 - `python3 download-pretrained-model.py` to download and save the pre-trained
-  model.  WARNING: this downloads about 200MB of data!
+  model. WARNING: this downloads about 200MB of data!
 
 # Build
 
