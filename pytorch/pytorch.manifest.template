@@ -22,6 +22,7 @@ fs.mounts = [
   { uri = "file:/usr", path = "/usr" },
   { uri = "file:/etc", path = "/etc" },
   { uri = "file:{{ pillow_path }}", path = "{{ pillow_path }}" },
+  { uri = "file:{{ torchvision_path }}", path = "{{ torchvision_path }}" },
 
   { type = "tmpfs", path = "/tmp" },
 ]
@@ -43,6 +44,7 @@ sgx.trusted_files = [
   "file:{{ python.stdlib }}/",
   "file:{{ python.distlib }}/",
   "file:{{ pillow_path }}",
+  "file:{{ torchvision_path }}",
   "file:{{ python.get_path('stdlib', vars={'installed_base': '/usr/local'}) }}/",
 
   "file:pytorchexample.py",
