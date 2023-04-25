@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
 print(sample(1:3))
 print(sample(1:3, size=3, replace=FALSE))  # same as previous line
 print(sample(c(2,5,3), size=4, replace=TRUE))

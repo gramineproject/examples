@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
 SHELL := /bin/bash # use bash syntax to activate virtual environment and to download models
 
 OPENVINO_DIR ?= $(INTEL_OPENVINO_DIR)

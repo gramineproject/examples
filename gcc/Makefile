@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
 THIS_DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
 ARCH_LONG ?= $(shell $(CC) -dumpmachine)

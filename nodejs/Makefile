@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
 THIS_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 NODEJS_DIR ?= /usr/bin
 

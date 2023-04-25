@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
