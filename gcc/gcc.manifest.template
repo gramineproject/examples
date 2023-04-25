@@ -22,8 +22,6 @@ fs.mounts = [
   { uri = "file:/tmp", path = "/tmp" },
 ]
 
-loader.pal_internal_mem_size = "64M"
-
 sgx.enclave_size = "1G"
 sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 

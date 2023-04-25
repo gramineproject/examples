@@ -15,8 +15,6 @@ loader.env.OMP_NUM_THREADS = "8"
 loader.uid = {{ env_user_uid }}
 loader.gid = {{ env_user_gid }}
 
-loader.pal_internal_mem_size = "128M"
-
 sys.stack.size = "8M"
 sys.enable_extra_runtime_domain_names_conf = true
 

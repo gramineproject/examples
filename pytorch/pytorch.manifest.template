@@ -14,8 +14,6 @@ loader.env.OMP_NUM_THREADS = "8"
 loader.insecure__use_cmdline_argv = true
 loader.insecure__use_host_env = true
 
-loader.pal_internal_mem_size = "128M"
-
 fs.mounts = [
   { uri = "file:{{ gramine.runtimedir() }}", path = "/lib" },
   { uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
