@@ -7,52 +7,46 @@ libos.entrypoint = "{{ entrypoint }}"
 
 loader.log_level = "{{ log_level }}"
 
-loader.env.LD_LIBRARY_PATH = "/lib:/usr/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}"
+loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}"
+loader.env.HOME = "{{ env.HOME }}"
 
 # Restrict the maximum number of threads to prevent insufficient memory
 # issue, observed on CentOS/RHEL.
 loader.env.OMP_NUM_THREADS = "8"
 
 loader.insecure__use_cmdline_argv = true
-loader.insecure__use_host_env = true
 
 fs.mounts = [
-  { uri = "file:{{ gramine.runtimedir() }}", path = "/lib" },
-  { uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
-  { uri = "file:/usr", path = "/usr" },
-  { uri = "file:/etc", path = "/etc" },
-  { uri = "file:{{ pillow_path }}", path = "{{ pillow_path }}" },
+  { path = "{{ entrypoint }}", uri = "file:{{ entrypoint }}" },
+  { path = "/lib", uri = "file:{{ gramine.runtimedir() }}" },
+  { path = "{{ arch_libdir }}", uri = "file:{{ arch_libdir }}" },
+  { path = "/usr/{{ arch_libdir }}", uri = "file:/usr/{{ arch_libdir }}" },
+{% for path in python.get_sys_path(entrypoint) %}
+  { path = "{{ path }}", uri = "file:{{ path }}" },
+{% endfor %}
 
   { type = "tmpfs", path = "/tmp" },
 ]
-
-# PyTorch loads its pre-trained models from here
-# Add below uncommented line to fs.mounts array if you want to use torchvision.model.alexnet(pretrained=True)
-# { type = "chroot", uri = "file:{{ env.HOME }}/.cache/torch", path = "{{ env.HOME }}/.cache/torch" }
 
 sgx.enclave_size = "4G"
 sgx.max_threads = 32
 sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 
 sgx.trusted_files = [
-  "file:{{ gramine.libos }}",
   "file:{{ entrypoint }}",
+  "file:{{ gramine.libos }}",
   "file:{{ gramine.runtimedir() }}/",
   "file:{{ arch_libdir }}/",
   "file:/usr/{{ arch_libdir }}/",
-  "file:{{ python.stdlib }}/",
-  "file:{{ python.distlib }}/",
-  "file:{{ pillow_path }}",
-  "file:{{ python.get_path('stdlib', vars={'installed_base': '/usr/local'}) }}/",
+{% for path in python.get_sys_path(entrypoint) %}
+  "file:{{ path }}{{ '/' if path.is_dir() else '' }}",
+{% endfor %}
 
   "file:pytorchexample.py",
 
   "file:classes.txt",
   "file:input.jpg",
   "file:alexnet-pretrained.pt",  # Pre-trained model saved as a file
-
-  # Uncomment line below if you want to use torchvision.model.alexnet(pretrained=True)
-  # "file:{{ env.HOME }}/.cache/torch/checkpoints/alexnet-owt-4df8aa71.pth",
 ]
 
 sgx.allowed_files = [
