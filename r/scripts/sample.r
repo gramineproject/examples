@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copied from https://www.rexamples.com/14/Sample()
 
 print(sample(1:3))
 print(sample(1:3, size=3, replace=FALSE))  # same as previous line
