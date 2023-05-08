@@ -35,6 +35,11 @@ fs.mounts = [
   { path = "/home/user/.local/lib", uri = "file:{{ env.HOME }}/.local/lib" },
 
   { type = "tmpfs", path = "/tmp" },
+
+  # scikit import pandas, pandas rely on pytz library, pytz installed by apt fails if it
+  # does not finds /usr/share/zoneinfo, # (this was found on pytz version # 2022.1
+  # installed by apt)
+  { path = "/usr/share/zoneinfo/", uri = "file:/usr/share/zoneinfo/" },
 ]
 
 sgx.enclave_size = "16G"
@@ -53,4 +58,5 @@ sgx.trusted_files = [
   "file:{{ env.HOME }}/.local/lib/",
   "file:data/",
   "file:scripts/",
+  "file:/usr/share/zoneinfo/"
 ]
