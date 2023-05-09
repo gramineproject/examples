@@ -18,7 +18,7 @@ fs.mounts = [
   { uri = "file:/usr/{{ arch_libdir }}", path = "/usr/{{ arch_libdir }}" },
 ]
 
-sgx.enclave_size = "512M"
+sgx.enclave_size = "2G"
 sgx.max_threads = 16
 sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 
