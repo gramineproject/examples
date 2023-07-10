@@ -35,7 +35,8 @@ fs.mounts = [
   { path = "/home/user/.local/lib", uri = "file:{{ env.HOME }}/.local/lib" },
 
   # Scikit imports pandas which in turn relies on the pytz library. The newer pytz versions fail if
-  # cannot find files under /usr/share/zoneinfo (found on pytz version 2022.1, installed by apt).
+  # they cannot find files under /usr/share/zoneinfo (found on pytz version 2022.1, installed by
+  # apt).
   { path = "/usr/share/zoneinfo/", uri = "file:/usr/share/zoneinfo/" },
 
   { type = "tmpfs", path = "/tmp" },
