@@ -7,7 +7,7 @@ libos.entrypoint = "{{ entrypoint }}"
 
 loader.log_level = "{{ log_level }}"
 
-loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}"
+loader.env.LD_LIBRARY_PATH = "/lib:/usr/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}"
 loader.env.HOME = "{{ env.HOME }}"
 
 # Restrict the maximum number of threads to prevent insufficient memory
@@ -19,6 +19,7 @@ loader.insecure__use_cmdline_argv = true
 fs.mounts = [
   { path = "{{ entrypoint }}", uri = "file:{{ entrypoint }}" },
   { path = "/lib", uri = "file:{{ gramine.runtimedir() }}" },
+  { path = "/usr/lib", uri = "file:/usr/lib" },
   { path = "{{ arch_libdir }}", uri = "file:{{ arch_libdir }}" },
   { path = "/usr/{{ arch_libdir }}", uri = "file:/usr/{{ arch_libdir }}" },
 {% for path in python.get_sys_path(entrypoint) %}
@@ -36,6 +37,7 @@ sgx.trusted_files = [
   "file:{{ entrypoint }}",
   "file:{{ gramine.libos }}",
   "file:{{ gramine.runtimedir() }}/",
+  "file:/usr/lib/",
   "file:{{ arch_libdir }}/",
   "file:/usr/{{ arch_libdir }}/",
 {% for path in python.get_sys_path(entrypoint) %}
