@@ -7,7 +7,10 @@ libos.entrypoint = "{{ entrypoint }}"
 
 loader.log_level = "{{ log_level }}"
 
-loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}"
+# In Debian12 we install torchvision via apt, which installs python3-torchvision
+# (0.14.1-2) at /usr/lib/ which is missing in the manifest template, causing pytorch
+# to fail with Gramine.
+loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}:/usr/lib"
 loader.env.HOME = "{{ env.HOME }}"
 
 # Restrict the maximum number of threads to prevent insufficient memory
@@ -26,6 +29,7 @@ fs.mounts = [
 {% endfor %}
 
   { type = "tmpfs", path = "/tmp" },
+  { path = "/usr/lib", uri = "file:/usr/lib" },
 ]
 
 sgx.enclave_size = "4G"
@@ -47,6 +51,7 @@ sgx.trusted_files = [
   "file:classes.txt",
   "file:input.jpg",
   "file:alexnet-pretrained.pt",  # Pre-trained model saved as a file
+  "file:/usr/lib/",
 ]
 
 sgx.allowed_files = [
