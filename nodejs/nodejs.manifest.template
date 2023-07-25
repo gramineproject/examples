@@ -20,6 +20,9 @@ fs.mounts = [
   { uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
   { uri = "file:/usr/{{ arch_libdir }}", path = "/usr/{{ arch_libdir }}" },
   { uri = "file:{{ nodejs_dir }}/nodejs", path = "{{ nodejs_dir }}/nodejs" },
+{%- if nodejs_usr_share_dir %}
+  { uri = "file:{{ nodejs_usr_share_dir }}", path = "{{ nodejs_usr_share_dir }}" },
+{%- endif %}
 ]
 
 # Node.js expects around 1.7GB of heap on startup, see https://github.com/nodejs/node/issues/13018
@@ -31,6 +34,9 @@ sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 sgx.trusted_files = [
   "file:{{ gramine.libos }}",
   "file:{{ nodejs_dir }}/nodejs",
+{%- if nodejs_usr_share_dir %}
+  "file:{{ nodejs_usr_share_dir }}/",
+{%- endif %}
   "file:{{ gramine.runtimedir() }}/",
   "file:{{ arch_libdir }}/",
   "file:/usr/{{ arch_libdir }}/",
