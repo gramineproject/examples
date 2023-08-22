@@ -5,7 +5,7 @@ Makefile and a template for generating the manifest.
 
 # Generating the manifest
 
-## Installing prerequisite
+## Installing prerequisites
 
 Please run the following commands to install MongoDB 6.0 Community Edition on Ubuntu 20.04:
 
@@ -67,5 +67,5 @@ gramine-sgx mongod
 
 Run the below commands from a new terminal:
 
-- `mongosh scripts/insert.js` # inserts new documents into a collection
-- `mongosh scripts/fetch.js` # fetches all documents, and prints their content
+- `mongosh scripts/insert.js` - inserts new documents into a collection
+- `mongosh scripts/fetch.js` - fetches all documents, and prints their content

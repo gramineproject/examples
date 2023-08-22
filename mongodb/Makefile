@@ -20,7 +20,6 @@ mongod.manifest: mongod.manifest.template
 		$< $@
 
 # Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
-# see the helloworld example for details on this workaround.
 mongod.sig mongod.manifest.sgx: sgx_sign
 	@:
 
