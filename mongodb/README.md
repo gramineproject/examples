@@ -25,8 +25,7 @@ Please run the following commands to install MongoDB 6.0 Community Edition on Ub
 
 2. Create a list file for MongoDB:
    ```
-   echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] \
-       https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | \
+   echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | \
        sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
    ```
 
