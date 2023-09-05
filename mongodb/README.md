@@ -7,7 +7,7 @@ Makefile and a template for generating the manifest.
 
 ## Installing prerequisites
 
-Please run the following commands to install MongoDB 7.0 Community Edition on Ubuntu 20.04:
+Please run the following commands to install MongoDB 7.0 Community Edition on Ubuntu 22.04:
 
 1. Import the public key used by the package management system:
 
@@ -21,11 +21,11 @@ Please run the following commands to install MongoDB 7.0 Community Edition on Ub
        ```
        curl -fsSL https://pgp.mongodb.com/server-7.0.asc | \
            sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg --dearmor
-        ```
+       ```
 
 2. Create a list file for MongoDB:
    ```
-   echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/7.0 multiverse" | \
+   echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | \
        sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
    ```
 
