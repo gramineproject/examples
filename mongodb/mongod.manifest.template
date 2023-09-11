@@ -15,9 +15,7 @@ fs.mounts = [
   { path = "/data/db", uri = "file:data/db" },
 ]
 
-sgx.debug = true
 sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
-
 sgx.enclave_size = "4G"
 sgx.max_threads = 64
 
