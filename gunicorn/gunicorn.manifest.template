@@ -1,0 +1,40 @@
+loader.entrypoint = "file:{{ gramine.libos }}"
+libos.entrypoint = "{{ entrypoint }}"
+
+loader.log_level = "{{ log_level }}"
+
+loader.insecure__use_cmdline_argv = true
+
+loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}"
+
+fs.mounts = [
+  { path = "{{ arch_libdir }}", uri = "file:{{ arch_libdir }}" },
+  { path = "{{ entrypoint }}", uri = "file:{{ entrypoint }}" },
+  { path = "/lib", uri = "file:{{ gramine.runtimedir() }}" },
+{% for path in python.get_sys_path(python_exe_path) %}
+  { path = "{{ path }}", uri = "file:{{ path }}" },
+{% endfor %}
+  { path = "/usr/bin/python3", uri = "file:/usr/bin/python3" },
+  { path = "/usr/{{ arch_libdir }}", uri = "file:/usr/{{ arch_libdir }}" },
+  { type = "tmpfs", path = "/tmp" },
+]
+
+sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
+sgx.enclave_size = "512M"
+sgx.max_threads = 64
+
+sgx.trusted_files = [
+  "file:{{ arch_libdir }}/",
+  "file:{{ entrypoint }}",
+  "file:{{ gramine.libos }}",
+  "file:{{ gramine.runtimedir() }}/",
+  "file:main.py",
+{% for path in python.get_sys_path(python_exe_path) %}
+  "file:{{ path }}{{ '/' if path.is_dir() else '' }}",
+{% endfor %}
+  "file:/usr/bin/python3",
+  "file:/usr/{{ arch_libdir }}/",
+]
+
+# BSD (flock) locks are currently experimental
+sys.experimental__enable_flock = true
