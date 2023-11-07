@@ -3,7 +3,7 @@ libos.entrypoint = "{{ entrypoint }}"
 
 loader.log_level = "{{ log_level }}"
 
-loader.insecure__use_cmdline_argv = true
+loader.argv = ["gunicorn", "--timeout", "600", "main:app"]
 
 loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}"
 
@@ -36,5 +36,3 @@ sgx.trusted_files = [
   "file:/usr/{{ arch_libdir }}/",
 ]
 
-# BSD (flock) locks are currently experimental
-sys.experimental__enable_flock = true
