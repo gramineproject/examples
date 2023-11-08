@@ -32,10 +32,10 @@ Here's an example of running Gunicorn under Gramine:
 
 Without SGX:
 ```
-gramine-direct gunicorn --workers 1 --timeout 600 main:app
+gramine-direct gunicorn
 ```
 
 With SGX:
 ```
-gramine-sgx gunicorn --workers 1 --timeout 600 main:app
+gramine-sgx gunicorn
 ```
