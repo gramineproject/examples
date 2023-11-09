@@ -5,6 +5,8 @@ loader.log_level = "{{ log_level }}"
 
 loader.argv = ["gunicorn", "--timeout", "600", "main:app"]
 
+sys.enable_sigterm_injection = true
+
 loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}"
 
 fs.mounts = [
