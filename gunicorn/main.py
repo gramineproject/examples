@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 
 @app.route('/hello', methods=['GET'])
 def helloworld():
