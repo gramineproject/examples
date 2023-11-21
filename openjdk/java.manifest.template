@@ -19,7 +19,7 @@ fs.mounts = [
 sgx.enclave_size = "16G"
 
 # SGX needs minimum 64 threads for loading OpenJDK runtime.
-sgx.max_threads = 64
+sgx.max_threads = {{ '1' if env.get('EDMM', '0') == '1' else '64' }}
 
 sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 
