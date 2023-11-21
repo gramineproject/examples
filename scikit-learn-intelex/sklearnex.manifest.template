@@ -43,7 +43,7 @@ fs.mounts = [
 ]
 
 sgx.enclave_size = "16G"
-sgx.max_threads = 128
+sgx.max_threads = {{ '1' if env.get('EDMM', '0') == '1' else '128' }}
 sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 
 sgx.trusted_files = [
