@@ -11,7 +11,7 @@ GRAMINE_LOG_LEVEL = error
 endif
 
 .PHONY: all
-all: $(IPERF_DIR)/src/.libs/iperf3 iperf3.manifest
+all: install/iperf3 install/libiperf.so.0 iperf3.manifest
 ifeq ($(SGX),1)
 all: iperf3.manifest.sgx iperf3.sig
 endif
@@ -40,26 +40,27 @@ sgx_sign: iperf3.manifest $(IPERF_DIR)/src/.libs/iperf3
 		--manifest $< \
 		--output $<.sgx
 
-.PHONY: start-native-server
-start-native-server: all
-	LD_LIBRARY_PATH=$(IPERF_DIR)/src/.libs $(IPERF_DIR)/src/.libs/iperf3 -s
-
 ifeq ($(SGX),)
 GRAMINE = gramine-direct
 else
 GRAMINE = gramine-sgx
 endif
 
-# Note that command-line arguments are hardcoded in the manifest file.
-.PHONY: start-gramine-server
-start-gramine-server: all
-	$(GRAMINE) iperf3
+# for simplicity, copy iperf3 executable into our install directory
+install/iperf3: $(IPERF_DIR)/src/.libs/iperf3
+	mkdir -p install
+	cp $< $@
+
+# for simplicity, copy libiperf library into our install directory
+install/libiperf.so.0: $(IPERF_DIR)/src/.libs/libiperf.so.0
+	mkdir -p install
+	cp $< $@
 
 ################################## CLEANUP ####################################
 
 .PHONY: clean
 clean:
-	$(RM) *.token *.sig *.manifest.sgx *.manifest iperf3
+	$(RM) -r *.token *.sig *.manifest.sgx *.manifest install
 
 .PHONY: distclean
 distclean: clean
