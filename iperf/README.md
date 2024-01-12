@@ -1,4 +1,4 @@
-# iperf3
+# iperf
 
 This directory contains the Makefile and the template manifest for the most
 recent version of iperf as of this writing (3.16).
