@@ -1,0 +1,43 @@
+# Copyright (C) 2024 Gramine contributors
+# SPDX-License-Identifier: BSD-3-Clause
+
+# iperf3 manifest file example
+
+loader.entrypoint = "file:{{ gramine.libos }}"
+libos.entrypoint = "/install/iperf3"
+
+loader.log_level = "{{ log_level }}"
+
+# Hardcode the argument to run the iperf3 server inside Gramine
+loader.argv = ["/install/iperf3", "-s"]
+
+loader.env.LD_LIBRARY_PATH = "/install:/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}"
+
+sys.enable_sigterm_injection = true
+
+fs.mounts = [
+  { path = "/lib", uri = "file:{{ gramine.runtimedir() }}" },
+  { path = "{{ arch_libdir }}", uri = "file:{{ arch_libdir }}" },
+  { path = "/usr/{{ arch_libdir }}", uri = "file:/usr/{{ arch_libdir }}" },
+  { type = "tmpfs", path = "/tmp"},
+
+  # Mount iperf3 executable and libiperf (located in the install directory)
+  # in Gramine under the /install directory.
+  { path = "/install/iperf3", uri = "file:install/iperf3" },
+  { path = "/install/libiperf.so.0", uri = "file:install/libiperf.so.0" },
+]
+
+sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
+# iperf3 is single threaded; we choose 4 to accommodate Gramine additional
+# threads for IPC and asynchronous events/alarms.
+sgx.max_threads = {{ '1' if env.get('EDMM', '0') == '1' else '4' }}
+sgx.enclave_size = "1024M"
+
+sgx.trusted_files = [
+  "file:install/iperf3",
+  "file:install/libiperf.so.0",
+  "file:{{ gramine.runtimedir() }}/",
+  "file:{{ arch_libdir }}/",
+  "file:/usr/{{ arch_libdir }}/",
+  "file:{{ gramine.libos }}",
+]
