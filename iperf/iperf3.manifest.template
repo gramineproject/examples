@@ -23,7 +23,6 @@ fs.mounts = [
   { path = "/install/libiperf.so.0", uri = "file:install/libiperf.so.0" },
 ]
 
-sgx.debug = true
 sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 # iperf3 is single threaded; we choose 4 to accommodate Gramine additional
 # threads for IPC and asynchronous events/alarms.
