@@ -10,7 +10,7 @@ learning inference performance. We test only the CPU backend (i.e., no GPU or FP
 - OpenVINO: Please download latest OpenVINO toolkit (as of this writing, version 2021.4) for Linux
   from https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit/download.html.
   For OpenVINO installation step-by-step instructions please refer to this
-[link](https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_linux.html).
+[link](https://docs.openvino.ai/2021.4/openvino_docs_install_guides_installing_openvino_linux.html).
 - Python (version 3.6 or higher)
 - Python virtual environment: `sudo apt-get install python3-venv`
 - CMake (version 3.10 or higher)
