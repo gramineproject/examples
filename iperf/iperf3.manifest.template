@@ -1,3 +1,6 @@
+# Copyright (C) 2024 Gramine contributors
+# SPDX-License-Identifier: BSD-3-Clause
+
 # iperf3 manifest file example
 
 loader.entrypoint = "file:{{ gramine.libos }}"

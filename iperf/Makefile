@@ -1,3 +1,6 @@
+# Copyright (C) 2024 Gramine contributors
+# SPDX-License-Identifier: BSD-3-Clause
+
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
 
 IPERF_DIR = iperf
