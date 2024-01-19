@@ -1,4 +1,5 @@
-# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2024 Gramine contributors
+# SPDX-License-Identifier: BSD-3-Clause
 
 SHELL := /bin/bash # use bash syntax to activate virtual environment and to download models
 
