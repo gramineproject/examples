@@ -30,11 +30,5 @@ sgx.allowed_files = [
   "file:data/db/",    # MongoDB data will be stored in plaintext; this is insecure!
 ]
 
-# MongoDB requires eventfd, and the Gramine implementation
-# currently relies on the host in an insecure manner. This setting isn't
-# suitable for production deployment, but works well as a stopgap during
-# development while a proper implementation in Gramine is being worked on.
-sys.insecure__allow_eventfd = true
-
 # BSD (flock) locks are currently experimental
 sys.experimental__enable_flock = true
