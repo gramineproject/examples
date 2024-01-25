@@ -4,8 +4,9 @@
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
 
 IPERF_DIR = iperf
-IPERF_REPO = https://github.com/esnet/iperf.git
-IPERF_VERSION = 3.16
+IPERF_SHA256 ?= cc740c6bbea104398cc3e466befc515a25896ec85e44a662d5f4a767b9cf713e
+IPERF_SRC ?= iperf-3.16.tar.gz
+IPERF_MIRRORS ?= https://github.com/esnet/iperf/releases/download/3.16
 
 ifeq ($(DEBUG),1)
 GRAMINE_LOG_LEVEL = debug
@@ -20,11 +21,14 @@ all: iperf3.manifest.sgx iperf3.sig
 endif
 
 $(IPERF_DIR)/configure:
-	git clone $(IPERF_REPO)
-	cd $(IPERF_DIR) && git checkout $(IPERF_VERSION) && ./configure && make
+	../common_tools/download --output $(IPERF_SRC) --sha256 $(IPERF_SHA256) \
+		$(foreach mirror,$(IPERF_MIRRORS),--url $(mirror)/$(IPERF_SRC))
+	mkdir $(IPERF_DIR)
+	tar -C $(IPERF_DIR) --strip-components=1 -xf $(IPERF_SRC)
 
 $(IPERF_DIR)/src/.libs/iperf3: $(IPERF_DIR)/configure
-	cd $(IPERF_DIR) && ./configure && make
+	cd $(IPERF_DIR) && ./configure
+	$(MAKE) -C $(IPERF_DIR)
 
 iperf3.manifest: iperf3.manifest.template
 	gramine-manifest \

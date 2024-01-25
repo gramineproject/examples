@@ -42,6 +42,7 @@ LD_LIBRARY_PATH=./install ./install/iperf3 -c localhost -p 5201
 ```
 
 # Useful iperf options
+
 ## Generic options (both for server and client):
 - `-p, --port`: server port to listen on/connect to
 - `--forceflush`: force flushing output at every interval
