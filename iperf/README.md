@@ -6,14 +6,14 @@ recent version of `iperf` as of this writing (3.16).
 # Prerequisites
 
 `iperf` has no prerequisites
-([source](https://github.com/esnet/iperf?tab=readme-ov-file#prerequisites)).
+([source](https://github.com/esnet/iperf/tree/3.16?tab=readme-ov-file#prerequisites)).
 
 # Building instructions
 
-We build `iperf` from source because on current Ubuntu distros (we tested Ubuntu
-22.04), the `iperf3` package has a version 3.9 which is built with
-`TCP_CONGESTION` requirement (i.e., with `iperf3_cv_header_tcp_congestion="yes"`
-config option). Using the Ubuntu package would fail with the following error:
+We build `iperf` from source because Ubuntu 22.04 has `iperf3` v3.9 in its
+package repositories which is built with `TCP_CONGESTION` requirement (i.e.,
+with `iperf3_cv_header_tcp_congestion="yes"` config option). Using the Ubuntu
+package would fail with the following error:
 ```
 iperf3: error - unable to set TCP_CONGESTION: ...
 ```
@@ -24,17 +24,17 @@ Thus we build `iperf` manually. In this case, it is built without
 [^1]: Starting from version 3.10, `iperf` supports environments that do not
 implement congestion control algorithm. Thus, iperf 3.10+ prebuilt packages
 should work under Gramine without problems. See [release
-notes](https://github.com/esnet/iperf/blob/master/RELNOTES.md#iperf-310-2021-05-26)
+notes](https://github.com/esnet/iperf/blob/3.16/RELNOTES.md#iperf-310-2021-05-26)
 for details.
 
 
 ## Building for Linux
 
-Run `make` in the root directory.
+Run `make` in the current directory.
 
 ## Building for SGX
 
-Run `make SGX=1` (non-debug) or `make SGX=1 DEBUG=1` (debug) in the root
+Run `make SGX=1` (non-debug) or `make SGX=1 DEBUG=1` (debug) in the current
 directory.
 
 # Execution instructions
@@ -60,6 +60,8 @@ LD_LIBRARY_PATH=./install ./install/iperf3 -c localhost -p 5201
 ```
 
 # Useful iperf options
+
+(The options may be version-dependent. Below are the options for v3.16.)
 
 ## Generic options (both for server and client):
 - `-p, --port`: server port to listen on/connect to
