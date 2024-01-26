@@ -10,6 +10,24 @@ recent version of `iperf` as of this writing (3.16).
 
 # Building instructions
 
+We build `iperf` from source because on current Ubuntu distros (we tested Ubuntu
+22.04), the `iperf3` package has a version 3.9 which is built with
+`TCP_CONGESTION` requirement (i.e., with `iperf3_cv_header_tcp_congestion="yes"`
+config option). Using the Ubuntu package would fail with the following error:
+```
+iperf3: error - unable to set TCP_CONGESTION: ...
+```
+
+Thus we build `iperf` manually. In this case, it is built without
+`TCP_CONGESTION`, and can successfully execute under Gramine[^1].
+
+[^1]: Starting from version 3.10, `iperf` supports environments that do not
+implement congestion control algorithm. Thus, iperf 3.10+ prebuilt packages
+should work under Gramine without problems. See [release
+notes](https://github.com/esnet/iperf/blob/master/RELNOTES.md#iperf-310-2021-05-26)
+for details.
+
+
 ## Building for Linux
 
 Run `make` in the root directory.

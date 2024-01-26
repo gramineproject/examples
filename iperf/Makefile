@@ -65,4 +65,4 @@ clean:
 
 .PHONY: distclean
 distclean: clean
-	$(RM) -r $(IPERF_DIR)
+	$(RM) -r $(IPERF_DIR) *.tar.gz
