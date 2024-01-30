@@ -1,3 +1,6 @@
+# Copyright (C) 2024 Gramine contributors
+# SPDX-License-Identifier: BSD-3-Clause
+
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
