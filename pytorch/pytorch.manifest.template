@@ -34,6 +34,10 @@ sgx.enclave_size = "4G"
 sgx.max_threads = {{ '1' if env.get('EDMM', '0') == '1' else '32' }}
 sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 
+# `use_exinfo = true` is needed because the application may trigger lazy allocation of pages
+# (through exception handling) when EDMM is enabled
+sgx.use_exinfo = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
+
 sgx.trusted_files = [
   "file:{{ entrypoint }}",
   "file:{{ gramine.libos }}",

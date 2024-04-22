@@ -33,6 +33,10 @@ sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 sgx.max_threads = {{ '1' if env.get('EDMM', '0') == '1' else '4' }}
 sgx.enclave_size = "1024M"
 
+# `use_exinfo = true` is needed because the application may trigger lazy allocation of pages
+# (through exception handling) when EDMM is enabled
+sgx.use_exinfo = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
+
 sgx.trusted_files = [
   "file:install/iperf3",
   "file:install/libiperf.so.0",
