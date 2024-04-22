@@ -7,9 +7,6 @@ Example applications for Gramine
 .. |nbsp| unicode:: 0xa0
    :trim:
 
-.. highlight:: sh
-
-
 This repository contains a curated set of Gramine examples. These examples are
 tested only against the most recent Gramine release (i.e., these examples are
 not guaranteed to work with older releases and unreleased versions of Gramine,
