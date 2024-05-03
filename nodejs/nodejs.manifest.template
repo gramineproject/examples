@@ -3,7 +3,6 @@
 
 # Node.js manifest file example
 
-loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "{{ nodejs_dir }}/nodejs"
 
 loader.log_level = "{{ log_level }}"
@@ -34,7 +33,6 @@ sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 sgx.use_exinfo = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 
 sgx.trusted_files = [
-  "file:{{ gramine.libos }}",
   "file:{{ nodejs_dir }}/nodejs",
 {%- if nodejs_usr_share_dir %}
   "file:{{ nodejs_usr_share_dir }}/",
