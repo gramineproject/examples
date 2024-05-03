@@ -3,7 +3,6 @@
 
 # PyTorch manifest template
 
-loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "{{ entrypoint }}"
 
 loader.log_level = "{{ log_level }}"
@@ -36,7 +35,6 @@ sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 
 sgx.trusted_files = [
   "file:{{ entrypoint }}",
-  "file:{{ gramine.libos }}",
   "file:{{ gramine.runtimedir() }}/",
   "file:/usr/lib/",
   "file:{{ arch_libdir }}/",

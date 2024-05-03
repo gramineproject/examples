@@ -3,7 +3,6 @@
 
 # Curl manifest file example
 
-loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "{{ curl_dir }}/curl"
 
 loader.log_level = "{{ log_level }}"
@@ -26,7 +25,6 @@ sgx.max_threads = {{ '1' if env.get('EDMM', '0') == '1' else '4' }}
 sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 
 sgx.trusted_files = [
-  "file:{{ gramine.libos }}",
   "file:{{ curl_dir }}/curl",
   "file:{{ gramine.runtimedir() }}/",
   "file:{{ arch_libdir }}/",

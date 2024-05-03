@@ -4,7 +4,6 @@
 # This is a general manifest template for running GCC and its utility programs,
 # including as, cc1, collect2, ld.
 
-loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "/usr/bin/gcc"
 
 loader.log_level = "{{ log_level }}"
@@ -29,7 +28,6 @@ sgx.enclave_size = "1G"
 sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 
 sgx.trusted_files = [
-  "file:{{ gramine.libos }}",
   "file:/usr/bin/gcc",
   "file:/usr/bin/as",
   "file:/usr/bin/ld",

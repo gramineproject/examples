@@ -3,7 +3,6 @@
 
 # TensorFlow Lite example
 
-loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "label_image"
 
 loader.log_level = "{{ log_level }}"
@@ -24,7 +23,6 @@ sgx.max_threads = {{ '1' if env.get('EDMM', '0') == '1' else '16' }}
 sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 
 sgx.trusted_files = [
-  "file:{{ gramine.libos }}",
   "file:label_image",
   "file:{{ gramine.runtimedir() }}/",
   "file:{{ arch_libdir }}/",
