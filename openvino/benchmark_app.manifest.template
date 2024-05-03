@@ -1,7 +1,6 @@
 # Copyright (C) 2024 Gramine contributors
 # SPDX-License-Identifier: BSD-3-Clause
 
-loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "benchmark_app"
 
 loader.log_level = "{{ log_level }}"
@@ -28,7 +27,6 @@ libos.check_invalid_pointers = false
 
 sgx.trusted_files = [
   "file:benchmark_app",
-  "file:{{ gramine.libos }}",
   "file:{{ gramine.runtimedir() }}/",
   "file:{{ arch_libdir }}/",
   "file:/usr/{{ arch_libdir }}/",

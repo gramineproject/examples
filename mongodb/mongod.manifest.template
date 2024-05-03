@@ -1,7 +1,6 @@
 # Copyright (C) 2024 Gramine contributors
 # SPDX-License-Identifier: BSD-3-Clause
 
-loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "{{ execdir }}/mongod"
 
 loader.log_level = "{{ log_level }}"
@@ -23,7 +22,6 @@ sgx.enclave_size = "8G"
 sgx.max_threads = {{ '1' if env.get('EDMM', '0') == '1' else '64' }}
 
 sgx.trusted_files = [
-  "file:{{ gramine.libos }}",
   "file:{{ execdir }}/mongod",
   "file:{{ gramine.runtimedir() }}/",
   "file:/usr/{{ arch_libdir }}/",

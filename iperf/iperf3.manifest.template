@@ -3,7 +3,6 @@
 
 # iperf3 manifest file example
 
-loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "/install/iperf3"
 
 loader.log_level = "{{ log_level }}"
@@ -39,5 +38,4 @@ sgx.trusted_files = [
   "file:{{ gramine.runtimedir() }}/",
   "file:{{ arch_libdir }}/",
   "file:/usr/{{ arch_libdir }}/",
-  "file:{{ gramine.libos }}",
 ]
