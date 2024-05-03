@@ -3,7 +3,6 @@
 
 # R manifest example
 
-loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "{{ r_exec }}"
 
 loader.log_level = "{{ log_level }}"
@@ -37,7 +36,6 @@ sgx.max_threads = {{ '1' if env.get('EDMM', '0') == '1' else '8' }}
 sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 
 sgx.trusted_files = [
-  "file:{{ gramine.libos }}",
   "file:{{ r_exec }}",
   "file:{{ gramine.runtimedir() }}/",
   "file:{{ arch_libdir }}/",
