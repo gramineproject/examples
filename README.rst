@@ -7,11 +7,12 @@ Example applications for Gramine
 .. |nbsp| unicode:: 0xa0
    :trim:
 
-This repository contains a curated set of Gramine examples. These examples are
-tested only against the most recent Gramine release (i.e., these examples are
-not guaranteed to work with older releases and unreleased versions of Gramine,
-including the latest master branch commits of Gramine). The examples were
-tested on Ubuntu 18.04 and 20.04.
+This repository contains a curated set of Gramine examples.
+
+Each release in this repository is guaranteed to work with the corresponding
+Gramine release, and the current `master` branch is guaranteed to work with the
+current Gramine `master` branch. Mixing non-matching releases and/or branches
+may lead to failures and other unpredictable results.
 
 For instructions how to build and run each application under Gramine, please
 see the README in each subdirectory.
@@ -26,7 +27,9 @@ We recommend to look at the (extensively commented) `Redis example
 to get an idea how to write the README, Makefile and manifest files. If you want
 to contribute a new example to Gramine and you take the Redis example as a
 template, we recommend to remove the comments from your copies as they only add
-noise (see e.g. Memcached for a "stripped-down" example).
+noise (see e.g. `Memcached
+<https://github.com/gramineproject/gramine/tree/master/CI-Examples/memcached>`__
+for a "stripped-down" example).
 
 Known unsupported applications
 ==============================

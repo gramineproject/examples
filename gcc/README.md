@@ -18,7 +18,7 @@ execute ```SGX=1 make check```. The regression tests build three sample programs
 
 It is known that GCC relies on specific Glibc version/build. Because Gramine
 uses its own patched Glibc, this may lead to seemlingly inexplicable failures.
-In particular, this GCC example is known to work on Ubuntu 18.04/20.04 but fail
-on RHEL 8/CentOS 8. There is currently no fix for RHEL/CentOS.
+In particular, this GCC example is known to work on Debian/Ubuntu but fail on
+RHEL/CentOS. There is currently no fix for RHEL/CentOS.
 
 For details, see https://github.com/gramineproject/graphene/issues/2489.

@@ -4,10 +4,6 @@ This directory contains an example for running Intel(R) Extension for
 Scikit-learn with Gramine, including the Makefile and a template for generating
 the manifest.
 
-**NOTE**: This example works only on post-v1.3.1 Gramine, due to the manifest
-file requiring special Python-templates handling. This example will work
-correctly on Gramine v1.4 once the latter is released.
-
 This example was tested with the following configuration:
 - scikit-learn-intelex v2023.0.1
 - scikit-learn v1.2.0
@@ -25,7 +21,7 @@ For generating the manifest and running the test scripts, please run the
 following command to install the required packages (Ubuntu-specific):
 
 ```sh
-# required for Ubuntu 18.04 as its default pip doesn't have scikit-learn package
+# default pip may not have the scikit-learn package
 python3 -m pip install --upgrade pip
 
 python3 -m pip install scikit-learn-intelex==2023.0.1 pandas
