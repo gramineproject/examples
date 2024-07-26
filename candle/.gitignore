@@ -1,0 +1,6 @@
+/candle_quantized
+/src
+
+# model
+/*.bin
+/*.json
