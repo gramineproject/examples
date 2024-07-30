@@ -72,7 +72,7 @@ label_image.manifest.sgx label_image.sig: sgx_sign
 	@:
 
 .INTERMEDIATE: sgx_sign
-sgx_sign: label_image.manifest inception_v3.tflite labels.txt
+sgx_sign: label_image.manifest
 	gramine-sgx-sign \
 		--manifest $< \
 		--output $<.sgx
