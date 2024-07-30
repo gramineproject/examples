@@ -22,7 +22,9 @@ mongod.manifest: mongod.manifest.template
 		-Dexecdir=$(shell dirname $(shell which mongod)) \
 		$< $@
 
-# Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`)
+# Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
+# for details on this workaround see
+# https://github.com/gramineproject/gramine/blob/e8735ea06c/CI-Examples/helloworld/Makefile
 mongod.sig mongod.manifest.sgx: sgx_sign
 	@:
 

@@ -18,7 +18,7 @@ ifeq ($(SGX),1)
 all: nodejs.manifest.sgx nodejs.sig
 endif
 
-nodejs.manifest: nodejs.manifest.template
+nodejs.manifest: nodejs.manifest.template helloworld.js
 	gramine-manifest \
 		-Dlog_level=$(GRAMINE_LOG_LEVEL) \
 		-Darch_libdir=$(ARCH_LIBDIR) \
@@ -33,7 +33,7 @@ nodejs.manifest.sgx nodejs.sig: sgx_sign
 	@:
 
 .INTERMEDIATE: sgx_sign
-sgx_sign: nodejs.manifest helloworld.js
+sgx_sign: nodejs.manifest
 	gramine-sgx-sign \
 		--manifest $< \
 		--output $<.sgx

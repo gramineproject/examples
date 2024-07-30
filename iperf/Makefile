@@ -26,23 +26,31 @@ $(IPERF_DIR)/configure:
 	mkdir $(IPERF_DIR)
 	tar -C $(IPERF_DIR) --strip-components=1 -xf $(IPERF_SRC)
 
-$(IPERF_DIR)/src/.libs/iperf3: $(IPERF_DIR)/configure
+# Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
+# for details on this workaround see
+# https://github.com/gramineproject/gramine/blob/e8735ea06c/CI-Examples/helloworld/Makefile
+$(IPERF_DIR)/src/.libs/iperf3 $(IPERF_DIR)/src/.libs/libiperf.so.0: iperf_build
+	@:
+
+.INTERMEDIATE: iperf_build
+iperf_build: $(IPERF_DIR)/configure
 	cd $(IPERF_DIR) && ./configure
 	$(MAKE) -C $(IPERF_DIR)
 
-iperf3.manifest: iperf3.manifest.template
+iperf3.manifest: iperf3.manifest.template install/iperf3 install/libiperf.so.0
 	gramine-manifest \
 		-Dlog_level=$(GRAMINE_LOG_LEVEL) \
 		-Darch_libdir=$(ARCH_LIBDIR) \
 		$< > $@
 
 # Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
-# see the helloworld example for details on this workaround.
+# for details on this workaround see
+# https://github.com/gramineproject/gramine/blob/e8735ea06c/CI-Examples/helloworld/Makefile
 iperf3.sig iperf3.manifest.sgx: sgx_sign
 	@:
 
 .INTERMEDIATE: sgx_sign
-sgx_sign: iperf3.manifest $(IPERF_DIR)/src/.libs/iperf3
+sgx_sign: iperf3.manifest
 	gramine-sgx-sign \
 		--manifest $< \
 		--output $<.sgx

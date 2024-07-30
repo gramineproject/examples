@@ -76,7 +76,7 @@ $(VENV_DIR)/.INSTALLATION_OK:
 	&& deactivate \
 	&& touch $@
 
-benchmark_app.manifest: benchmark_app.manifest.template
+benchmark_app.manifest: benchmark_app.manifest.template | benchmark_app
 	gramine-manifest \
 		-Dlog_level=$(GRAMINE_LOG_LEVEL) \
 		-Darch_libdir=$(ARCH_LIBDIR) \
@@ -91,7 +91,7 @@ benchmark_app.manifest.sgx benchmark_app.sig: sgx_sign
 	@:
 
 .INTERMEDIATE: sgx_sign
-sgx_sign: benchmark_app.manifest | benchmark_app
+sgx_sign: benchmark_app.manifest
 	gramine-sgx-sign \
 		--manifest $< \
 		--output $<.sgx
