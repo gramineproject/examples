@@ -26,7 +26,13 @@ $(IPERF_DIR)/configure:
 	mkdir $(IPERF_DIR)
 	tar -C $(IPERF_DIR) --strip-components=1 -xf $(IPERF_SRC)
 
-$(IPERF_DIR)/src/.libs/iperf3 $(IPERF_DIR)/src/.libs/libiperf.so.0: $(IPERF_DIR)/configure
+# Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
+# see the helloworld example for details on this workaround.
+$(IPERF_DIR)/src/.libs/iperf3 $(IPERF_DIR)/src/.libs/libiperf.so.0: iperf_build
+	@:
+
+.INTERMEDIATE: iperf_build
+iperf_build: $(IPERF_DIR)/configure
 	cd $(IPERF_DIR) && ./configure
 	$(MAKE) -C $(IPERF_DIR)
 
