@@ -27,7 +27,8 @@ $(IPERF_DIR)/configure:
 	tar -C $(IPERF_DIR) --strip-components=1 -xf $(IPERF_SRC)
 
 # Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
-# see the helloworld example for details on this workaround.
+# for details on this workaround see
+# https://github.com/gramineproject/gramine/blob/e8735ea06c/CI-Examples/helloworld/Makefile
 $(IPERF_DIR)/src/.libs/iperf3 $(IPERF_DIR)/src/.libs/libiperf.so.0: iperf_build
 	@:
 
@@ -43,7 +44,8 @@ iperf3.manifest: iperf3.manifest.template install/iperf3 install/libiperf.so.0
 		$< > $@
 
 # Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
-# see the helloworld example for details on this workaround.
+# for details on this workaround see
+# https://github.com/gramineproject/gramine/blob/e8735ea06c/CI-Examples/helloworld/Makefile
 iperf3.sig iperf3.manifest.sgx: sgx_sign
 	@:
 
