@@ -56,6 +56,15 @@ gramine-direct ./sklearnex scripts/kmeans_example.py
 gramine-direct ./sklearnex scripts/kmeans_perf_eval.py
 ```
 
+**NOTE**: `kmeans_perf_eval.py` can exceed the process's maximum number of
+mappings in Linux. You may need to increase the value in
+`/proc/sys/vm/max_map_count`:
+
+```
+# the value is just an example
+sudo sysctl vm.max_map_count=1310720
+```
+
 With SGX:
 
 ```sh
