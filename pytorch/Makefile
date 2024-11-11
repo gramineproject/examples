@@ -3,6 +3,14 @@
 
 # PyTorch and the pre-trained model must be installed on the system. See README for details.
 
+SHELL := /bin/bash
+
+THIS_DIR := $(shell pwd)
+
+VENV_DIR ?= $(THIS_DIR)/my_venv
+
+ENTRYPOINT := $(VENV_DIR)/bin/python3
+
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
 
 ifeq ($(DEBUG),1)
@@ -21,7 +29,8 @@ pytorch.manifest: pytorch.manifest.template
 	gramine-manifest \
 		-Dlog_level=$(GRAMINE_LOG_LEVEL) \
 		-Darch_libdir=$(ARCH_LIBDIR) \
-		-Dentrypoint=$(realpath $(shell sh -c "command -v python3")) \
+		-Dentrypoint=$(ENTRYPOINT) \
+		-Dvenv_dir=$(VENV_DIR) \
 		$< > $@
 
 # Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
