@@ -22,6 +22,7 @@ fs.mounts = [
   { path = "/usr/lib", uri = "file:/usr/lib" },
   { path = "{{ arch_libdir }}", uri = "file:{{ arch_libdir }}" },
   { path = "/usr/{{ arch_libdir }}", uri = "file:/usr/{{ arch_libdir }}" },
+  { path = "{{ venv_dir }}", uri = "file:{{ venv_dir }}" },
 {% for path in python.get_sys_path(entrypoint) %}
   { path = "{{ path }}", uri = "file:{{ path }}" },
 {% endfor %}
@@ -43,6 +44,7 @@ sgx.trusted_files = [
   "file:/usr/lib/",
   "file:{{ arch_libdir }}/",
   "file:/usr/{{ arch_libdir }}/",
+  "file:{{ venv_dir }}/",
 {% for path in python.get_sys_path(entrypoint) %}
   "file:{{ path }}{{ '/' if path.is_dir() else '' }}",
 {% endfor %}

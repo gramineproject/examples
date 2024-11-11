@@ -16,16 +16,15 @@ With high probability (41%) the classifier detected the image to contain a
 Labrador retriever.
 
 # Pre-requisites
-
-The following steps should suffice to run the workload on a stock Ubuntu 18.04
-installation.
+The following steps should suffice to run the workload on a standard Ubuntu distribution.
 
 - `sudo apt install libnss-mdns libnss-myhostname` to install additional
   DNS-resolver libraries.
 - `sudo apt install python3-pip lsb-release` to install `pip` and `lsb_release`.
   The former is required to install additional Python packages while the latter
   is used by the Makefile.
-- `pip3 install --user torchvision pillow` to install the torchvision and pillow
+- `python3 -m venv my_venv && source my_venv/bin/activate` to create and activate a virtual environment.
+- `pip3 install torchvision pillow` to install the torchvision and pillow
   Python packages and their dependencies (usually in $HOME/.local). WARNING:
   This downloads several hundred megabytes of data!
 - `python3 download-pretrained-model.py` to download and save the pre-trained
