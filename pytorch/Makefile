@@ -5,7 +5,7 @@
 
 SHELL := /bin/bash
 
-THIS_DIR := $(shell pwd)
+THIS_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 
 VENV_DIR ?= $(THIS_DIR)/my_venv
 
