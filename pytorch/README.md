@@ -16,9 +16,7 @@ With high probability (41%) the classifier detected the image to contain a
 Labrador retriever.
 
 # Pre-requisites
-
-The following steps should suffice to run the workload on a stock Ubuntu 18.04
-installation.
+The following steps should suffice to run the workload on a standard Ubuntu distribution.
 
 - `sudo apt install libnss-mdns libnss-myhostname` to install additional
   DNS-resolver libraries.
