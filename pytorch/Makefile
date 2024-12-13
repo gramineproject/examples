@@ -6,9 +6,7 @@
 SHELL := /bin/bash
 
 THIS_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
-
 VENV_DIR ?= $(THIS_DIR)/my_venv
-
 ENTRYPOINT := $(VENV_DIR)/bin/python3
 
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
