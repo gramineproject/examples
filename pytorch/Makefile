@@ -27,8 +27,8 @@ pytorch.manifest: pytorch.manifest.template
 	gramine-manifest \
 		-Dlog_level=$(GRAMINE_LOG_LEVEL) \
 		-Darch_libdir=$(ARCH_LIBDIR) \
-		-Dentrypoint=$(ENTRYPOINT) \
-		-Dvenv_dir=$(VENV_DIR) \
+		-Dentrypoint=$(abspath $(ENTRYPOINT)) \
+		-Dvenv_dir=$(abspath $(VENV_DIR)) \
 		$< > $@
 
 # Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
