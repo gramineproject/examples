@@ -18,12 +18,21 @@ GRAMINE_LOG_LEVEL = error
 endif
 
 .PHONY: all
-all: pytorch.manifest
+all: $(VENV_DIR)/.INSTALLATION_OK pytorch.manifest
 ifeq ($(SGX),1)
 all: pytorch.manifest.sgx pytorch.sig
 endif
 
-pytorch.manifest: pytorch.manifest.template
+.PRECIOUS: $(VENV_DIR)/.INSTALLATION_OK
+$(VENV_DIR)/.INSTALLATION_OK:
+	python3 -m venv $(VENV_DIR) \
+	&& source $(VENV_DIR)/bin/activate \
+	&& pip3 install torchvision pillow \
+	&& python3 download-pretrained-model.py \
+	&& deactivate \
+	&& touch $@
+
+pytorch.manifest: pytorch.manifest.template $(VENV_DIR)/.INSTALLATION_OK
 	gramine-manifest \
 		-Dlog_level=$(GRAMINE_LOG_LEVEL) \
 		-Darch_libdir=$(ARCH_LIBDIR) \
@@ -49,4 +58,4 @@ clean:
 
 .PHONY: distclean
 distclean: clean
-	$(RM) *.pt result.txt
+	$(RM) -r *.pt result.txt $(VENV_DIR)
