@@ -1,0 +1,37 @@
+loader.entrypoint = "file:{{ gramine.libos }}"
+libos.entrypoint = "/usr/sbin/mysqld"
+
+loader.log_level = "{{ log_level }}"
+
+loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}"
+
+loader.insecure__use_cmdline_argv = true
+
+fs.mounts = [
+  { path = "/lib", uri = "file:{{ gramine.runtimedir() }}" },
+  { path = "{{ arch_libdir }}", uri = "file:{{ arch_libdir }}" },
+  { path = "/usr/sbin", uri = "file:/usr/sbin" },
+  { path = "/var/lib/mysql", uri = "file:/var/lib/mysql" },
+  { path = "/run/mysqld", uri = "file:/run/mysqld"},
+  { type = "tmpfs", path = "/tmp" },
+]
+
+sgx.nonpie_binary = true
+sgx.enclave_size = "32G"
+sgx.thread_num = 512
+
+loader.uid = {{ uid }}
+loader.gid = {{ gid }}
+
+sgx.trusted_files = [
+  "file:{{ gramine.libos }}",
+  "file:/usr/sbin/mysqld",
+  "file:{{ gramine.runtimedir() }}/",
+  "file:{{ arch_libdir }}/",
+]
+
+sgx.allowed_files = [
+  "file:/var/lib/mysql",
+  "file:/var/log/mysql",
+  "file:/run/mysqld/",
+]
