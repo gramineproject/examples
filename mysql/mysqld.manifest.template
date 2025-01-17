@@ -1,0 +1,43 @@
+# MySQL manifest example
+
+loader.entrypoint = "file:{{ gramine.libos }}"
+libos.entrypoint = "{{ entrypoint }}"
+
+loader.log_level = "{{ log_level }}"
+
+loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr/lib:/usr/{{ arch_libdir }}"
+
+loader.insecure__use_cmdline_argv = true
+sys.enable_sigterm_injection = true
+
+sgx.nonpie_binary = true
+sgx.enclave_size = "8G"
+sgx.max_threads = {{ '1' if env.get('EDMM', '0') == '1' else '128' }}
+
+loader.uid = {{ uid }}
+loader.gid = {{ gid }}
+
+fs.mounts = [
+  { path = "/lib", uri = "file:{{ gramine.runtimedir() }}" },
+  { path = "{{ arch_libdir }}", uri = "file:{{ arch_libdir }}" },
+  { path = "/usr/{{ arch_libdir }}", uri = "file:/usr/{{ arch_libdir }}" },
+  { path = "{{ entrypoint }}", uri = "file:{{ entrypoint }}" },
+  { path = "/usr/lib/mysql", uri = "file:/usr/lib/mysql" },
+  { path = "/var/lib/mysql-files", uri = "file:/var/lib/mysql-files" },
+  { path = "/var/run/mysqld", uri = "file:/var/run/mysqld" },
+  { path = "/tmp", uri = "file:/tmp" },
+]
+
+sgx.trusted_files = [
+  "file:{{ gramine.libos }}",
+  "file:{{ entrypoint }}",
+  "file:{{ gramine.runtimedir() }}/",
+  "file:{{ arch_libdir }}/",
+  "file:/usr/{{ arch_libdir }}/",
+  "file:/usr/lib/mysql/",
+]
+
+sgx.allowed_files = [
+  "file:/var/run/mysqld/",
+  "file:/tmp/",     # MySQL data will be stored in plaintext; this is insecure!
+]
