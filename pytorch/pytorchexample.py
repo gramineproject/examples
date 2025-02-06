@@ -4,7 +4,9 @@
 from torchvision import models
 import torch
 
-# Load the model from a file (This file is from a trusted source)
+# Load the model from a file (ensure this file is from a trusted source)
+# Note: For PyTorch 2.6 and later, direct unpickling with weights_only=True (which was made the default)
+# can fail if the model file contains more than just the weights and includes classes or functions that are not allowlisted.
 alexnet = torch.load("alexnet-pretrained.pt", weights_only=False)
 
 # Prepare a transform to get the input image into a format (e.g., x,y dimensions) the classifier
