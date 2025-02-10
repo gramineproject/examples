@@ -16,3 +16,6 @@
 *.o
 *.so
 *.so.*
+
+# Virtual environment
+my_venv
