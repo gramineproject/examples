@@ -4,10 +4,10 @@
 from torchvision import models
 import torch
 
-# Load the model from a file. This file needs to be obtained from a trusted 
+# Load the model from a file. This file needs to be obtained from a trusted
 # source, because it can contain code, not only data.
-# Note: For PyTorch 2.6 and later, direct unpickling with weights_only=True 
-# (which was made the default) can fail if the model file contains more than 
+# Note: For PyTorch 2.6 and later, direct unpickling with weights_only=True
+# (which was made the default) can fail if the model file contains more than
 # just the weights and includes classes or functions that are not allowlisted.
 alexnet = torch.load("alexnet-pretrained.pt", weights_only=False)
 
