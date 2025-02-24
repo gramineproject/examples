@@ -1,0 +1,49 @@
+# Copyright (C) 2024 Gramine contributors
+# SPDX-License-Identifier: BSD-3-Clause
+
+loader.entrypoint = "file:{{ gramine.libos }}"
+libos.entrypoint = "{{ entrypoint }}"
+
+loader.log_level = "{{ log_level }}"
+
+# We need `--timeout 600` to work around the problem of a constantly restarting worker process:
+# the worker process is supposed to update the ctime of the shared file, and the parent process
+# verifies that the worker process is alive by checking the ctime of this file every second.
+# This ctime file metadata sharing between processes is currently not supported by Gramine;
+# see also https://github.com/gramineproject/gramine/issues/1134.
+loader.argv = ["gunicorn", "--timeout", "600", "main:app"]
+
+sys.enable_sigterm_injection = true
+
+loader.env.LD_LIBRARY_PATH = "/gramine_lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}"
+
+fs.mounts = [
+  { path = "{{ entrypoint }}", uri = "file:{{ entrypoint }}" },
+  { path = "/gramine_lib", uri = "file:{{ gramine.runtimedir() }}" },
+{% for path in python.get_sys_path(python_exe_path) %}
+  { path = "{{ path }}", uri = "file:{{ path }}" },
+{% endfor %}
+  { path = "/usr/bin", uri = "file:/usr/bin" },
+  { path = "{{ arch_libdir }}", uri = "file:{{ arch_libdir }}" },
+  { path = "/usr/{{ arch_libdir }}", uri = "file:/usr/{{ arch_libdir }}" },
+  { type = "tmpfs", path = "/tmp" },
+]
+
+sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
+sgx.enclave_size = "512M"
+sgx.max_threads = 64
+
+sgx.use_exinfo = true
+
+sgx.trusted_files = [
+  "file:{{ entrypoint }}",
+  "file:{{ gramine.libos }}",
+  "file:{{ gramine.runtimedir() }}/",
+{% for path in python.get_sys_path(python_exe_path) %}
+  "file:{{ path }}{{ '/' if path.is_dir() else '' }}",
+{% endfor %}
+  "file:/usr/bin/",
+  "file:{{ arch_libdir }}/",
+  "file:/usr/{{ arch_libdir }}/",
+  "file:main.py",
+]
