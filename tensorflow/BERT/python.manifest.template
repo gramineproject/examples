@@ -1,0 +1,61 @@
+libos.entrypoint = "{{ entrypoint }}"
+loader.entrypoint = "file:{{ gramine.libos }}"
+
+loader.log_level = "{{ log_level }}"
+
+loader.insecure__use_cmdline_argv = true
+loader.insecure__use_host_env = true
+loader.insecure__disable_aslr = true
+
+loader.env.LD_LIBRARY_PATH = "{{ python.stdlib }}/lib:/lib:{{ arch_libdir }}:/usr/lib:/usr/{{ arch_libdir }}"
+loader.pal_internal_mem_size = "512M"
+
+fs.mount.lib.type = "chroot"
+fs.mount.lib.path = "/lib"
+fs.mount.lib.uri = "file:{{ gramine.runtimedir() }}"
+
+fs.mount.lib2.type = "chroot"
+fs.mount.lib2.path = "{{ arch_libdir }}"
+fs.mount.lib2.uri = "file:{{ arch_libdir }}"
+
+fs.mount.usr.type = "chroot"
+fs.mount.usr.path = "/usr"
+fs.mount.usr.uri = "file:/usr"
+
+fs.mount.pyhome.type = "chroot"
+fs.mount.pyhome.path = "{{ python.stdlib }}"
+fs.mount.pyhome.uri = "file:{{ python.stdlib }}"
+
+fs.mount.pydisthome.type = "chroot"
+fs.mount.pydisthome.path = "{{ python.distlib }}"
+fs.mount.pydisthome.uri = "file:{{ python.distlib }}"
+
+fs.mount.pydistpath.type = "chroot"
+fs.mount.pydistpath.path = "{{ pythondistpath }}"
+fs.mount.pydistpath.uri = "file:{{ pythondistpath }}"
+
+fs.mount.tmp.type = "tmpfs"
+fs.mount.tmp.path = "/tmp"
+fs.mount.tmp.uri = "file:/tmp"
+
+sgx.enclave_size = "32G"
+sgx.thread_num = 256
+sgx.preheat_enclave = true
+sgx.nonpie_binary = true
+
+sgx.trusted_files = [
+  "file:{{ gramine.runtimedir() }}/",
+  "file:{{ arch_libdir }}/",
+  "file:/usr/{{ arch_libdir }}/",
+  "file:{{ gramine.libos }}",
+  "file:{{ entrypoint }}",
+  "file:{{ python.stdlib }}/",
+  "file:{{ python.distlib }}/",
+  "file:{{ pythondistpath }}/",
+  "file:models/",
+  "file:data/",
+]
+
+sgx.allowed_files = [
+  "file:output/",
+]
